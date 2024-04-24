@@ -5,7 +5,6 @@
   "scripts": {
     "start": "homey app run",
     "build": "homey app build",
-    "install": "homey app install",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "test": "homey app validate"
   },
