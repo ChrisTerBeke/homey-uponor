@@ -1,0 +1,13 @@
+{
+    "type": "mac",
+    "mac": {
+        "manufacturer": [
+            [
+                40,
+                245,
+                55
+            ]
+        ]
+    },
+    "id": "{{address}}"
+}

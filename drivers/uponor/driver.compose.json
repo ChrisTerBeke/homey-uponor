@@ -1,0 +1,36 @@
+{
+    "id": "uponor",
+    "name": {
+        "en": "Uponor Smatrix Pulse"
+    },
+    "class": "thermostat",
+    "capabilities": [
+        "measure_temperature"
+    ],
+    "platforms": [
+        "local"
+    ],
+    "connectivity": [
+        "lan"
+    ],
+    "images": {
+        "small": "{{driverAssetsPath}}/images/small.png",
+        "large": "{{driverAssetsPath}}/images/large.png"
+    },
+    "pair": [
+        {
+            "id": "list_devices",
+            "template": "list_devices",
+            "navigation": {
+                "next": "add_devices"
+            },
+            "options": {
+                "singular": false
+            }
+        },
+        {
+            "id": "add_devices",
+            "template": "add_devices"
+        }
+    ]
+}

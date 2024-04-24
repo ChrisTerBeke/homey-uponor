@@ -1,0 +1,2859 @@
+{
+    "result": "OK",
+    "output": {
+        "vars": [
+            {
+                "waspVarName": "cust_New_ControllerSW",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "cust_CX_SW_Distributed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "cust_Start_SW_Update",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "cust_Update_Counter_TimeOut",
+                "waspVarValue": "36"
+            },
+            {
+                "waspVarName": "cust_Update_SW_Retries",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "cust_SW_Update_Fail",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "cust_Mini_FW_Updated",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "cust_General_RH_Setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "cust_controller_1_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "cust_SW_version_update",
+                "waspVarValue": "X245_121.hex"
+            },
+            {
+                "waspVarName": "cust_Controller1_Name",
+                "waspVarValue": "Beneden"
+            },
+            {
+                "waspVarName": "cust_C1_T1_name",
+                "waspVarValue": "Woonkamer"
+            },
+            {
+                "waspVarName": "cust_Controller2_Name",
+                "waspVarValue": "Boven"
+            },
+            {
+                "waspVarName": "cust_C2_T1_name",
+                "waspVarValue": "Badkamer"
+            },
+            {
+                "waspVarName": "cust_C2_T2_name",
+                "waspVarValue": "Logeerkamer"
+            },
+            {
+                "waspVarName": "cust_C2_T4_name",
+                "waspVarValue": "Slaapkamer"
+            },
+            {
+                "waspVarName": "cust_C2_T6_name",
+                "waspVarValue": "Inloopkast"
+            },
+            {
+                "waspVarName": "cust_wifi_device",
+                "waspVarValue": "H369A6B1B5F_EXT"
+            },
+            {
+                "waspVarName": "cust_ip_device",
+                "waspVarValue": "192.168.2.10"
+            },
+            {
+                "waspVarName": "cust_Low_temperature_Hyst",
+                "waspVarValue": "90"
+            },
+            {
+                "waspVarName": "cust_Low_temperature_Limit",
+                "waspVarValue": "590"
+            },
+            {
+                "waspVarName": "cust_Enable_Low_Temp_Alarm",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "cust_Enable_SW_Update",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "cust_Succesfull_SW_Instal",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_valve_exercise",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_pump_exercise",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_supply_diagnostic",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_autobalance",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_pump_management",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_rh_control_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_supply_water_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_cooling_available",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_forced_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_comm_module_exist",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_time_limit_bypass",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_heat_pump_dynamic_heatcurve",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_heat_pump_response",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_heat_pump_defrost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_heat_cool_master_switch",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "Sys_CeilingCooling_Type",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_HC_supply_limit",
+                "waspVarValue": "644"
+            },
+            {
+                "waspVarName": "sys_HC_supply_hyst",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "sys_first_stage_offset",
+                "waspVarValue": "36"
+            },
+            {
+                "waspVarName": "sys_day",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_Month",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_year",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_minutes",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_hour",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_days",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_seconds",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "Sys_ext_outdoor_temp",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "sys_heat_cool_offset",
+                "waspVarValue": "36"
+            },
+            {
+                "waspVarName": "sys_eco_mode_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "sys_indoor_temp_switch",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "sys_outdoor_temp_hyst",
+                "waspVarValue": "36"
+            },
+            {
+                "waspVarName": "sys_outdoor_temp_switch",
+                "waspVarValue": "824"
+            },
+            {
+                "waspVarName": "sys_indoor_temp_hyst",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "sys_indoor_temp_delay",
+                "waspVarValue": "24"
+            },
+            {
+                "waspVarName": "sys_pun_protocol_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_OTA_status",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "sys_controller_1_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_controller_2_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_controller_3_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_controller_4_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_controller_1_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_controller_2_lost",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "sys_controller_3_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_controller_4_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "sys_average_relative_humidity",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_1_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_1_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_2_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_2_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_3_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_3_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_4_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_4_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_5_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_5_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_6_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_6_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_7_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_7_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_8_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_8_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_9_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_9_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_10_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_10_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_11_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_11_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_12_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_12_fancoil",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_out_relay_heat_cool_SwFunct",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_out_relay_heat_cool_SwFunct",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_general_purpose_input",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_general_purpose_input",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C1_output_module_configuration",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_output_module_configuration",
+                "waspVarValue": "7"
+            },
+            {
+                "waspVarName": "C1_controller_relays_config",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_controller_relays_config",
+                "waspVarValue": "7"
+            },
+            {
+                "waspVarName": "C1_channel_1_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_1_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_2_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_2_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_3_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_3_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_4_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_4_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_5_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_5_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_6_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_6_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_7_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_7_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_8_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_8_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_9_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_9_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_10_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_10_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_11_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_11_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_12_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_channel_12_ceiling_cooling",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_channel_1_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_1_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_2_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_2_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_3_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_3_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_4_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_4_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_5_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_5_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_6_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_6_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_7_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_7_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_8_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_8_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_9_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_9_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_10_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_10_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_11_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_11_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_channel_12_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_channel_12_ave_temp",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_rh_dead_zone",
+                "waspVarValue": "5"
+            },
+            {
+                "waspVarName": "C2_rh_dead_zone",
+                "waspVarValue": "5"
+            },
+            {
+                "waspVarName": "C1_rh_worst",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_rh_worst",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_sw_version",
+                "waspVarValue": "288"
+            },
+            {
+                "waspVarName": "C2_sw_version",
+                "waspVarValue": "288"
+            },
+            {
+                "waspVarName": "C1_thermostat_1_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_thermostat_1_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_thermostat_2_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_2_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_thermostat_3_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_3_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_4_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_4_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_thermostat_5_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_5_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_6_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_6_presence",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_thermostat_7_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_7_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_8_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_8_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_9_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_9_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_10_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_10_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_11_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_11_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_12_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_12_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_output_module_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_output_module_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_outdoor_temp_sensor_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_outdoor_temp_sensor_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_heat_cool_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_heat_cool_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_eco_mode_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_eco_mode_presence",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_pump_relay",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_stat_pump_relay",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_supply_temp_hi_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_supply_temp_hi_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_supply_temp_low_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_supply_temp_low_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_eco_mode_forced_pub_thermo",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_eco_mode_forced_pub_thermo",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_demand",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_stat_demand",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_general_system_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_general_system_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_device_system_alarm_eco_loss",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_device_system_alarm_eco_loss",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_heat_cool_slave_input",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_heat_cool_slave_input",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_1",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_1",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_2",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_2",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_3",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_3",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_4",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_4",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_5",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_5",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_6",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_6",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_7",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_7",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_8",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_8",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_9",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_9",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_10",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_10",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_11",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_11",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat_change_12",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat_change_12",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_average_room_temperature",
+                "waspVarValue": "675"
+            },
+            {
+                "waspVarName": "C2_average_room_temperature",
+                "waspVarValue": "652"
+            },
+            {
+                "waspVarName": "C1_average_setpoint",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_average_setpoint",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_outdoor_temperature",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_outdoor_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_alarm_type",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_alarm_type",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_supply_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_supply_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_worst_room_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_worst_room_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_worst_setpoint",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_worst_setpoint",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_stat_heat_pump_dyn_heat",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_heat_pump_dyn_heat",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_hardware_type",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_hardware_type",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_memory_map",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_memory_map",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_out_module_relay1_cmd",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_out_module_relay1_cmd",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_out_module_relay2_cmd",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_out_module_relay2_cmd",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_out_module_relay1",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_out_module_relay1",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_out_module_relay2",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_out_module_relay2",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_stat_out_module_com_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_stat_out_module_com_lost",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_pending_sw_version",
+                "waspVarValue": "65535"
+            },
+            {
+                "waspVarName": "C2_pending_sw_version",
+                "waspVarValue": "289"
+            },
+            {
+                "waspVarName": "C1_bootloader_sw_version",
+                "waspVarValue": "1044"
+            },
+            {
+                "waspVarName": "C2_bootloader_sw_version",
+                "waspVarValue": "1044"
+            },
+            {
+                "waspVarName": "C1_T1_bypass_enable",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_bypass_enable",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_bypass_enable",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_bypass_enable",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_bypass_enable",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_manual_fan_on",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_manual_fan_on",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_manual_fan_on",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_manual_fan_on",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_manual_fan_on",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_mode_comfort_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_mode_comfort_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_mode_comfort_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_mode_comfort_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_mode_comfort_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_dehumidifier_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_dehumidifier_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_dehumidifier_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_dehumidifier_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_dehumidifier_activation",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_rh_control",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_rh_control",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_rh_control",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_rh_control",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_rh_control",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_eco_profile_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_eco_profile_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_eco_profile_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_eco_profile_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_eco_profile_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_pub_setpoint_override",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_pub_setpoint_override",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_pub_setpoint_override",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_pub_setpoint_override",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_pub_setpoint_override",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_cooling_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T1_cooling_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T2_cooling_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T4_cooling_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T6_cooling_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_T1_rh_setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "C2_T1_rh_setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "C2_T2_rh_setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "C2_T4_rh_setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "C2_T6_rh_setpoint",
+                "waspVarValue": "75"
+            },
+            {
+                "waspVarName": "C1_T1_comfort_heating_setpoint",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_comfort_heating_setpoint",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_comfort_heating_setpoint",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_comfort_heating_setpoint",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_comfort_heating_setpoint",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_minimum_setpoint",
+                "waspVarValue": "410"
+            },
+            {
+                "waspVarName": "C2_T1_minimum_setpoint",
+                "waspVarValue": "410"
+            },
+            {
+                "waspVarName": "C2_T2_minimum_setpoint",
+                "waspVarValue": "410"
+            },
+            {
+                "waspVarName": "C2_T4_minimum_setpoint",
+                "waspVarValue": "410"
+            },
+            {
+                "waspVarName": "C2_T6_minimum_setpoint",
+                "waspVarValue": "410"
+            },
+            {
+                "waspVarName": "C1_T1_maximum_setpoint",
+                "waspVarValue": "950"
+            },
+            {
+                "waspVarName": "C2_T1_maximum_setpoint",
+                "waspVarValue": "950"
+            },
+            {
+                "waspVarName": "C2_T2_maximum_setpoint",
+                "waspVarValue": "950"
+            },
+            {
+                "waspVarName": "C2_T4_maximum_setpoint",
+                "waspVarValue": "950"
+            },
+            {
+                "waspVarName": "C2_T6_maximum_setpoint",
+                "waspVarValue": "950"
+            },
+            {
+                "waspVarName": "C1_T1_minimum_floor_setpoint",
+                "waspVarValue": "680"
+            },
+            {
+                "waspVarName": "C2_T1_minimum_floor_setpoint",
+                "waspVarValue": "680"
+            },
+            {
+                "waspVarName": "C2_T2_minimum_floor_setpoint",
+                "waspVarValue": "680"
+            },
+            {
+                "waspVarName": "C2_T4_minimum_floor_setpoint",
+                "waspVarValue": "680"
+            },
+            {
+                "waspVarName": "C2_T6_minimum_floor_setpoint",
+                "waspVarValue": "680"
+            },
+            {
+                "waspVarName": "C1_T1_maximum_floor_setpoint",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "C2_T1_maximum_floor_setpoint",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "C2_T2_maximum_floor_setpoint",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "C2_T4_maximum_floor_setpoint",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "C2_T6_maximum_floor_setpoint",
+                "waspVarValue": "788"
+            },
+            {
+                "waspVarName": "C1_T1_setpoint",
+                "waspVarValue": "681"
+            },
+            {
+                "waspVarName": "C2_T1_setpoint",
+                "waspVarValue": "644"
+            },
+            {
+                "waspVarName": "C2_T2_setpoint",
+                "waspVarValue": "644"
+            },
+            {
+                "waspVarName": "C2_T4_setpoint",
+                "waspVarValue": "644"
+            },
+            {
+                "waspVarName": "C2_T6_setpoint",
+                "waspVarValue": "644"
+            },
+            {
+                "waspVarName": "C1_T1_eco_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "C2_T1_eco_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "C2_T2_eco_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "C2_T4_eco_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "C2_T6_eco_offset",
+                "waspVarValue": "72"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_wifi_installed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_wifi_installed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_wifi_installed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_wifi_installed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_wifi_installed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_need_date_info",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_need_date_info",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_need_date_info",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_need_date_info",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_need_date_info",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_eco_forced",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_eco_forced",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_eco_forced",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_eco_forced",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_eco_forced",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_sub_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_sub_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_sub_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_sub_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_sub_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_actuator",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_actuator",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_rh_cool_shutdown",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_rh_cool_shutdown",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_rh_cool_shutdown",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_rh_cool_shutdown",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_rh_cool_shutdown",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_floor_limit_reach",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_floor_limit_reach",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_floor_limit_reach",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_floor_limit_reach",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_floor_limit_reach",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_fallbk_heatalarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_fallbk_heatalarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_fallbk_heatalarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_fallbk_heatalarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_fallbk_heatalarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_holiday_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_holiday_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_holiday_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_holiday_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_holiday_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_cb_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_cb_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_cb_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_cb_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_cb_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_air_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_air_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_air_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_air_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_air_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_external_sensor_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_external_sensor_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_external_sensor_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_external_sensor_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_external_sensor_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_rh_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_rh_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_rh_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_rh_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_rh_sensor_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_comfort_eco_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_tamper_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_tamper_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_tamper_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_tamper_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_tamper_alarm",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_rf_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_rf_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_rf_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_rf_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_rf_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_battery_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_battery_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_battery_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_battery_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_battery_error",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_rf_low_sig_warning",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_rf_low_sig_warning",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_rf_low_sig_warning",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_rf_low_sig_warning",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_rf_low_sig_warning",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_valve_position_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_valve_position_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_valve_position_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_valve_position_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_valve_position_err",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_eco_program",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_eco_program",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_eco_program",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_eco_program",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_eco_program",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_stat_demand_led",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_stat_demand_led",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_stat_demand_led",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_stat_demand_led",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_stat_demand_led",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_thermostat_type",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C2_T1_thermostat_type",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C2_T2_thermostat_type",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C2_T4_thermostat_type",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C2_T6_thermostat_type",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C1_T1_eco_setting",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_eco_setting",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_eco_setting",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_eco_setting",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_eco_setting",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_system_device_public",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_system_device_public",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_system_device_public",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_system_device_public",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_system_device_public",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_input_state",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_input_state",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_input_state",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_input_state",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_input_state",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_sensor_only",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_sensor_only",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_sensor_only",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_sensor_only",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_sensor_only",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_regulation_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_regulation_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_regulation_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_regulation_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_regulation_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_cool_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T1_cool_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T2_cool_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T4_cool_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T6_cool_allowed",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C1_T1_manual_cool_allowed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_manual_cool_allowed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_manual_cool_allowed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_manual_cool_allowed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_manual_cool_allowed",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_heat_cool_mode",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_heat_cool_slave",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_heat_cool_slave",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_heat_cool_slave",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_heat_cool_slave",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_heat_cool_slave",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_room_temperature",
+                "waspVarValue": "675"
+            },
+            {
+                "waspVarName": "C2_T1_room_temperature",
+                "waspVarValue": "659"
+            },
+            {
+                "waspVarName": "C2_T2_room_temperature",
+                "waspVarValue": "656"
+            },
+            {
+                "waspVarName": "C2_T4_room_temperature",
+                "waspVarValue": "637"
+            },
+            {
+                "waspVarName": "C2_T6_room_temperature",
+                "waspVarValue": "659"
+            },
+            {
+                "waspVarName": "C1_T1_external_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_T1_external_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_T2_external_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_T4_external_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C2_T6_external_temperature",
+                "waspVarValue": "32767"
+            },
+            {
+                "waspVarName": "C1_T1_rh",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_rh",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_rh",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_rh",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_rh",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_hw_type",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_T1_hw_type",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_T2_hw_type",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_T4_hw_type",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C2_T6_hw_type",
+                "waspVarValue": "3"
+            },
+            {
+                "waspVarName": "C1_T1_sw_version",
+                "waspVarValue": "11"
+            },
+            {
+                "waspVarName": "C2_T1_sw_version",
+                "waspVarValue": "11"
+            },
+            {
+                "waspVarName": "C2_T2_sw_version",
+                "waspVarValue": "11"
+            },
+            {
+                "waspVarName": "C2_T4_sw_version",
+                "waspVarValue": "11"
+            },
+            {
+                "waspVarName": "C2_T6_sw_version",
+                "waspVarValue": "11"
+            },
+            {
+                "waspVarName": "C1_T1_ufh_pwm_output",
+                "waspVarValue": "54"
+            },
+            {
+                "waspVarName": "C2_T1_ufh_pwm_output",
+                "waspVarValue": "28"
+            },
+            {
+                "waspVarName": "C2_T2_ufh_pwm_output",
+                "waspVarValue": "57"
+            },
+            {
+                "waspVarName": "C2_T4_ufh_pwm_output",
+                "waspVarValue": "15"
+            },
+            {
+                "waspVarName": "C2_T6_ufh_pwm_output",
+                "waspVarValue": "50"
+            },
+            {
+                "waspVarName": "C1_T1_head1_supply_temp",
+                "waspVarValue": "54"
+            },
+            {
+                "waspVarName": "C2_T1_head1_supply_temp",
+                "waspVarValue": "28"
+            },
+            {
+                "waspVarName": "C2_T2_head1_supply_temp",
+                "waspVarValue": "57"
+            },
+            {
+                "waspVarName": "C2_T4_head1_supply_temp",
+                "waspVarValue": "15"
+            },
+            {
+                "waspVarName": "C2_T6_head1_supply_temp",
+                "waspVarValue": "50"
+            },
+            {
+                "waspVarName": "C1_T1_head1_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head1_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head1_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head1_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head1_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head1_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head1_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head1_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head1_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head1_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head1_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head1_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head1_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head1_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head1_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_ufh1_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_ufh1_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_ufh1_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_ufh1_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_ufh1_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head2_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head2_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head2_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head2_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head2_valve_pos_percent",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head2_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head2_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head2_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head2_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head2_valve_pos",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head2_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head2_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head2_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head2_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head2_sw_version",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_ufh2_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_ufh2_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_ufh2_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_ufh2_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_ufh2_actuator_cycle",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_head2_supply_temp",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head2_supply_temp",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head2_supply_temp",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head2_supply_temp",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head2_supply_temp",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_channel_position",
+                "waspVarValue": "7"
+            },
+            {
+                "waspVarName": "C2_T1_channel_position",
+                "waspVarValue": "1"
+            },
+            {
+                "waspVarName": "C2_T2_channel_position",
+                "waspVarValue": "2"
+            },
+            {
+                "waspVarName": "C2_T4_channel_position",
+                "waspVarValue": "8"
+            },
+            {
+                "waspVarName": "C2_T6_channel_position",
+                "waspVarValue": "32"
+            },
+            {
+                "waspVarName": "C1_T1_head_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T1_head_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T2_head_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T4_head_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_T6_head_number",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_id_output_module",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_id_output_module",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_id_sys_dev_outdoor",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_id_sys_dev_outdoor",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_id_sys_dev_hc",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_id_sys_dev_hc",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_id_sys_dev_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_id_sys_dev_eco",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat1_id",
+                "waspVarValue": "286209722"
+            },
+            {
+                "waspVarName": "C2_thermostat1_id",
+                "waspVarValue": "286209595"
+            },
+            {
+                "waspVarName": "C1_thermostat2_id",
+                "waspVarValue": "286209722"
+            },
+            {
+                "waspVarName": "C2_thermostat2_id",
+                "waspVarValue": "286209584"
+            },
+            {
+                "waspVarName": "C1_thermostat3_id",
+                "waspVarValue": "286209722"
+            },
+            {
+                "waspVarName": "C2_thermostat3_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat4_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat4_id",
+                "waspVarValue": "286209739"
+            },
+            {
+                "waspVarName": "C1_thermostat5_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat5_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat6_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat6_id",
+                "waspVarValue": "286209769"
+            },
+            {
+                "waspVarName": "C1_thermostat7_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat7_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat8_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat8_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat9_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat9_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat10_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat10_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat11_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat11_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_thermostat12_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_thermostat12_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_1_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_1_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_2_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_2_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_3_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_3_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_4_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_4_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_5_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_5_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_6_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_6_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_7_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_7_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_8_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_8_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_9_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_9_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_10_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_10_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_11_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_11_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_12_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_12_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_13_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_13_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_14_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_14_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_15_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_15_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_16_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_16_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_17_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_17_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_18_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_18_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_19_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_19_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_20_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_20_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_21_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_21_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_22_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_22_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_23_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_23_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_TTH_24_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C2_TTH_24_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "controller1_id",
+                "waspVarValue": "419468687"
+            },
+            {
+                "waspVarName": "controller2_id",
+                "waspVarValue": "419468731"
+            },
+            {
+                "waspVarName": "controller3_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "controller4_id",
+                "waspVarValue": "0"
+            },
+            {
+                "waspVarName": "C1_T1_Monday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Monday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Monday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Monday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Monday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Tuesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Tuesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Tuesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Tuesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Tuesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Wednesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Wednesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Wednesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Wednesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Wednesday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Thursday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Thursday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Thursday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Thursday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Thursday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Friday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Friday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Friday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Friday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Friday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Saturday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Saturday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Saturday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Saturday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Saturday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C1_T1_Sunday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T1_Sunday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T2_Sunday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T4_Sunday",
+                "waspVarValue": "000000000000"
+            },
+            {
+                "waspVarName": "C2_T6_Sunday",
+                "waspVarValue": "000000000000"
+            }
+        ]
+    }
+}
