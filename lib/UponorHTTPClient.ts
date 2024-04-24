@@ -102,7 +102,8 @@ export class UponorHTTPClient {
     }
 
     public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
-        const setPoint = Math.round(((value * 9 / 5) + 32) * 10).toString()
+        const fahrenheit = (value * 9 / 5) + 32
+        const setPoint = round(fahrenheit * 10, 0).toString()
         await this._setAttribute(`C${controllerID}_T${thermostatID}_setpoint`, setPoint)
     }
 
@@ -128,16 +129,20 @@ export class UponorHTTPClient {
         if (data.result != 'OK') {
             return Promise.reject(data.result)
         }
-
-        await this._syncAttributes()
     }
 
     private static _formatTemperature(input: string | undefined): number {
         const fahrenheit = parseFloat(input || '0') / 10
-        return Math.round((fahrenheit - 32) * 5 / 9)
+        const celcius = (fahrenheit - 32) * 5 / 9
+        return round(celcius, 1)
     }
 
     private static _createKey(controllerID: string | number, thermostatID: string | number): string {
         return `C${controllerID}_T${thermostatID}`
     }
+}
+
+function round(value: number, precision: number = 0): number {
+    var multiplier = Math.pow(10, precision)
+    return Math.round(value * multiplier) / multiplier
 }
