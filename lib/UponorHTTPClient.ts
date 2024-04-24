@@ -9,6 +9,8 @@ export type Thermostat = {
     name: string | undefined
     temperature: number | undefined
     setPoint: number | undefined
+    minimumSetPoint: number | undefined
+    maximumSetPoint: number | undefined
     mode: Mode | undefined
 }
 
@@ -87,6 +89,44 @@ export class UponorHTTPClient {
             const thermostatID = matches[2] // second capture group
             const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
 
+            // TODO: calculate actual mode using heat/cool/eco/holiday/comfort mode attributes
+            // C2_T6_cool_allowed = "0"
+            // C2_T6_manual_cool_allowed = "0"
+            // C2_T6_heat_cool_mode = "0"
+            // C1_T1_heat_cool_slave = "0"
+            // C2_T6_stat_cb_comfort_eco_mode = "0"
+            // C1_T1_mode_comfort_eco = "0"
+            // C2_T6_stat_cb_eco_forced = "0"
+            // C1_T1_eco_profile_number = "0"
+            // C2_T6_stat_cb_holiday_mode = "0"
+            // C2_T6_stat_cb_heat_cool_mode = "0"
+            // C2_T6_stat_comfort_eco_mode = "0"
+            // C2_T6_stat_eco_program = "0"
+            // C2_T6_eco_setting = "0"
+            // C1_T1_eco_offset = "72"
+
+            // TODO: implement alarms
+            // C2_T6_stat_cb_fallbk_heatalarm = "0"
+            // C2_T6_stat_air_sensor_error = "0"
+            // C2_T6_stat_external_sensor_err = "0"
+            // C2_T6_stat_rh_sensor_error = "0"
+            // C2_T6_stat_tamper_alarm = "0"
+            // C2_T6_stat_rf_error = "0"
+            // C2_T6_stat_battery_error = "0"
+            // C2_T6_stat_rf_low_sig_warning = "0"
+            // C2_T6_stat_valve_position_err = "0"
+
+            // TODO: other
+            // C1_T1_head1_supply_temp = "54"
+            // C1_T1_head1_valve_pos_percent = "0"
+            // C1_T1_head1_valve_pos = "0"
+            // C1_T1_head2_valve_pos_percent = "0"
+            // C1_T1_head2_valve_pos = "0"
+            // C1_T1_head2_supply_temp = "0"
+            // C1_T1_channel_position = "7"
+            // C1_T1_head_number = "0"
+            // C1_T1_bypass_enable = "0"
+
             thermostats.set(ctKey, {
                 id: ctKey,
                 name: value,
@@ -94,7 +134,9 @@ export class UponorHTTPClient {
                 thermostatID: parseInt(thermostatID),
                 temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
                 setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-                mode: 'auto', // TODO: calculate mode using heat/cool/eco/holiday/comfort mode attributes
+                minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
+                maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
+                mode: 'auto',
             })
         })
 
