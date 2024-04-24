@@ -50,6 +50,10 @@
       "connectivity": [
         "lan"
       ],
+      "images": {
+        "small": "/drivers/uponor/assets/images/small.png",
+        "large": "/drivers/uponor/assets/images/large.png"
+      },
       "pair": [
         {
           "id": "list_devices",

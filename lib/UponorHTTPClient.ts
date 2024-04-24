@@ -146,7 +146,7 @@ export class UponorHTTPClient {
     public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
         const fahrenheit = (value * 9 / 5) + 32
         const setPoint = round(fahrenheit * 10, 0).toString()
-        await this._setAttribute(`C${controllerID}_T${thermostatID}_setpoint`, setPoint)
+        await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]))
     }
 
     public async setMode(controllerID: number, thermostatID: number, value: Mode): Promise<void> {
@@ -154,18 +154,12 @@ export class UponorHTTPClient {
         // await this._setAttribute("", "")
     }
 
-    private async _setAttribute(key: string, value: string): Promise<void> {
-        const body = JSON.stringify({
-            "vars": [
-                { "waspVarName": key, "waspVarValue": value },
-            ]
-        })
+    private async _setAttributes(attributes: Map<string, string>): Promise<void> {
+        const vars = Array.from(attributes, ([key, value]) => [{ "waspVarName": key, "waspVarValue": value }]).flat()
         const request = await fetch(this._url, {
             method: 'POST',
-            headers: {
-                'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes'
-            },
-            body: body,
+            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
+            body: JSON.stringify({ "vars": vars }),
         })
         const data: AttributesResponse = await request.json() as AttributesResponse
         if (data.result != 'OK') {
