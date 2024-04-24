@@ -8,25 +8,25 @@ class UponorDriver extends Driver {
         // const discoveryStrategy = this.getDiscoveryStrategy()
         // const discoveryResults = discoveryStrategy.getDiscoveryResults()
         // console.log('discoveryResults', discoveryResults)
-
         const client = new UponorHTTPClient('192.168.2.17')
         await client.syncAttributes()
 
+        const devices: any[] = []
         const thermostats = client.getThermostats()
-        console.log('thermostats', thermostats)
-
-        return thermostats.map((thermostat: Thermostat) => {
-            return {
+        thermostats.forEach((thermostat: Thermostat) => {
+            devices.push({
                 name: thermostat.name,
                 data: {
                     id: thermostat.id,
                     name: thermostat.name,
-                    ip_address: '192.168.2.17',
-                    controller_id: thermostat.controller_id,
-                    thermostat_id: thermostat.thermostat_id,
+                    IPAddress: '192.168.2.17',
+                    controllerID: thermostat.controllerID,
+                    thermostatID: thermostat.thermostatID,
                 },
-            }
+            })
         })
+
+        return devices
     }
 }
 

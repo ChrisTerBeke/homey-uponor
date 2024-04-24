@@ -1,12 +1,15 @@
 import fetch from 'node-fetch'
 
+export type Mode = 'auto' | 'heat' | 'cool' | 'off'
+
 export type Thermostat = {
     id: string | undefined
-    controller_id: number | undefined
-    thermostat_id: number | undefined
+    controllerID: number | undefined
+    thermostatID: number | undefined
     name: string | undefined
     temperature: number | undefined
     setPoint: number | undefined
+    mode: Mode | undefined
 }
 
 type AttributesResponse = {
@@ -23,6 +26,7 @@ export class UponorHTTPClient {
 
     private _url: string
     private _attributes: Map<string, string> = new Map()
+    private _thermostats: Map<string, Thermostat> = new Map()
 
     constructor(ip_address: string) {
         this._url = `http://${ip_address}/JNAP/`
@@ -36,58 +40,21 @@ export class UponorHTTPClient {
         return this._attributes.get(name)
     }
 
-    public getThermostats(): Thermostat[] {
-        const attributes = this.getAttributes()
-        const thermostats: Thermostat[] = []
-
-        // TODO: only do this once on init
-        attributes.forEach((value, key) => {
-
-            const regex = /cust_C(\d+)_T(\d+)_name/
-            const matches = regex.exec(key)
-            if (!matches) {
-                return
-            }
-
-            const controller_id = matches[1] // first capture group
-            const thermostat_id = matches[2] // second capture group
-            const ctKey = `C${controller_id}_T${thermostat_id}`
-
-            thermostats.push({
-                id: ctKey,
-                name: value,
-                controller_id: parseInt(controller_id),
-                thermostat_id: parseInt(thermostat_id),
-                temperature: this._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
-                setPoint: this._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-            })
-        })
-
-        return thermostats
+    public getThermostats(): Map<string, Thermostat> {
+        return this._thermostats
     }
 
-    public getThermostat(controller_id: number, thermostat_id: number): Thermostat {
-        const ctKey = `C${controller_id}_T${thermostat_id}`
-        return {
-            id: ctKey,
-            name: this.getAttribute(`cust_${ctKey}_name`),
-            controller_id: controller_id,
-            thermostat_id: thermostat_id,
-            temperature: this._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
-            setPoint: this._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-        }
+    public getThermostat(controllerID: number, thermostatID: number): Thermostat | undefined {
+        const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
+        return this._thermostats.get(ctKey)
     }
 
     public async syncAttributes(): Promise<void> {
-        this._attributes = await this._getAllAttributes()
+        this._attributes = await this._syncAttributes()
+        this._thermostats = this._syncThermostats()
     }
 
-    private _formatTemperature(input: string | undefined): number {
-        const fahrenheit = parseFloat(input || '0') / 10
-        return Math.round((fahrenheit - 32) * 5 / 9)
-    }
-
-    private async _getAllAttributes(): Promise<Map<string, string>> {
+    private async _syncAttributes(): Promise<Map<string, string>> {
         const request = await fetch(this._url, {
             method: 'POST',
             headers: {
@@ -96,7 +63,6 @@ export class UponorHTTPClient {
             body: '{}'
         })
         const data: AttributesResponse = await request.json() as AttributesResponse
-
         if (data.result != 'OK') {
             return Promise.reject(data.result)
         }
@@ -109,18 +75,69 @@ export class UponorHTTPClient {
         return result
     }
 
-    private async _setAttributes() {
-        //     def send_data(self, data):
-        // items = []
-        // for k, v in data.items():
-        //     items.append('{'waspVarName': '' + k + '','waspVarValue': '' + str(v) + ''}')
-        // payload = '{'vars': [' + ','.join(items) + ']}'
+    private _syncThermostats(): Map<string, Thermostat> {
+        const attributes = this.getAttributes()
+        const thermostats: Map<string, Thermostat> = new Map()
 
-        // r = requests.post(url = self.url, headers = { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
-        //     data = payload)
-        // r_json = r.json()
+        attributes.forEach((value, key) => {
+            const regex = /cust_C(\d+)_T(\d+)_name/
+            const matches = regex.exec(key)
+            if (!matches) return
+            const controllerID = matches[1] // first capture group
+            const thermostatID = matches[2] // second capture group
+            const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
 
-        // if 'result' in r_json and not r_json['result'] == 'OK':
-        //             raise ValueError(r_json)
+            thermostats.set(ctKey, {
+                id: ctKey,
+                name: value,
+                controllerID: parseInt(controllerID),
+                thermostatID: parseInt(thermostatID),
+                temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
+                setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
+                mode: 'auto', // TODO: calculate mode using heat/cool/eco/holiday/comfort mode attributes
+            })
+        })
+
+        return thermostats
+    }
+
+    public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
+        const setPoint = Math.round(((value * 9 / 5) + 32) * 10).toString()
+        await this._setAttribute(`C${controllerID}_T${thermostatID}_setpoint`, setPoint)
+    }
+
+    public async setMode(controllerID: number, thermostatID: number, value: Mode): Promise<void> {
+        // TODO: convert value to correct heat/cool/eco/holiday/comfort attributes
+        // await this._setAttribute("", "")
+    }
+
+    private async _setAttribute(key: string, value: string): Promise<void> {
+        const body = JSON.stringify({
+            "vars": [
+                { "waspVarName": key, "waspVarValue": value },
+            ]
+        })
+        const request = await fetch(this._url, {
+            method: 'POST',
+            headers: {
+                'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes'
+            },
+            body: body,
+        })
+        const data: AttributesResponse = await request.json() as AttributesResponse
+        if (data.result != 'OK') {
+            return Promise.reject(data.result)
+        }
+
+        await this._syncAttributes()
+    }
+
+    private static _formatTemperature(input: string | undefined): number {
+        const fahrenheit = parseFloat(input || '0') / 10
+        return Math.round((fahrenheit - 32) * 5 / 9)
+    }
+
+    private static _createKey(controllerID: string | number, thermostatID: string | number): string {
+        return `C${controllerID}_T${thermostatID}`
     }
 }
