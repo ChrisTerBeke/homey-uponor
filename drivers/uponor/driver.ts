@@ -17,11 +17,13 @@ class UponorDriver extends Driver {
                     name: thermostat.name,
                     data: {
                         id: `${discoveryResult.id}_${thermostat.id}`,
-                        name: thermostat.name,
                         MACAddress: discoveryResult.id,
                         controllerID: thermostat.controllerID,
                         thermostatID: thermostat.thermostatID,
                     },
+                    settings: {
+                        address: discoveryResult.address,
+                    }
                 })
             })
         }

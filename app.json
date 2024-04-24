@@ -70,6 +70,16 @@
           "id": "add_devices",
           "template": "add_devices"
         }
+      ],
+      "settings": [
+        {
+          "id": "address",
+          "label": {
+            "en": "IP Address"
+          },
+          "type": "text",
+          "required": true
+        }
       ]
     }
   ],
