@@ -7,10 +7,10 @@
         "local"
     ],
     "name": {
-        "en": "Uponor Smatrix Pulse"
+        "en": "Uponor"
     },
     "description": {
-        "en": "Adds support for Uponor Smatrix Pulse."
+        "en": "Adds support for Uponor systems."
     },
     "category": [
         "climate"

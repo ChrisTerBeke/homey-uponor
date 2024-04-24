@@ -8,10 +8,10 @@
     "local"
   ],
   "name": {
-    "en": "Uponor Smatrix Pulse"
+    "en": "Uponor"
   },
   "description": {
-    "en": "Adds support for Uponor Smatrix Pulse."
+    "en": "Adds support for Uponor systems."
   },
   "category": [
     "climate"
@@ -37,7 +37,7 @@
     {
       "id": "uponor",
       "name": {
-        "en": "Uponor Smatrix Pulse"
+        "en": "Uponor Smatrix Pulse R-208"
       },
       "class": "thermostat",
       "capabilities": [
@@ -50,6 +50,7 @@
       "connectivity": [
         "lan"
       ],
+      "discovery": "uponor",
       "images": {
         "small": "/drivers/uponor/assets/images/small.png",
         "large": "/drivers/uponor/assets/images/large.png"
@@ -78,9 +79,9 @@
       "mac": {
         "manufacturer": [
           [
-            40,
-            245,
-            55
+            54,
+            206,
+            75
           ]
         ]
       },

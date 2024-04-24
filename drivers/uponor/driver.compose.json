@@ -1,7 +1,7 @@
 {
     "id": "uponor",
     "name": {
-        "en": "Uponor Smatrix Pulse"
+        "en": "Uponor Smatrix Pulse R-208"
     },
     "class": "thermostat",
     "capabilities": [
@@ -14,6 +14,7 @@
     "connectivity": [
         "lan"
     ],
+    "discovery": "uponor",
     "images": {
         "small": "{{driverAssetsPath}}/images/small.png",
         "large": "{{driverAssetsPath}}/images/large.png"
