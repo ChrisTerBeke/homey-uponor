@@ -77,8 +77,11 @@
           "label": {
             "en": "IP Address"
           },
-          "type": "text",
-          "required": true
+          "type": "label",
+          "required": false,
+          "hint": {
+            "en": "The IP address of the device."
+          }
         }
       ]
     }

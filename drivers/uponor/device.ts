@@ -17,7 +17,11 @@ class UponorThermostatDevice extends Device {
 
     async onAdded(): Promise<void> {
         const { address } = this.getSettings()
-        await this._updateAddress(address)
+        await this._init(address)
+    }
+
+    async onUninit(): Promise<void> {
+        await this._uninit()
     }
 
     onDiscoveryResult(discoveryResult: DiscoveryResult) {
@@ -25,31 +29,34 @@ class UponorThermostatDevice extends Device {
     }
 
     async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC) {
-        await this._updateAddress(discoveryResult.address)
+        await this._init(discoveryResult.address)
     }
 
     async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._updateAddress(discoveryResult.address)
+        await this._init(discoveryResult.address)
     }
 
     async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._updateAddress(discoveryResult.address)
+        await this._init(discoveryResult.address)
     }
 
     async onDeleted(): Promise<void> {
+        await this._uninit()
+    }
+
+    async _init(newAddress: string): Promise<void> {
+        // TODO: validate new IP address is correct before updating everything (ARP is not always reliable)
+        await this._uninit()
+        await this.setSettings({ address: newAddress })
+        this._client = new UponorHTTPClient(newAddress)
+        this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+        await this._syncAttributes()
+    }
+
+    async _uninit() {
         clearInterval(this._syncInterval as NodeJS.Timeout)
         this._syncInterval = undefined
         this._client = undefined
-    }
-
-    async _updateAddress(newAddress: string): Promise<void> {
-        // TODO: validate new IP address is correct before updating everything (ARP is not always reliable)
-        clearInterval(this._syncInterval as NodeJS.Timeout)
-        await this.setSettings({ address: newAddress })
-        const { address } = this.getSettings()
-        this._client = new UponorHTTPClient(address)
-        await this._syncAttributes()
-        this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
     }
 
     private async _syncAttributes() {
