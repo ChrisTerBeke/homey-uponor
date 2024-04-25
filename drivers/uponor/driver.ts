@@ -23,17 +23,17 @@ class UponorDriver extends Driver {
             }
 
             if (driver._customIpAddress) {
-                // TODO: find actual MAC address for custom IP
-                return await driver._findDevices(driver._customIpAddress, 'custom')
+                const time = new Date().getTime()
+                return await driver._findDevices(driver._customIpAddress, `custom_${time}`)
             }
 
             return []
         })
     }
 
-    private async _findDevices(ip: string, mac: string): Promise<any[]> {
+    private async _findDevices(ipAddress: string, systemID: string): Promise<any[]> {
         const devices: any[] = []
-        const client = new UponorHTTPClient(ip)
+        const client = new UponorHTTPClient(ipAddress)
         const connected = await client.testConnection()
         if (!connected) return devices
 
@@ -42,13 +42,12 @@ class UponorDriver extends Driver {
             devices.push({
                 name: thermostat.name,
                 data: {
-                    id: `${mac}_${thermostat.id}`,
-                    MACAddress: mac,
+                    id: `${systemID}_${thermostat.id}`,
                     controllerID: thermostat.controllerID,
                     thermostatID: thermostat.thermostatID,
                 },
                 store: {
-                    address: ip,
+                    address: ipAddress,
                 }
             })
         })

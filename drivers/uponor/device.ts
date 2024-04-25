@@ -1,6 +1,5 @@
 import { Device, DiscoveryResult } from 'homey'
 import { UponorHTTPClient, Mode } from '../../lib/UponorHTTPClient'
-import { DiscoveryResultMAC } from 'homey/lib/DiscoveryStrategy'
 
 // sync thermostat every minute
 const POLL_INTERVAL_MS = 1000 * 60 * 1
@@ -28,16 +27,16 @@ class UponorThermostatDevice extends Device {
         return this.getData().id.includes(discoveryResult.id)
     }
 
-    async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        this._updateAddress(discoveryResult.address)
+    async onDiscoveryAvailable(discoveryResult: DiscoveryResult): Promise<void> {
+        this._updateAddress(discoveryResult.id)
     }
 
-    async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        this._updateAddress(discoveryResult.address)
+    async onDiscoveryAddressChanged(discoveryResult: DiscoveryResult): Promise<void> {
+        this._updateAddress(discoveryResult.id)
     }
 
-    async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        this._updateAddress(discoveryResult.address)
+    async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResult): Promise<void> {
+        this._updateAddress(discoveryResult.id)
     }
 
     async onSettings({ newSettings }: { newSettings: { [key: string]: any } }): Promise<void> {
