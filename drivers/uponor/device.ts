@@ -1,3 +1,4 @@
+import { isIPv4 } from 'net'
 import { Device, DiscoveryResult } from 'homey'
 import { UponorHTTPClient, Mode } from '../../lib/UponorHTTPClient'
 
@@ -58,9 +59,13 @@ class UponorThermostatDevice extends Device {
     }
 
     private async _updateAddress(newAddress: string): Promise<boolean> {
-        const client = new UponorHTTPClient(newAddress)
-        const canConnect = await client.testConnection()
-        if (!canConnect) return false
+        if (newAddress.length > 0) {
+            const isValidIP = isIPv4(newAddress)
+            if (!isValidIP) return false
+            const client = new UponorHTTPClient(newAddress)
+            const canConnect = await client.testConnection()
+            if (!canConnect) return false
+        }
         this.setStoreValue('address', newAddress)
         this._init()
         return true
