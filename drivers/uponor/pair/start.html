@@ -1,0 +1,25 @@
+<script type="application/javascript">
+    Homey.setTitle("Uponor setup")
+    Homey.setSubtitle("Select the pairing method")
+
+    function setCustomIP() {
+        var address = document.getElementById("address").value
+        Homey.emit("custom_ip_address", address)
+    }
+</script>
+
+<p>
+    Automated discovery mode scans for known Uponor devices in the local network.
+    This does not always work depending on the network configuration.
+    If you do not see your Uponor devices in the list, please try entering the IP address before continuing.
+</p>
+
+
+<form class="homey-form">
+    <fieldset class="homey-form-fieldset">
+        <div class="homey-form-group">
+            <label class="homey-form-label" for="address">IP Address</label>
+            <input class="homey-form-input" id="address" type="text" value="" onblur="setCustomIP()" />
+        </div>
+    </fieldset>
+</form>

@@ -21,6 +21,12 @@
     },
     "pair": [
         {
+            "id": "start",
+            "navigation": {
+                "next": "list_devices"
+            }
+        },
+        {
             "id": "list_devices",
             "template": "list_devices",
             "navigation": {
@@ -41,7 +47,7 @@
             "label": {
                 "en": "IP Address"
             },
-            "type": "label",
+            "type": "text",
             "required": false,
             "hint": {
                 "en": "The IP address of the device."

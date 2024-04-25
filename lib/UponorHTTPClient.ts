@@ -34,6 +34,7 @@ export class UponorHTTPClient {
         this._url = `http://${ip_address}/JNAP/`
     }
 
+
     public getAttributes(): Map<string, string> {
         return this._attributes
     }
@@ -56,12 +57,19 @@ export class UponorHTTPClient {
         this._thermostats = this._syncThermostats()
     }
 
+    public async testConnection(): Promise<boolean> {
+        const request = await fetch(this._url, {
+            method: 'POST',
+            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
+            body: '{}'
+        })
+        return request.status == 200
+    }
+
     private async _syncAttributes(): Promise<Map<string, string>> {
         const request = await fetch(this._url, {
             method: 'POST',
-            headers: {
-                'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes'
-            },
+            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
             body: '{}'
         })
         const data: AttributesResponse = await request.json() as AttributesResponse

@@ -16,8 +16,7 @@ class UponorThermostatDevice extends Device {
     }
 
     async onAdded(): Promise<void> {
-        const { address } = this.getSettings()
-        await this._init(address)
+        await this._init()
     }
 
     async onUninit(): Promise<void> {
@@ -29,28 +28,47 @@ class UponorThermostatDevice extends Device {
     }
 
     async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC) {
-        await this._init(discoveryResult.address)
+        await this._updateAddress(discoveryResult.address)
     }
 
     async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._init(discoveryResult.address)
+        await this._updateAddress(discoveryResult.address)
     }
 
     async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._init(discoveryResult.address)
+        await this._updateAddress(discoveryResult.address)
     }
 
     async onDeleted(): Promise<void> {
         await this._uninit()
     }
 
-    async _init(newAddress: string): Promise<void> {
-        // TODO: validate new IP address is correct before updating everything (ARP is not always reliable)
+    private _getAddress(): string {
+        const settingAddress = this.getSetting('address')
+        if (settingAddress) return settingAddress
+        const storeAddress = this.getStoreValue('address')
+        if (storeAddress) return storeAddress
+        return ""
+    }
+
+    private async _updateAddress(newAddress: string) {
+        const client = new UponorHTTPClient(newAddress)
+        const connected = await client.testConnection()
+        if (!connected) {
+            await this.setUnavailable(`Could not find Uponor controller on IP address ${newAddress}`)
+            return
+        }
+        await this.setStoreValue('address', newAddress)
+        await this._init()
+    }
+
+    async _init(): Promise<void> {
         await this._uninit()
-        await this.setSettings({ address: newAddress })
-        this._client = new UponorHTTPClient(newAddress)
+        const address = this._getAddress()
+        this._client = new UponorHTTPClient(address)
         this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
         await this._syncAttributes()
+        await this.setAvailable()
     }
 
     async _uninit() {
