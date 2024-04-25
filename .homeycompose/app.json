@@ -7,10 +7,10 @@
         "local"
     ],
     "name": {
-        "en": "Uponor"
+        "en": "Uponor Smatrix"
     },
     "description": {
-        "en": "Adds support for Uponor systems."
+        "en": "Adds support for Uponor Smatrix underfloor heating systems."
     },
     "category": [
         "climate"

@@ -1,7 +1,7 @@
 {
     "id": "uponor",
     "name": {
-        "en": "Uponor Smatrix Pulse R-208"
+        "en": "Smatrix Pulse R-208"
     },
     "class": "thermostat",
     "capabilities": [

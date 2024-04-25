@@ -1,7 +1,6 @@
 import { Device, DiscoveryResult } from 'homey'
 import { UponorHTTPClient, Mode } from '../../lib/UponorHTTPClient'
 
-// sync thermostat every minute
 const POLL_INTERVAL_MS = 1000 * 60 * 1
 
 class UponorThermostatDevice extends Device {
