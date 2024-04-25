@@ -81,12 +81,12 @@
         {
           "id": "address",
           "label": {
-            "en": "IP Address"
+            "en": "Override IP Address"
           },
           "type": "text",
           "required": false,
           "hint": {
-            "en": "The IP address of the device."
+            "en": "Overrides the auto-discovered IP address of the device."
           }
         }
       ]

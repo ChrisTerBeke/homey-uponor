@@ -58,12 +58,17 @@ export class UponorHTTPClient {
     }
 
     public async testConnection(): Promise<boolean> {
-        const request = await fetch(this._url, {
-            method: 'POST',
-            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
-            body: '{}'
-        })
-        return request.status == 200
+        try {
+            const request = await fetch(this._url, {
+                method: 'POST',
+                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
+                body: '{}',
+                timeout: 3000,
+            })
+            return request.status == 200
+        } catch (error) {
+            return false
+        }
     }
 
     private async _syncAttributes(): Promise<Map<string, string>> {

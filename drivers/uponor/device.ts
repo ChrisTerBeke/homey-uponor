@@ -9,93 +9,104 @@ class UponorThermostatDevice extends Device {
 
     private _syncInterval?: NodeJS.Timer
     private _client?: UponorHTTPClient
-    
-    async onInit() {
+
+    async onInit(): Promise<void> {
         this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
         // this.registerCapabilityListener('thermostat_mode', this._setThermostatMode.bind(this))
+        this._init()
     }
 
     async onAdded(): Promise<void> {
-        await this._init()
+        this._init()
     }
 
     async onUninit(): Promise<void> {
-        await this._uninit()
+        this._uninit()
     }
 
-    onDiscoveryResult(discoveryResult: DiscoveryResult) {
+    onDiscoveryResult(discoveryResult: DiscoveryResult): boolean {
         return this.getData().id.includes(discoveryResult.id)
     }
 
-    async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC) {
-        await this._updateAddress(discoveryResult.address)
+    async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC): Promise<void> {
+        this._updateAddress(discoveryResult.address)
     }
 
     async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._updateAddress(discoveryResult.address)
+        this._updateAddress(discoveryResult.address)
     }
 
     async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this._updateAddress(discoveryResult.address)
+        this._updateAddress(discoveryResult.address)
+    }
+
+    async onSettings({ newSettings }: { newSettings: { [key: string]: any } }): Promise<void> {
+        const addressUpdated = await this._updateAddress(newSettings.address as string)
+        if (!addressUpdated) {
+            throw new Error(`Could not connect to Uponor controller on IP address ${newSettings.address}`)
+        }
     }
 
     async onDeleted(): Promise<void> {
-        await this._uninit()
+        this._uninit()
     }
 
-    private _getAddress(): string {
+    private _getAddress(): string | undefined {
         const settingAddress = this.getSetting('address')
         if (settingAddress) return settingAddress
         const storeAddress = this.getStoreValue('address')
         if (storeAddress) return storeAddress
-        return ""
+        return undefined
     }
 
-    private async _updateAddress(newAddress: string) {
+    private async _updateAddress(newAddress: string): Promise<boolean> {
         const client = new UponorHTTPClient(newAddress)
-        const connected = await client.testConnection()
-        if (!connected) {
-            await this.setUnavailable(`Could not find Uponor controller on IP address ${newAddress}`)
-            return
-        }
-        await this.setStoreValue('address', newAddress)
-        await this._init()
+        const canConnect = await client.testConnection()
+        if (!canConnect) return false
+        this.setStoreValue('address', newAddress)
+        this._init()
+        return true
     }
 
     async _init(): Promise<void> {
         await this._uninit()
         const address = this._getAddress()
-        this._client = new UponorHTTPClient(address)
+        if (!address) return this.setUnavailable('No IP address configured')
+        const client = new UponorHTTPClient(address)
+        const canConnect = await client.testConnection()
+        if (!canConnect) return this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
+        this._client = client
         this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
-        await this._syncAttributes()
-        await this.setAvailable()
+        this._syncAttributes()
     }
 
-    async _uninit() {
+    async _uninit(): Promise<void> {
+        this.setUnavailable()
         clearInterval(this._syncInterval as NodeJS.Timeout)
         this._syncInterval = undefined
         this._client = undefined
     }
 
-    private async _syncAttributes() {
-        if (!this._client) return
+    private async _syncAttributes(): Promise<void> {
+        if (!this._client) return this.setUnavailable('No Uponor client')
         await this._client.syncAttributes()
         const { controllerID, thermostatID } = this.getData()
         const data = this._client.getThermostat(controllerID, thermostatID)
-        if (!data) return
+        if (!data) return this.setUnavailable('Could not find thermostat data')
+        this.setAvailable()
         this.setCapabilityValue('measure_temperature', data.temperature)
         this.setCapabilityValue('target_temperature', data.setPoint)
-        // this.setCapabilityValue('thermostat_mode', data?.mode)
+        // this.setCapabilityValue('thermostat_mode', data.mode)
     }
 
-    private async _setTargetTemperature(value: number) {
+    private async _setTargetTemperature(value: number): Promise<void> {
         if (!this._client) return
         const { controllerID, thermostatID } = this.getData()
         await this._client.setTargetTemperature(controllerID, thermostatID, value)
         await this._syncAttributes()
     }
 
-    private async _setThermostatMode(value: Mode) {
+    private async _setThermostatMode(value: Mode): Promise<void> {
         if (!this._client) return
         const { controllerID, thermostatID } = this.getData()
         await this._client.setMode(controllerID, thermostatID, value)

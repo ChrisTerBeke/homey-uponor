@@ -1,1 +1,9 @@
-{}
+{
+    "pair": {
+        "title": "Uponor setup",
+        "subtitle": "Select the pairing method",
+        "description": "Homey scans for known Uponor devices in the local network. This does not always work depending on the network configuration. If you do not see your Uponor devices in the list, please try entering the IP address before continuing.",
+        "ip_address": "IP address",
+        "custom_ip_address_warning": "Automatic discovery is recommended to prevent issues when the IP address of the controller changes."
+    }
+}
