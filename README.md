@@ -1,4 +1,4 @@
 # Homey Uponor
 
-Adds support for Uponor products.
-Currently only the Smatrix Pulse controller is supported.
+Unofficial support for Uponor Smatrix.
+Currently only the Smatrix Pulse R-208 controller is tested.

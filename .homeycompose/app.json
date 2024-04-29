@@ -1,35 +1,35 @@
 {
-    "id": "com.christerbeke.homey-uponor",
-    "version": "0.0.1",
-    "compatibility": ">=5.0.0",
-    "sdk": 3,
-    "platforms": [
-        "local"
-    ],
-    "name": {
-        "en": "Uponor Smatrix"
-    },
-    "description": {
-        "en": "Adds support for Uponor Smatrix underfloor heating systems."
-    },
-    "category": [
-        "climate"
-    ],
-    "permissions": [],
-    "images": {
-        "small": "/assets/images/small.png",
-        "large": "/assets/images/large.png",
-        "xlarge": "/assets/images/xlarge.png"
-    },
-    "author": {
-        "name": "Chris ter Beke",
-        "email": "contact+homey@christerbeke.com"
-    },
-    "brandColor": "#0062C8",
-    "source": "https://github.com/ChrisTerBeke/homey-uponor",
-    "support": "https://github.com/ChrisTerBeke/homey-uponor/issues",
-    "homepage": "https://github.com/ChrisTerBeke/homey-uponor",
-    "bugs": {
-        "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
-    }
+  "id": "com.christerbeke.uponor-smatrix",
+  "version": "0.0.2",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Uponor Smatrix"
+  },
+  "description": {
+    "en": "Moving Water through cities, buildings and homes."
+  },
+  "category": [
+    "climate"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Chris ter Beke",
+    "email": "contact+homey@christerbeke.com"
+  },
+  "brandColor": "#0062C8",
+  "source": "https://github.com/ChrisTerBeke/homey-uponor",
+  "support": "https://github.com/ChrisTerBeke/homey-uponor/issues",
+  "homepage": "https://github.com/ChrisTerBeke/homey-uponor",
+  "bugs": {
+    "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
+  }
 }
