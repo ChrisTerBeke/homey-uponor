@@ -11,7 +11,6 @@ class UponorThermostatDevice extends Device {
 
     async onInit(): Promise<void> {
         this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
-        // this.registerCapabilityListener('thermostat_mode', this._setThermostatMode.bind(this))
         this._init()
     }
 
@@ -99,20 +98,12 @@ class UponorThermostatDevice extends Device {
         this.setAvailable()
         this.setCapabilityValue('measure_temperature', data.temperature)
         this.setCapabilityValue('target_temperature', data.setPoint)
-        // this.setCapabilityValue('thermostat_mode', data.mode)
     }
 
     private async _setTargetTemperature(value: number): Promise<void> {
         if (!this._client) return
         const { controllerID, thermostatID } = this.getData()
         await this._client.setTargetTemperature(controllerID, thermostatID, value)
-        await this._syncAttributes()
-    }
-
-    private async _setThermostatMode(value: Mode): Promise<void> {
-        if (!this._client) return
-        const { controllerID, thermostatID } = this.getData()
-        await this._client.setMode(controllerID, thermostatID, value)
         await this._syncAttributes()
     }
 }
