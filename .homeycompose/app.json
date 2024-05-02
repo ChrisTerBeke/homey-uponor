@@ -31,5 +31,6 @@
   "homepage": "https://github.com/ChrisTerBeke/homey-uponor",
   "bugs": {
     "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
-  }
+  },
+  "homeyCommunityTopicId": 109100
 }
