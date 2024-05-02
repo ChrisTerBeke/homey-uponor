@@ -72,22 +72,18 @@ export class UponorHTTPClient {
     }
 
     private async _syncAttributes(): Promise<Map<string, string>> {
-        const request = await fetch(this._url, {
-            method: 'POST',
-            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
-            body: '{}'
-        })
-        const data: AttributesResponse = await request.json() as AttributesResponse
-        if (data.result != 'OK') {
-            return Promise.reject(data.result)
+        try {
+            const request = await fetch(this._url, {
+                method: 'POST',
+                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
+                body: '{}'
+            })
+            const data: AttributesResponse = await request.json() as AttributesResponse
+            if (data.result != 'OK') return Promise.reject(data.result)
+            return new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
+        } catch (error) {
+            return Promise.reject(error)
         }
-
-        const result = new Map<string, string>()
-        for (const v of data.output.vars) {
-            result.set(v.waspVarName, v.waspVarValue)
-        }
-
-        return result
     }
 
     private _syncThermostats(): Map<string, Thermostat> {
@@ -168,15 +164,17 @@ export class UponorHTTPClient {
     }
 
     private async _setAttributes(attributes: Map<string, string>): Promise<void> {
-        const vars = Array.from(attributes, ([key, value]) => [{ "waspVarName": key, "waspVarValue": value }]).flat()
-        const request = await fetch(this._url, {
-            method: 'POST',
-            headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
-            body: JSON.stringify({ "vars": vars }),
-        })
-        const data: AttributesResponse = await request.json() as AttributesResponse
-        if (data.result != 'OK') {
-            return Promise.reject(data.result)
+        try {
+            const vars = Array.from(attributes, ([key, value]) => [{ "waspVarName": key, "waspVarValue": value }]).flat()
+            const request = await fetch(this._url, {
+                method: 'POST',
+                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
+                body: JSON.stringify({ "vars": vars }),
+            })
+            const data: AttributesResponse = await request.json() as AttributesResponse
+            if (data.result != 'OK') return Promise.reject(data.result)
+        } catch (error) {
+            return Promise.reject(error)
         }
     }
 
