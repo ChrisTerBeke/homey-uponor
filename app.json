@@ -33,6 +33,7 @@
   "bugs": {
     "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
   },
+  "homeyCommunityTopicId": 109100,
   "drivers": [
     {
       "id": "uponor",
