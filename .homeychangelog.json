@@ -4,5 +4,8 @@
   },
   "0.0.2": {
     "en": "Fixed description for certification"
+  },
+  "0.0.3": {
+    "en": "Fixed crashes caused by network issues"
   }
 }
