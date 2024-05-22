@@ -57,6 +57,19 @@ export class UponorHTTPClient {
         this._thermostats = this._syncThermostats()
     }
 
+    public async debug(): Promise<any> {
+        try {
+            const request = await fetch(this._url, {
+                method: 'POST',
+                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
+                body: '{}',
+            })
+            return await request.json()
+        } catch (error) {
+            return false
+        }
+    }
+
     public async testConnection(): Promise<boolean> {
         try {
             const request = await fetch(this._url, {
