@@ -1,5 +1,5 @@
 import { Driver } from 'homey'
-import { UponorHTTPClient } from '../../lib/UponorHTTPClient'
+import { Thermostat, UponorHTTPClient } from '../../lib/UponorHTTPClient'
 import { PairSession } from 'homey/lib/Driver';
 
 class UponorDriver extends Driver {
@@ -32,27 +32,31 @@ class UponorDriver extends Driver {
     }
 
     private async _findDevices(ipAddress: string, systemID: string): Promise<any[]> {
-        const devices: any[] = []
         const client = new UponorHTTPClient(ipAddress)
-        const connected = await client.testConnection()
-        if (!connected) return devices
 
-        await client.syncAttributes()
-        client.getThermostats().forEach((thermostat) => {
-            devices.push({
-                name: thermostat.name,
-                data: {
-                    id: `${systemID}_${thermostat.id}`,
-                    controllerID: thermostat.controllerID,
-                    thermostatID: thermostat.thermostatID,
-                },
-                store: {
-                    address: ipAddress,
-                }
-            })
-        })
+        try {
+            const connected = await client.testConnection()
+            if (!connected) return []
+            await client.syncAttributes()
+            const thermostats = Array.from(client.getThermostats().values())
+            return thermostats.map(this._mapDevice.bind(this, ipAddress, systemID))
+        } catch (error) {
+            return []
+        }
+    }
 
-        return devices
+    private _mapDevice(ipAddress: string, systemID: string, thermostat: Thermostat): any {
+        return {
+            name: thermostat.name,
+            data: {
+                id: `${systemID}_${thermostat.id}`,
+                controllerID: thermostat.controllerID,
+                thermostatID: thermostat.thermostatID,
+            },
+            store: {
+                address: ipAddress,
+            }
+        }
     }
 }
 
