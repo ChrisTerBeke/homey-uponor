@@ -1,6 +1,6 @@
 import { isIPv4 } from 'net'
 import { Device, DiscoveryResult } from 'homey'
-import { UponorHTTPClient, Mode } from '../../lib/UponorHTTPClient'
+import { UponorHTTPClient } from '../../lib/UponorHTTPClient'
 
 const POLL_INTERVAL_MS = 1000 * 60 * 1
 
@@ -62,8 +62,12 @@ class UponorThermostatDevice extends Device {
             const isValidIP = isIPv4(newAddress)
             if (!isValidIP) return false
             const client = new UponorHTTPClient(newAddress)
-            const canConnect = await client.testConnection()
-            if (!canConnect) return false
+            try {
+                const canConnect = await client.testConnection()
+                if (!canConnect) return false
+            } catch (error) {
+                return false
+            }
         }
         this.setStoreValue('address', newAddress)
         this._init()
@@ -74,12 +78,17 @@ class UponorThermostatDevice extends Device {
         await this._uninit()
         const address = this._getAddress()
         if (!address) return this.setUnavailable('No IP address configured')
-        const client = new UponorHTTPClient(address)
-        const canConnect = await client.testConnection()
-        if (!canConnect) return this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
-        this._client = client
-        this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
-        this._syncAttributes()
+
+        try {
+            const client = new UponorHTTPClient(address)
+            const canConnect = await client.testConnection()
+            if (!canConnect) return this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
+            this._client = client
+            this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+            this._syncAttributes()
+        } catch (error) {
+            this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
+        }
     }
 
     async _uninit(): Promise<void> {
@@ -91,19 +100,30 @@ class UponorThermostatDevice extends Device {
 
     private async _syncAttributes(): Promise<void> {
         if (!this._client) return this.setUnavailable('No Uponor client')
-        await this._client.syncAttributes()
-        const { controllerID, thermostatID } = this.getData()
-        const data = this._client.getThermostat(controllerID, thermostatID)
-        if (!data) return this.setUnavailable('Could not find thermostat data')
-        this.setAvailable()
-        this.setCapabilityValue('measure_temperature', data.temperature)
-        this.setCapabilityValue('target_temperature', data.setPoint)
+
+        try {
+            await this._client.syncAttributes()
+            const { controllerID, thermostatID } = this.getData()
+            const data = this._client.getThermostat(controllerID, thermostatID)
+            if (!data) return this.setUnavailable('Could not find thermostat data')
+            this.setAvailable()
+            this.setCapabilityValue('measure_temperature', data.temperature)
+            this.setCapabilityValue('target_temperature', data.setPoint)
+        } catch (error) {
+            this.setUnavailable('Could not fetch data from Uponor controller')
+        }
     }
 
     private async _setTargetTemperature(value: number): Promise<void> {
         if (!this._client) return
-        const { controllerID, thermostatID } = this.getData()
-        await this._client.setTargetTemperature(controllerID, thermostatID, value)
+
+        try {
+            const { controllerID, thermostatID } = this.getData()
+            await this._client.setTargetTemperature(controllerID, thermostatID, value)
+        } catch (error) {
+            this.setUnavailable('Could not send data to Uponor controller')
+        }
+
         await this._syncAttributes()
     }
 }
