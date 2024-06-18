@@ -40,13 +40,7 @@ class UponorThermostatDevice extends Device {
 
     async onSettings({ newSettings }: { newSettings: { [key: string]: any } }): Promise<void> {
         const addressUpdated = await this._updateAddress(newSettings.address as string)
-        if (!addressUpdated) {
-            throw new Error(`Could not connect to Uponor controller on IP address ${newSettings.address}`)
-        }
-    }
-
-    async onDeleted(): Promise<void> {
-        this._uninit()
+        if (!addressUpdated) throw new Error(`Could not connect to Uponor controller on IP address ${newSettings.address}`)
     }
 
     private _getAddress(): string | undefined {
@@ -96,7 +90,6 @@ class UponorThermostatDevice extends Device {
     }
 
     async _uninit(): Promise<void> {
-        this.setUnavailable()
         clearInterval(this._syncInterval as NodeJS.Timeout)
         this._syncInterval = undefined
         this._client = undefined
