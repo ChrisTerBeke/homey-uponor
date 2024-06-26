@@ -34,7 +34,6 @@ export class UponorHTTPClient {
         this._url = `http://${ip_address}/JNAP/`
     }
 
-
     public getAttributes(): Map<string, string> {
         return this._attributes
     }
@@ -110,7 +109,7 @@ export class UponorHTTPClient {
             const controllerID = matches[1] // first capture group
             const thermostatID = matches[2] // second capture group
             const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
-            
+
             thermostats.set(ctKey, {
                 id: ctKey,
                 name: value,
