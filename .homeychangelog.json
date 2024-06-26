@@ -10,5 +10,8 @@
   },
   "0.0.4": {
     "en": "Fix crashes caused by network errors, add debug function"
+  },
+  "0.0.5": {
+    "en": "Stability improvements"
   }
 }
