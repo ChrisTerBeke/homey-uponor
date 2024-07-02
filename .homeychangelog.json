@@ -13,5 +13,8 @@
   },
   "0.0.5": {
     "en": "Stability improvements"
+  },
+  "0.0.6": {
+    "en": "Simplify refresh and temperature functions"
   }
 }
