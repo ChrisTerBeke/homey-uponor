@@ -34,10 +34,6 @@ class UponorThermostatDevice extends Device {
         this._updateAddress(discoveryResult.address, true)
     }
 
-    async onDiscoveryLastSeenChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        this._updateAddress(discoveryResult.address, true)
-    }
-
     async onSettings({ newSettings }: { newSettings: { [key: string]: any } }): Promise<void> {
         const addressUpdated = await this._updateAddress(newSettings.address as string)
         if (!addressUpdated) throw new Error(`Could not connect to Uponor controller on IP address ${newSettings.address}`)
@@ -77,7 +73,7 @@ class UponorThermostatDevice extends Device {
             this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
             this._syncAttributes()
         } catch (error) {
-            this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
+            this.setUnavailable(`Error connecting to Uponor controller: ${error}`)
         }
     }
 
