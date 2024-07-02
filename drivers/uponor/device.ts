@@ -111,16 +111,14 @@ class UponorThermostatDevice extends Device {
     }
 
     private async _setTargetTemperature(value: number): Promise<void> {
-        if (!this._client) return
+        if (!this._client) return this.setUnavailable('No Uponor client')
+        const { controllerID, thermostatID } = this.getData()
 
         try {
-            const { controllerID, thermostatID } = this.getData()
             await this._client.setTargetTemperature(controllerID, thermostatID, value)
         } catch (error) {
             this.setUnavailable('Could not send data to Uponor controller')
         }
-
-        await this._syncAttributes()
     }
 }
 
