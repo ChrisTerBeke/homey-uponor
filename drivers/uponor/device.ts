@@ -53,22 +53,14 @@ class UponorThermostatDevice extends Device {
 
     private async _updateAddress(newAddress: string, persist = false): Promise<boolean> {
         if (newAddress && newAddress.length > 0) {
-            const isValidIP = isIPv4(newAddress)
-            if (!isValidIP) return false
-            const client = new UponorHTTPClient(newAddress)
-            try {
-                const canConnect = await client.testConnection()
-                if (!canConnect) return false
-            } catch (error) {
-                return false
-            }
+            if (!isIPv4(newAddress)) return false
         }
 
         if (persist) {
-            this.setStoreValue('address', newAddress)
+            await this.setStoreValue('address', newAddress)
         }
 
-        this._init()
+        await this._init()
         return true
     }
 
