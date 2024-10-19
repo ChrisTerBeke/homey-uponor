@@ -10,7 +10,6 @@ class UponorThermostatDevice extends Device {
     private _client?: UponorHTTPClient
 
     async onInit(): Promise<void> {
-        this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
         this._init()
     }
 
@@ -61,7 +60,9 @@ class UponorThermostatDevice extends Device {
     }
 
     async _init(): Promise<void> {
-        await this._uninit()
+        // TODO: implement dynamic capability system like the Remeha app
+        this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
+
         const address = this._getAddress()
         if (!address) return this.setUnavailable('No IP address configured')
 
@@ -71,7 +72,7 @@ class UponorThermostatDevice extends Device {
             if (!canConnect) return this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
             this._client = client
             this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
-            this._syncAttributes()
+            setTimeout(this._syncAttributes.bind(this), 2000)
         } catch (error) {
             this.setUnavailable(`Error connecting to Uponor controller: ${error}`)
         }
