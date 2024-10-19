@@ -40,9 +40,9 @@ class UponorThermostatDevice extends Device {
 
     private _getAddress(): string | undefined {
         const settingAddress = this.getSetting('address')
-        if (settingAddress && settingAddress.length > 0) return settingAddress
+        if (settingAddress && isIPv4(settingAddress)) return settingAddress
         const storeAddress = this.getStoreValue('address')
-        if (storeAddress && storeAddress.length > 0) return storeAddress
+        if (storeAddress && isIPv4(settingAddress)) return storeAddress
         return undefined
     }
 
