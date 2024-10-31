@@ -19,5 +19,8 @@
   },
   "0.0.7": {
     "en": "Reduce number of times that controller is re-initialized"
+  },
+  "0.0.8": {
+    "en": "Fixed IP address settings"
   }
 }
