@@ -43,6 +43,16 @@
     ],
     "settings": [
         {
+            "id": "discovered_address",
+            "label": {
+                "en": "IP Address",
+                "nl": "IP-adres"
+            },
+            "type": "label",
+            "required": false,
+            "highlight": true
+        },
+        {
             "id": "address",
             "label": {
                 "en": "Override IP Address",

@@ -69,6 +69,12 @@ export class UponorHTTPClient {
         }
     }
 
+    public async updateAddress(newAddress: string): Promise<boolean> {
+        this._url = `http://${newAddress}/JNAP/`
+        const success = await this.testConnection()
+        return success
+    }
+
     public async testConnection(): Promise<boolean> {
         try {
             const request = await fetch(this._url, {

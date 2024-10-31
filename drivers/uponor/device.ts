@@ -26,10 +26,12 @@ class UponorThermostatDevice extends Device {
     }
 
     async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC): Promise<void> {
+        await this.setSettings({ 'discovered_address': discoveryResult.address })
         this._updateAddress(discoveryResult.address, true)
     }
 
     async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
+        await this.setSettings({ 'discovered_address': discoveryResult.address })
         this._updateAddress(discoveryResult.address, true)
     }
 
@@ -42,21 +44,26 @@ class UponorThermostatDevice extends Device {
         const settingAddress = this.getSetting('address')
         if (settingAddress && isIPv4(settingAddress)) return settingAddress
         const storeAddress = this.getStoreValue('address')
-        if (storeAddress && isIPv4(settingAddress)) return storeAddress
+        if (storeAddress && isIPv4(storeAddress)) return storeAddress
         return undefined
     }
 
     private async _updateAddress(newAddress: string, persist = false): Promise<boolean> {
-        if (newAddress && newAddress.length > 0) {
-            if (!isIPv4(newAddress)) return false
+        if (newAddress.length === 0) {
+            newAddress = await this.getStoreValue('address')
+        }
+
+        if (!isIPv4(newAddress)) {
+            return false
         }
 
         if (persist) {
             await this.setStoreValue('address', newAddress)
         }
 
-        await this._init()
-        return true
+        if (!this._client) return false
+        const success = await this._client.updateAddress(newAddress)
+        return success
     }
 
     async _init(): Promise<void> {
