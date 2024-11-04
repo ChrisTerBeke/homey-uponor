@@ -26,13 +26,13 @@ class UponorThermostatDevice extends Device {
     }
 
     async onDiscoveryAvailable(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this.setSettings({ 'discovered_address': discoveryResult.address })
-        this._updateAddress(discoveryResult.address, true)
+        await this._updateDiscoveredAddress(discoveryResult.address)
+        await this._updateAddress(discoveryResult.address, true)
     }
 
     async onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC): Promise<void> {
-        await this.setSettings({ 'discovered_address': discoveryResult.address })
-        this._updateAddress(discoveryResult.address, true)
+        await this._updateDiscoveredAddress(discoveryResult.address)
+        await this._updateAddress(discoveryResult.address, true)
     }
 
     async onSettings({ newSettings }: { newSettings: { [key: string]: any } }): Promise<void> {
@@ -66,23 +66,17 @@ class UponorThermostatDevice extends Device {
         return success
     }
 
-    async _init(): Promise<void> {
-        // TODO: implement dynamic capability system like the Remeha app
-        this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
+    private async _updateDiscoveredAddress(newAddress: string): Promise<void> {
+        if (newAddress.length === 0) return
+        await this.setSettings({ 'discovered_address': newAddress })
+    }
 
+    async _init(): Promise<void> {
         const address = this._getAddress()
         if (!address) return this.setUnavailable('No IP address configured')
-
-        try {
-            const client = new UponorHTTPClient(address)
-            const canConnect = await client.testConnection()
-            if (!canConnect) return this.setUnavailable(`Could not connect to Uponor controller on IP address ${address}`)
-            this._client = client
-            this._syncInterval = setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
-            setTimeout(this._syncAttributes.bind(this), 2000)
-        } catch (error) {
-            this.setUnavailable(`Error connecting to Uponor controller: ${error}`)
-        }
+        this._client = new UponorHTTPClient(address)
+        this._syncInterval = setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
+        setTimeout(this._sync.bind(this), 2000)
     }
 
     async _uninit(): Promise<void> {
@@ -91,8 +85,19 @@ class UponorThermostatDevice extends Device {
         this._client = undefined
     }
 
+    private async _sync(): Promise<void> {
+        await this._syncCapabilities()
+        await this._syncAttributes()
+    }
+
+    private async _syncCapabilities(): Promise<void> {
+        this.registerCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
+    }
+
     private async _syncAttributes(): Promise<void> {
         if (!this._client) return this.setUnavailable('No Uponor client')
+        const canConnect = await this._client.testConnection()
+        if (!canConnect) return this.setUnavailable('Could not connect to Uponor controller on local network')
 
         try {
             await this._client.syncAttributes()
