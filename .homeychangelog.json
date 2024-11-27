@@ -25,5 +25,8 @@
   },
   "0.0.9": {
     "en": "Improvements for IP address configuration"
+  },
+  "0.0.10": {
+    "en": "Stability improvements"
   }
 }
