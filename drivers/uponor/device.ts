@@ -21,6 +21,10 @@ class UponorThermostatDevice extends Device {
         this._uninit()
     }
 
+    onDeleted(): void {
+        this.homey.clearInterval(this._syncInterval)
+    }
+
     onDiscoveryResult(discoveryResult: DiscoveryResultMAC): boolean {
         return this.getData().id.includes(discoveryResult.id)
     }
@@ -75,12 +79,12 @@ class UponorThermostatDevice extends Device {
         const address = this._getAddress()
         if (!address) return this.setUnavailable('No IP address configured')
         this._client = new UponorHTTPClient(address)
-        this._syncInterval = setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
-        setTimeout(this._sync.bind(this), 2000)
+        this._syncInterval = this.homey.setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
+        this.homey.setTimeout(this._sync.bind(this), 2000)
     }
 
     async _uninit(): Promise<void> {
-        clearInterval(this._syncInterval as NodeJS.Timeout)
+        this.homey.clearInterval(this._syncInterval)
         this._syncInterval = undefined
         this._client = undefined
     }
