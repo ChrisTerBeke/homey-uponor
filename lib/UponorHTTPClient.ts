@@ -81,7 +81,7 @@ export class UponorHTTPClient {
                 method: 'POST',
                 headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
                 body: '{}',
-                timeout: 3000,
+                timeout: 30000,
             })
             return request.status == 200
         } catch (error) {
