@@ -1,3 +1,4 @@
+import { isIPv4 } from 'net'
 import fetch from 'node-fetch'
 
 export type Mode = 'auto' | 'heat' | 'cool' | 'off'
@@ -27,11 +28,19 @@ type AttributesResponse = {
 export class UponorHTTPClient {
 
     private _url: string
+    private _lastSync: Date | undefined
+    private _rawAttributes: any
     private _attributes: Map<string, string> = new Map()
     private _thermostats: Map<string, Thermostat> = new Map()
 
     constructor(ip_address: string) {
         this._url = `http://${ip_address}/JNAP/`
+    }
+
+    public async updateAddress(newAddress: string): Promise<boolean> {
+        if (!isIPv4(newAddress)) return false
+        this._url = `http://${newAddress}/JNAP/`
+        return await this.testConnection()
     }
 
     public getAttributes(): Map<string, string> {
@@ -52,59 +61,59 @@ export class UponorHTTPClient {
     }
 
     public async syncAttributes(): Promise<void> {
-        this._attributes = await this._syncAttributes()
-        this._thermostats = this._syncThermostats()
+        const syncedRaw = await this._syncRawAttributes()
+        if (!syncedRaw) return console.error('Could not sync raw attributes')
+        const parsed = await this._parseAttributes()
+        if (!parsed) return console.error('Could not parse attributes')
+        await this._syncThermostats()
     }
 
     public async debug(): Promise<any> {
-        try {
-            const request = await fetch(this._url, {
-                method: 'POST',
-                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
-                body: '{}',
-            })
-            return await request.json()
-        } catch (error) {
-            return false
-        }
-    }
-
-    public async updateAddress(newAddress: string): Promise<boolean> {
-        this._url = `http://${newAddress}/JNAP/`
-        const success = await this.testConnection()
-        return success
+        return this._rawAttributes
     }
 
     public async testConnection(): Promise<boolean> {
-        try {
-            const request = await fetch(this._url, {
-                method: 'POST',
-                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
-                body: '{}',
-                timeout: 30000,
-            })
-            return request.status == 200
-        } catch (error) {
-            return false
-        }
+        return this._syncRawAttributes(true)
     }
 
-    private async _syncAttributes(): Promise<Map<string, string>> {
+    public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
+        const fahrenheit = (value * 9 / 5) + 32
+        const setPoint = round(fahrenheit * 10, 0).toString()
+        await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]))
+    }
+
+    // public async setMode(controllerID: number, thermostatID: number, value: Mode): Promise<void> {
+    //     // TODO: convert value to correct heat/cool/eco/holiday/comfort attributes
+    //     // await this._setAttribute("", "")
+    // }
+
+    private async _syncRawAttributes(force: boolean = false): Promise<boolean> {
+        if (!force && this._lastSync && (new Date().getTime() - this._lastSync.getTime()) < 60000) {
+            return true
+        }
+
         try {
             const request = await fetch(this._url, {
                 method: 'POST',
                 headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
                 body: '{}'
             })
-            const data: AttributesResponse = await request.json() as AttributesResponse
-            if (data.result != 'OK') return Promise.reject(data.result)
-            return new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
+            this._lastSync = new Date()
+            this._rawAttributes = await request.json()
+            return request.status == 200
         } catch (error) {
-            return Promise.reject(error)
+            return false
         }
     }
 
-    private _syncThermostats(): Map<string, Thermostat> {
+    private async _parseAttributes(): Promise<boolean> {
+        const data = this._rawAttributes as AttributesResponse
+        if (data && data.result != 'OK') return false
+        this._attributes = new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
+        return true
+    }
+
+    private async _syncThermostats(): Promise<void> {
         const attributes = this.getAttributes()
         const thermostats: Map<string, Thermostat> = new Map()
 
@@ -129,18 +138,7 @@ export class UponorHTTPClient {
             })
         })
 
-        return thermostats
-    }
-
-    public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
-        const fahrenheit = (value * 9 / 5) + 32
-        const setPoint = round(fahrenheit * 10, 0).toString()
-        await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]))
-    }
-
-    public async setMode(controllerID: number, thermostatID: number, value: Mode): Promise<void> {
-        // TODO: convert value to correct heat/cool/eco/holiday/comfort attributes
-        // await this._setAttribute("", "")
+        this._thermostats = thermostats
     }
 
     private async _setAttributes(attributes: Map<string, string>): Promise<void> {

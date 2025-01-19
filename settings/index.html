@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+        <script type="text/javascript">
+            function onHomeyReady(Homey) {
+                Homey.ready()
+
+                var ipAddressInput = document.getElementById('ip_address')
+                var customIpAdressInput = document.getElementById('custom_ip_address')
+                var debugDevicesInput = document.getElementById('debug_devices')
+
+                Homey.get('ip_address', function (err, ip_address) {
+                    if (err) return Homey.alert(err)
+                    ipAddressInput.value = ip_address
+                })
+
+                Homey.get('custom_ip_address', function (err, ip_address) {
+                    if (err) return Homey.alert(err)
+                    customIpAdressInput.value = ip_address
+                })
+
+                Homey.get('debug_devices', function (err, debug_devices) {
+                    if (err) return Homey.alert(err)
+                    debugDevicesInput.value = debug_devices
+                })
+            }
+        </script>
+    </head>
+    <body>
+        <fieldset class="homey-form-fieldset">
+            <legend class="homey-form-legend" data-i18n="settings.info_title"></legend>
+
+            <div class="homey-form-group">
+                <label class="homey-form-label" data-i18n="settings.ip_address_label"></label>
+                <input class="homey-form-input" id="ip_address" type="text" disabled></input>
+            </div>
+
+            <div class="homey-form-group">
+                <label class="homey-form-label" data-i18n="settings.custom_ip_address_label"></label>
+                <input class="homey-form-input" id="custom_ip_address" type="text"></input>
+            </div>
+
+            <div class="homey-form-group">
+                <label class="homey-form-label" data-i18n="settings.debug_devices_label"></label>
+                <textarea class="homey-form-textarea" id="debug_devices" disabled></textarea>
+            </div>
+        </fieldset>
+    </body>
+</html>
