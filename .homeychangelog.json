@@ -31,5 +31,8 @@
   },
   "0.0.11": {
     "en": "Increase network timeout to support larger amount of devices"
+  },
+  "0.1.0": {
+    "en": "Complete rewrite of networking and discovery"
   }
 }
