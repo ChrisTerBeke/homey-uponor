@@ -61,8 +61,10 @@ export class UponorHTTPClient {
     }
 
     public async syncAttributes(): Promise<void> {
-        await this._syncRawAttributes()
-        await this._parseAttributes()
+        const syncedRaw = await this._syncRawAttributes()
+        if (!syncedRaw) return console.error('Could not sync raw attributes')
+        const parsed = await this._parseAttributes()
+        if (!parsed) return console.error('Could not parse attributes')
         await this._syncThermostats()
     }
 
@@ -104,10 +106,11 @@ export class UponorHTTPClient {
         }
     }
 
-    private async _parseAttributes(): Promise<Map<string, string>> {
+    private async _parseAttributes(): Promise<boolean> {
         const data = this._rawAttributes as AttributesResponse
-        if (data.result != 'OK') return Promise.reject(data.result)
-        return new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
+        if (data && data.result != 'OK') return false
+        this._attributes = new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
+        return true
     }
 
     private async _syncThermostats(): Promise<void> {

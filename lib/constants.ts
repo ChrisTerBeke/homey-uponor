@@ -1,0 +1,9 @@
+export const IP_ADDRESS_SETTINGS_KEY = 'ip_address'
+export const CUSTOM_IP_ADDRESS_SETTINGS_KEY = 'custom_ip_address'
+export const DEBUG_DEVICES_SETTINGS_KEY = 'debug_devices'
+export const CUSTOM_IP_ADDRESS_PAIR_KEY = 'custom_ip_address'
+export const LIST_DEVICES_PAIR_KEY = 'list_devices'
+export const MEASURE_TEMPERATURE_CAPABILITY = 'measure_temperature'
+export const TARGET_TEMPERATURE_CAPABILITY = 'target_temperature'
+export const POLL_INTERVAL_MS = 1000 * 60 * 1  // 1 minute
+export const INIT_TIMEOUT_MS = 1000 * 2  // 2 seconds

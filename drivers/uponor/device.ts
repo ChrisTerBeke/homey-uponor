@@ -1,14 +1,14 @@
 import { Device, DiscoveryResultMAC } from 'homey'
 import { UponorHTTPClient } from '../../lib/UponorHTTPClient'
 import { UponorDriver } from './driver'
-
-const POLL_INTERVAL_MS = 1000 * 60 * 1
+import { MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS } from '../../lib/constants'
 
 class UponorThermostatDevice extends Device {
 
     async onInit(): Promise<void> {
-        this.homey.setInterval(this._sync.bind(this), POLL_INTERVAL_MS)
-        this.homey.setTimeout(this._sync.bind(this), 2000)
+        await this._syncCapabilities()
+        this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS)
+        this.homey.setTimeout(this._syncAttributes.bind(this), INIT_TIMEOUT_MS)
     }
 
     onDiscoveryResult(discoveryResult: DiscoveryResultMAC): boolean {
@@ -33,18 +33,14 @@ class UponorThermostatDevice extends Device {
         return await driver.setIpAddress(newAddress)
     }
 
-    private async _sync(): Promise<void> {
-        await this._syncCapabilities()
-        await this._syncAttributes()
-    }
-
     private async _syncCapabilities(): Promise<void> {
-        this._ensureCapabilityListener('target_temperature', this._setTargetTemperature.bind(this))
+        await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY)
+        await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this))
     }
 
-    private _ensureCapabilityListener(capability: string, callback: (value: any) => Promise<void>): void {
-        if (this.listenerCount(capability) === 1) return
-        this.registerCapabilityListener(capability, callback)
+    private async _ensureCapability(capability: string, callback: Device.CapabilityCallback | undefined = undefined): Promise<void> {
+        if (!this.hasCapability(capability)) await this.addCapability(capability)
+        if (callback) this.registerCapabilityListener(capability, callback)
     }
 
     private async _syncAttributes(): Promise<void> {
@@ -54,18 +50,20 @@ class UponorThermostatDevice extends Device {
             const data = this._getClient().getThermostat(controllerID, thermostatID)
             if (!data) return this.setUnavailable('Could not find thermostat data')
             this.setAvailable()
-            this.setCapabilityValue('measure_temperature', data.temperature)
-            this.setCapabilityValue('target_temperature', data.setPoint)
+            this.setCapabilityValue(MEASURE_TEMPERATURE_CAPABILITY, data.temperature)
+            this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint)
         } catch (error) {
+            this.homey.error(error)
             this.setUnavailable('Could not fetch data from Uponor controller')
         }
     }
 
-    private async _setTargetTemperature(value: number): Promise<void> {
+    private async _setTargetTemperature(value: number, _opts: any): Promise<void> {
         const { controllerID, thermostatID } = this.getData()
         try {
             await this._getClient().setTargetTemperature(controllerID, thermostatID, value)
         } catch (error) {
+            this.homey.error(error)
             this.setUnavailable('Could not send data to Uponor controller')
         }
     }
