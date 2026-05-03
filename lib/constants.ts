@@ -4,6 +4,7 @@ export const CUSTOM_IP_ADDRESS_PAIR_KEY = 'custom_ip_address';
 export const LIST_DEVICES_PAIR_KEY = 'list_devices';
 export const MEASURE_TEMPERATURE_CAPABILITY = 'measure_temperature';
 export const TARGET_TEMPERATURE_CAPABILITY = 'target_temperature';
+export const MEASURE_HUMIDITY_CAPABILITY = 'measure_humidity';
 export const POLL_INTERVAL_MS = 1000 * 60 * 1; // 1 minute
 export const INIT_TIMEOUT_MS = 1000 * 2; // 2 seconds
 export const CACHE_EXPIRATION_MS = 60000; // 60 seconds
