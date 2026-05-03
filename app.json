@@ -43,7 +43,8 @@
       "class": "thermostat",
       "capabilities": [
         "measure_temperature",
-        "target_temperature"
+        "target_temperature",
+        "measure_humidity"
       ],
       "platforms": [
         "local"

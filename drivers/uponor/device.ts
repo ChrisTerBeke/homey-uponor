@@ -2,7 +2,7 @@ import { Device, DiscoveryResultMAC } from 'homey';
 import { UponorHTTPClient } from '../../lib/UponorHTTPClient';
 import { UponorDriver } from './driver';
 import {
-  MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
+  MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
 } from '../../lib/constants';
 
 class UponorThermostatDevice extends Device {
@@ -53,6 +53,7 @@ class UponorThermostatDevice extends Device {
   private async _syncCapabilities(): Promise<void> {
     await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY);
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
+    await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
   }
 
   private async _ensureCapability(capability: string, callback: Device.CapabilityCallback | undefined = undefined): Promise<void> {
@@ -72,6 +73,9 @@ class UponorThermostatDevice extends Device {
       await this.setAvailable();
       await this.setCapabilityValue(MEASURE_TEMPERATURE_CAPABILITY, data.temperature);
       await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
+      if (data.humidity !== undefined) {
+        await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
+      }
     } catch (error) {
       this.homey.error(error);
       await this.setUnavailable('Could not fetch data from Uponor controller');

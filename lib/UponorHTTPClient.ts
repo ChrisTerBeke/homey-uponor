@@ -13,6 +13,7 @@ export type Thermostat = {
     minimumSetPoint: number | undefined;
     maximumSetPoint: number | undefined;
     mode: Mode | undefined;
+    humidity: number | undefined;
 };
 
 type AttributesResponse = {
@@ -156,6 +157,7 @@ export class UponorHTTPClient {
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
         mode: 'auto',
+        humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
       });
     });
 
