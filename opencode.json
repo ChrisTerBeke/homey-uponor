@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "Homey": {
+      "type": "remote",
+      "url": "https://mcp.athom.com"
+    }
+  }
+}

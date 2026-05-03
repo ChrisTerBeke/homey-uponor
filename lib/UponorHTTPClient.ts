@@ -1,173 +1,196 @@
-import { isIPv4 } from 'net'
-import fetch from 'node-fetch'
+import { isIPv4 } from 'net';
+import fetch from 'node-fetch';
+import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants';
 
-export type Mode = 'auto' | 'heat' | 'cool' | 'off'
+export type Mode = 'auto' | 'heat' | 'cool' | 'off';
 
 export type Thermostat = {
-    id: string | undefined
-    controllerID: number | undefined
-    thermostatID: number | undefined
-    name: string | undefined
-    temperature: number | undefined
-    setPoint: number | undefined
-    minimumSetPoint: number | undefined
-    maximumSetPoint: number | undefined
-    mode: Mode | undefined
-}
+    id: string | undefined;
+    controllerID: number | undefined;
+    thermostatID: number | undefined;
+    name: string | undefined;
+    temperature: number | undefined;
+    setPoint: number | undefined;
+    minimumSetPoint: number | undefined;
+    maximumSetPoint: number | undefined;
+    mode: Mode | undefined;
+};
 
 type AttributesResponse = {
-    result: string
-    output: {
-        vars: {
-            waspVarName: string
-            waspVarValue: string
-        }[]
-    }
+    result: string;
+    output?: {
+        vars?: {
+            waspVarName: string;
+            waspVarValue: string;
+        }[];
+    };
+};
+
+function round(value: number, precision: number = 0): number {
+  const multiplier = 10 ** precision;
+  return Math.round(value * multiplier) / multiplier;
 }
 
 export class UponorHTTPClient {
 
-    private _url: string
-    private _lastSync: Date | undefined
-    private _rawAttributes: any
-    private _attributes: Map<string, string> = new Map()
-    private _thermostats: Map<string, Thermostat> = new Map()
+  private _url: string;
+  private _lastSync: Date | undefined;
+  private _rawAttributes: unknown;
+  private _attributes: Map<string, string> = new Map();
+  private _thermostats: Map<string, Thermostat> = new Map();
+  private _syncPromise: Promise<boolean> | null = null;
 
-    constructor(ip_address: string) {
-        this._url = `http://${ip_address}/JNAP/`
+  constructor(ipAddress: string) {
+    this._url = `http://${ipAddress}/JNAP/`;
+  }
+
+  public async updateAddress(newAddress: string): Promise<boolean> {
+    if (!isIPv4(newAddress)) return false;
+    this._url = `http://${newAddress}/JNAP/`;
+    return this.testConnection();
+  }
+
+  public getAttributes(): Map<string, string> {
+    return this._attributes;
+  }
+
+  public getAttribute(name: string): string | undefined {
+    return this._attributes.get(name);
+  }
+
+  public getThermostats(): Map<string, Thermostat> {
+    return this._thermostats;
+  }
+
+  public getThermostat(controllerID: number, thermostatID: number): Thermostat | undefined {
+    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+    return this._thermostats.get(ctKey);
+  }
+
+  public async syncAttributes(): Promise<void> {
+    const syncedRaw = await this._syncRawAttributes();
+    if (!syncedRaw) throw new Error('Could not sync raw attributes');
+    const parsed = await this._parseAttributes();
+    if (!parsed) throw new Error('Could not parse attributes');
+    await this._syncThermostats();
+  }
+
+  public async debug(): Promise<unknown> {
+    return this._rawAttributes;
+  }
+
+  public async testConnection(): Promise<boolean> {
+    try {
+      return await this._syncRawAttributes(true);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
+    const fahrenheit = (value * (9 / 5)) + 32;
+    const setPoint = round(fahrenheit * 10, 0).toString();
+    await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]));
+  }
+
+  private async _syncRawAttributes(force: boolean = false): Promise<boolean> {
+    if (!force && this._lastSync && (new Date().getTime() - this._lastSync.getTime()) < CACHE_EXPIRATION_MS) {
+      return true;
     }
 
-    public async updateAddress(newAddress: string): Promise<boolean> {
-        if (!isIPv4(newAddress)) return false
-        this._url = `http://${newAddress}/JNAP/`
-        return await this.testConnection()
+    if (this._syncPromise && !force) {
+      return this._syncPromise;
     }
 
-    public getAttributes(): Map<string, string> {
-        return this._attributes
+    this._syncPromise = (async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+      try {
+        const request = await fetch(this._url, {
+          method: 'POST',
+          headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
+          body: '{}',
+          signal: controller.signal as any,
+        });
+        clearTimeout(timeout);
+        this._lastSync = new Date();
+        this._rawAttributes = await request.json();
+        return request.status === 200;
+      } catch (error) {
+        clearTimeout(timeout);
+        throw error;
+      } finally {
+        this._syncPromise = null;
+      }
+    })();
+
+    return this._syncPromise;
+  }
+
+  private async _parseAttributes(): Promise<boolean> {
+    const data = this._rawAttributes as AttributesResponse;
+    if (!data || data.result !== 'OK' || !data.output || !data.output.vars) return false;
+    this._attributes = new Map(data.output.vars.map((v) => [v.waspVarName, v.waspVarValue]));
+    return true;
+  }
+
+  private async _syncThermostats(): Promise<void> {
+    const attributes = this.getAttributes();
+    const thermostats: Map<string, Thermostat> = new Map();
+
+    attributes.forEach((value, key) => {
+      const regex = /cust_C(\d+)_T(\d+)_name/;
+      const matches = regex.exec(key);
+      if (!matches) return;
+      const controllerID = matches[1]; // first capture group
+      const thermostatID = matches[2]; // second capture group
+      const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+
+      thermostats.set(ctKey, {
+        id: ctKey,
+        name: value,
+        controllerID: parseInt(controllerID, 10),
+        thermostatID: parseInt(thermostatID, 10),
+        temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
+        setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
+        minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
+        maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
+        mode: 'auto',
+      });
+    });
+
+    this._thermostats = thermostats;
+  }
+
+  private async _setAttributes(attributes: Map<string, string>): Promise<void> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+    try {
+      const vars = Array.from(attributes, ([key, value]) => [{ waspVarName: key, waspVarValue: value }]).flat();
+      const request = await fetch(this._url, {
+        method: 'POST',
+        headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
+        body: JSON.stringify({ vars }),
+        signal: controller.signal as any,
+      });
+      clearTimeout(timeout);
+      const data: AttributesResponse = await request.json() as AttributesResponse;
+      if (data.result !== 'OK') throw new Error(data.result);
+    } catch (error) {
+      clearTimeout(timeout);
+      throw error;
     }
+  }
 
-    public getAttribute(name: string): string | undefined {
-        return this._attributes.get(name)
-    }
+  private static _formatTemperature(input: string | undefined): number {
+    const fahrenheit = parseFloat(input || '0') / 10;
+    const celsius = (fahrenheit - 32) * (5 / 9);
+    return round(celsius, 1);
+  }
 
-    public getThermostats(): Map<string, Thermostat> {
-        return this._thermostats
-    }
-
-    public getThermostat(controllerID: number, thermostatID: number): Thermostat | undefined {
-        const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
-        return this._thermostats.get(ctKey)
-    }
-
-    public async syncAttributes(): Promise<void> {
-        const syncedRaw = await this._syncRawAttributes()
-        if (!syncedRaw) return console.error('Could not sync raw attributes')
-        const parsed = await this._parseAttributes()
-        if (!parsed) return console.error('Could not parse attributes')
-        await this._syncThermostats()
-    }
-
-    public async debug(): Promise<any> {
-        return this._rawAttributes
-    }
-
-    public async testConnection(): Promise<boolean> {
-        return this._syncRawAttributes(true)
-    }
-
-    public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
-        const fahrenheit = (value * 9 / 5) + 32
-        const setPoint = round(fahrenheit * 10, 0).toString()
-        await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]))
-    }
-
-    // public async setMode(controllerID: number, thermostatID: number, value: Mode): Promise<void> {
-    //     // TODO: convert value to correct heat/cool/eco/holiday/comfort attributes
-    //     // await this._setAttribute("", "")
-    // }
-
-    private async _syncRawAttributes(force: boolean = false): Promise<boolean> {
-        if (!force && this._lastSync && (new Date().getTime() - this._lastSync.getTime()) < 60000) {
-            return true
-        }
-
-        try {
-            const request = await fetch(this._url, {
-                method: 'POST',
-                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
-                body: '{}'
-            })
-            this._lastSync = new Date()
-            this._rawAttributes = await request.json()
-            return request.status == 200
-        } catch (error) {
-            return false
-        }
-    }
-
-    private async _parseAttributes(): Promise<boolean> {
-        const data = this._rawAttributes as AttributesResponse
-        if (data && data.result != 'OK') return false
-        this._attributes = new Map(data.output.vars.map(v => [v.waspVarName, v.waspVarValue]))
-        return true
-    }
-
-    private async _syncThermostats(): Promise<void> {
-        const attributes = this.getAttributes()
-        const thermostats: Map<string, Thermostat> = new Map()
-
-        attributes.forEach((value, key) => {
-            const regex = /cust_C(\d+)_T(\d+)_name/
-            const matches = regex.exec(key)
-            if (!matches) return
-            const controllerID = matches[1] // first capture group
-            const thermostatID = matches[2] // second capture group
-            const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID)
-
-            thermostats.set(ctKey, {
-                id: ctKey,
-                name: value,
-                controllerID: parseInt(controllerID),
-                thermostatID: parseInt(thermostatID),
-                temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
-                setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-                minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
-                maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
-                mode: 'auto',
-            })
-        })
-
-        this._thermostats = thermostats
-    }
-
-    private async _setAttributes(attributes: Map<string, string>): Promise<void> {
-        try {
-            const vars = Array.from(attributes, ([key, value]) => [{ "waspVarName": key, "waspVarValue": value }]).flat()
-            const request = await fetch(this._url, {
-                method: 'POST',
-                headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
-                body: JSON.stringify({ "vars": vars }),
-            })
-            const data: AttributesResponse = await request.json() as AttributesResponse
-            if (data.result != 'OK') return Promise.reject(data.result)
-        } catch (error) {
-            return Promise.reject(error)
-        }
-    }
-
-    private static _formatTemperature(input: string | undefined): number {
-        const fahrenheit = parseFloat(input || '0') / 10
-        const celcius = (fahrenheit - 32) * 5 / 9
-        return round(celcius, 1)
-    }
-
-    private static _createKey(controllerID: string | number, thermostatID: string | number): string {
-        return `C${controllerID}_T${thermostatID}`
-    }
-}
-
-function round(value: number, precision: number = 0): number {
-    var multiplier = Math.pow(10, precision)
-    return Math.round(value * multiplier) / multiplier
+  private static _createKey(controllerID: string | number, thermostatID: string | number): string {
+    return `C${controllerID}_T${thermostatID}`;
+  }
 }
