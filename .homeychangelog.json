@@ -34,5 +34,8 @@
   },
   "0.1.0": {
     "en": "Complete rewrite of networking and discovery"
+  },
+  "1.0.0": {
+    "en": "Added several new features based on GitHub requests"
   }
 }
