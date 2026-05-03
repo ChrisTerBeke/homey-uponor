@@ -41,6 +41,12 @@
         "en": "Smatrix Pulse R-208"
       },
       "class": "thermostat",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "images": {
         "large": "/drivers/uponor/assets/images/large.png",
         "small": "/drivers/uponor/assets/images/small.png",
