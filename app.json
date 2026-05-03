@@ -109,6 +109,17 @@
           "CR2032"
         ]
       },
+      "flow": {
+        "conditions": [
+          {
+            "id": "thermostat_is_heating",
+            "title": {
+              "en": "Is heating",
+              "nl": "Is aan het verwarmen"
+            }
+          }
+        ]
+      },
       "pair": [
         {
           "id": "start",

@@ -10,6 +10,12 @@ import {
 
 class UponorThermostatDevice extends Device {
 
+  private _isHeating: boolean = false;
+
+  public isHeating(): boolean {
+    return this._isHeating;
+  }
+
   async onInit(): Promise<void> {
     await this._syncCapabilities();
     this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS);
@@ -88,6 +94,7 @@ class UponorThermostatDevice extends Device {
       if (data.humidity !== undefined) {
         await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
       }
+      this._isHeating = data.active;
       await this.setCapabilityValue(ALARM_BATTERY_CAPABILITY, data.alarms.battery);
       await this.setCapabilityValue(ALARM_TAMPER_CAPABILITY, data.alarms.tamper);
       await this.setCapabilityValue(ALARM_AIR_SENSOR_CAPABILITY, data.alarms.airSensor);
@@ -115,4 +122,5 @@ class UponorThermostatDevice extends Device {
   }
 }
 
+export default UponorThermostatDevice;
 module.exports = UponorThermostatDevice;
