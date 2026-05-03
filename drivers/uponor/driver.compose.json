@@ -4,6 +4,11 @@
         "en": "Smatrix Pulse R-208"
     },
     "class": "thermostat",
+    "images": {
+        "large": "/drivers/uponor/assets/images/large.png",
+        "small": "/drivers/uponor/assets/images/small.png",
+        "xlarge": "/drivers/uponor/assets/images/xlarge.png"
+    },
     "capabilities": [
         "measure_temperature",
         "target_temperature",
