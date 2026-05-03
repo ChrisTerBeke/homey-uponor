@@ -1,0 +1,14 @@
+{
+  "id": "thermostat_is_heating",
+  "title": {
+    "en": "Is heating",
+    "nl": "Is aan het verwarmen"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=uponor"
+    }
+  ]
+}

@@ -34,6 +34,24 @@
     "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
   },
   "homeyCommunityTopicId": 109100,
+  "flow": {
+    "conditions": [
+      {
+        "id": "thermostat_is_heating",
+        "title": {
+          "en": "Is heating",
+          "nl": "Is aan het verwarmen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "uponor",
@@ -107,17 +125,6 @@
       "energy": {
         "batteries": [
           "CR2032"
-        ]
-      },
-      "flow": {
-        "conditions": [
-          {
-            "id": "thermostat_is_heating",
-            "title": {
-              "en": "Is heating",
-              "nl": "Is aan het verwarmen"
-            }
-          }
         ]
       },
       "pair": [

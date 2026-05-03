@@ -34,11 +34,12 @@ export class UponorDriver extends Driver {
   }
 
   async onInit(): Promise<void> {
-    this.homey.flow.getConditionCard('thermostat_is_heating')
-      .registerRunListener(async (args, _state) => {
-        const device = args.device as UponorThermostatDevice;
-        return device.isHeating();
+    const isHeatingCondition = this.homey.flow.getConditionCard('thermostat_is_heating');
+    if (isHeatingCondition) {
+      isHeatingCondition.registerRunListener(async (args: { device: UponorThermostatDevice }, _state: any) => {
+        return args.device.isHeating();
       });
+    }
   }
 
   async onPair(session: PairSession): Promise<void> {
