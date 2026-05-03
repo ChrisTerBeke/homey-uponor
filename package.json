@@ -9,7 +9,7 @@
     "test": "homey app validate"
   },
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.5",
