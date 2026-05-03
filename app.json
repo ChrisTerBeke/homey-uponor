@@ -47,6 +47,7 @@
       "connectivity": [
         "lan"
       ],
+      "discovery": "uponor",
       "images": {
         "large": "/drivers/uponor/assets/images/large.png",
         "small": "/drivers/uponor/assets/images/small.png",
