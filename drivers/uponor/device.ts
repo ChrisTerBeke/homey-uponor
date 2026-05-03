@@ -3,6 +3,9 @@ import { UponorHTTPClient } from '../../lib/UponorHTTPClient';
 import { UponorDriver } from './driver';
 import {
   MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
+  ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
+  ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
+  ALARM_HEAT_FALLBACK_CAPABILITY,
 } from '../../lib/constants';
 
 class UponorThermostatDevice extends Device {
@@ -54,6 +57,15 @@ class UponorThermostatDevice extends Device {
     await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY);
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
     await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
+    await this._ensureCapability(ALARM_BATTERY_CAPABILITY);
+    await this._ensureCapability(ALARM_TAMPER_CAPABILITY);
+    await this._ensureCapability(ALARM_AIR_SENSOR_CAPABILITY);
+    await this._ensureCapability(ALARM_EXT_SENSOR_CAPABILITY);
+    await this._ensureCapability(ALARM_RH_SENSOR_CAPABILITY);
+    await this._ensureCapability(ALARM_RF_ERROR_CAPABILITY);
+    await this._ensureCapability(ALARM_RF_LOW_SIG_CAPABILITY);
+    await this._ensureCapability(ALARM_VALVE_POS_CAPABILITY);
+    await this._ensureCapability(ALARM_HEAT_FALLBACK_CAPABILITY);
   }
 
   private async _ensureCapability(capability: string, callback: Device.CapabilityCallback | undefined = undefined): Promise<void> {
@@ -76,6 +88,15 @@ class UponorThermostatDevice extends Device {
       if (data.humidity !== undefined) {
         await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
       }
+      await this.setCapabilityValue(ALARM_BATTERY_CAPABILITY, data.alarms.battery);
+      await this.setCapabilityValue(ALARM_TAMPER_CAPABILITY, data.alarms.tamper);
+      await this.setCapabilityValue(ALARM_AIR_SENSOR_CAPABILITY, data.alarms.airSensor);
+      await this.setCapabilityValue(ALARM_EXT_SENSOR_CAPABILITY, data.alarms.extSensor);
+      await this.setCapabilityValue(ALARM_RH_SENSOR_CAPABILITY, data.alarms.rhSensor);
+      await this.setCapabilityValue(ALARM_RF_ERROR_CAPABILITY, data.alarms.rfError);
+      await this.setCapabilityValue(ALARM_RF_LOW_SIG_CAPABILITY, data.alarms.rfLowSig);
+      await this.setCapabilityValue(ALARM_VALVE_POS_CAPABILITY, data.alarms.valvePos);
+      await this.setCapabilityValue(ALARM_HEAT_FALLBACK_CAPABILITY, data.alarms.heatFallback);
     } catch (error) {
       this.homey.error(error);
       await this.setUnavailable('Could not fetch data from Uponor controller');

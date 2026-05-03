@@ -4,11 +4,6 @@
         "en": "Smatrix Pulse R-208"
     },
     "class": "thermostat",
-    "capabilities": [
-        "measure_temperature",
-        "target_temperature",
-        "measure_humidity"
-    ],
     "platforms": [
         "local"
     ],
@@ -17,8 +12,65 @@
     ],
     "discovery": "uponor",
     "images": {
-        "small": "{{driverAssetsPath}}/images/small.png",
-        "large": "{{driverAssetsPath}}/images/large.png"
+        "large": "/drivers/uponor/assets/images/large.png",
+        "small": "/drivers/uponor/assets/images/small.png",
+        "xlarge": "/drivers/uponor/assets/images/xlarge.png"
+    },
+    "capabilities": [
+        "measure_temperature",
+        "target_temperature",
+        "measure_humidity",
+        "alarm_battery",
+        "alarm_tamper",
+        "alarm_generic.air_sensor",
+        "alarm_generic.ext_sensor",
+        "alarm_generic.rh_sensor",
+        "alarm_generic.rf_error",
+        "alarm_generic.rf_low_sig",
+        "alarm_generic.valve_pos",
+        "alarm_generic.heat_fallback"
+    ],
+    "capabilitiesOptions": {
+        "alarm_generic.air_sensor": {
+            "title": {
+                "en": "Air Sensor Error"
+            }
+        },
+        "alarm_generic.ext_sensor": {
+            "title": {
+                "en": "External Sensor Error"
+            }
+        },
+        "alarm_generic.rh_sensor": {
+            "title": {
+                "en": "Humidity Sensor Error"
+            }
+        },
+        "alarm_generic.rf_error": {
+            "title": {
+                "en": "RF Error"
+            }
+        },
+        "alarm_generic.rf_low_sig": {
+            "title": {
+                "en": "RF Low Signal"
+            }
+        },
+        "alarm_generic.valve_pos": {
+            "title": {
+                "en": "Valve Position Error"
+            }
+        },
+        "alarm_generic.heat_fallback": {
+            "title": {
+                "en": "Fallback Heat Alarm"
+            }
+        }
+    },
+    "energy": {
+        "batteries": [
+            "CR2032"
+        ]
     },
     "pair": [
         {

@@ -14,6 +14,17 @@ export type Thermostat = {
     maximumSetPoint: number | undefined;
     mode: Mode | undefined;
     humidity: number | undefined;
+    alarms: {
+        battery: boolean;
+        tamper: boolean;
+        airSensor: boolean;
+        extSensor: boolean;
+        rhSensor: boolean;
+        rfError: boolean;
+        rfLowSig: boolean;
+        valvePos: boolean;
+        heatFallback: boolean;
+    };
 };
 
 type AttributesResponse = {
@@ -158,6 +169,17 @@ export class UponorHTTPClient {
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
         mode: 'auto',
         humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
+        alarms: {
+          battery: this.getAttribute(`${ctKey}_stat_battery_error`) === '1',
+          tamper: this.getAttribute(`${ctKey}_stat_tamper_alarm`) === '1',
+          airSensor: this.getAttribute(`${ctKey}_stat_air_sensor_error`) === '1',
+          extSensor: this.getAttribute(`${ctKey}_stat_external_sensor_err`) === '1',
+          rhSensor: this.getAttribute(`${ctKey}_stat_rh_sensor_error`) === '1',
+          rfError: this.getAttribute(`${ctKey}_stat_rf_error`) === '1',
+          rfLowSig: this.getAttribute(`${ctKey}_stat_rf_low_sig_warning`) === '1',
+          valvePos: this.getAttribute(`${ctKey}_stat_valve_position_err`) === '1',
+          heatFallback: this.getAttribute(`${ctKey}_stat_cb_fallbk_heatalarm`) === '1',
+        },
       });
     });
 
