@@ -20,6 +20,10 @@ export class UponorDriver extends Driver {
     return this._clients.get(address)!;
   }
 
+  removeClient(address: string): void {
+    this._clients.delete(address);
+  }
+
   getCustomIpAddress(): string | undefined {
     return this.homey.settings.get(CUSTOM_IP_ADDRESS_SETTINGS_KEY);
   }

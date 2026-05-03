@@ -1,4 +1,3 @@
-import { isIPv4 } from 'net';
 import fetch from 'node-fetch';
 import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants';
 
@@ -45,7 +44,6 @@ export class UponorHTTPClient {
   }
 
   public async updateAddress(newAddress: string): Promise<boolean> {
-    if (!isIPv4(newAddress)) return false;
     this._url = `http://${newAddress}/JNAP/`;
     return this.testConnection();
   }
@@ -91,6 +89,7 @@ export class UponorHTTPClient {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
     await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]));
+    this._lastSync = undefined; // invalidate cache
   }
 
   private async _syncRawAttributes(force: boolean = false): Promise<boolean> {

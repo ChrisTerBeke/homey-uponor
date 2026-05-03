@@ -33,8 +33,21 @@ class UponorThermostatDevice extends Device {
   }
 
   private async _updateAddress(newAddress: string): Promise<boolean> {
-    await this.setStoreValue('address', newAddress);
-    return this._getClient().updateAddress(newAddress);
+    const oldAddress = this.getStoreValue('address');
+    if (oldAddress === newAddress) return true;
+
+    const driver = this.driver as UponorDriver;
+    const testClient = driver.getClient(newAddress);
+
+    // Only save the new address if the controller is actually reachable there
+    const success = await testClient.testConnection();
+    if (success) {
+      if (oldAddress) {
+        driver.removeClient(oldAddress);
+      }
+      await this.setStoreValue('address', newAddress);
+    }
+    return success;
   }
 
   private async _syncCapabilities(): Promise<void> {
