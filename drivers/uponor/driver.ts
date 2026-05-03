@@ -1,6 +1,7 @@
 import { Driver } from 'homey';
 import { PairSession } from 'homey/lib/Driver';
 import { Thermostat, UponorHTTPClient } from '../../lib/UponorHTTPClient';
+import UponorThermostatDevice from './device';
 import {
   CUSTOM_IP_ADDRESS_SETTINGS_KEY,
   DEBUG_DEVICES_SETTINGS_KEY,
@@ -30,6 +31,15 @@ export class UponorDriver extends Driver {
 
   private async _setCustomIpAddress(address: string): Promise<void> {
     return this.homey.settings.set(CUSTOM_IP_ADDRESS_SETTINGS_KEY, address);
+  }
+
+  async onInit(): Promise<void> {
+    const isHeatingCondition = this.homey.flow.getConditionCard('thermostat_is_heating');
+    if (isHeatingCondition) {
+      isHeatingCondition.registerRunListener(async (args: { device: UponorThermostatDevice }, _state: any) => {
+        return args.device.isHeating();
+      });
+    }
   }
 
   async onPair(session: PairSession): Promise<void> {

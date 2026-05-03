@@ -2,13 +2,19 @@ import { Device, DiscoveryResultMAC } from 'homey';
 import { UponorHTTPClient } from '../../lib/UponorHTTPClient';
 import { UponorDriver } from './driver';
 import {
-  MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
+  MEASURE_TEMPERATURE_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
   ALARM_HEAT_FALLBACK_CAPABILITY,
 } from '../../lib/constants';
 
 class UponorThermostatDevice extends Device {
+
+  private _isHeating: boolean = false;
+
+  public isHeating(): boolean {
+    return this._isHeating;
+  }
 
   async onInit(): Promise<void> {
     await this._syncCapabilities();
@@ -57,6 +63,7 @@ class UponorThermostatDevice extends Device {
     await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY);
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
     await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
+    await this._ensureCapability(IS_HEATING_CAPABILITY);
     await this._ensureCapability(ALARM_BATTERY_CAPABILITY);
     await this._ensureCapability(ALARM_TAMPER_CAPABILITY);
     await this._ensureCapability(ALARM_AIR_SENSOR_CAPABILITY);
@@ -88,6 +95,8 @@ class UponorThermostatDevice extends Device {
       if (data.humidity !== undefined) {
         await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
       }
+      this._isHeating = data.active;
+      await this.setCapabilityValue(IS_HEATING_CAPABILITY, data.active);
       await this.setCapabilityValue(ALARM_BATTERY_CAPABILITY, data.alarms.battery);
       await this.setCapabilityValue(ALARM_TAMPER_CAPABILITY, data.alarms.tamper);
       await this.setCapabilityValue(ALARM_AIR_SENSOR_CAPABILITY, data.alarms.airSensor);
@@ -115,4 +124,5 @@ class UponorThermostatDevice extends Device {
   }
 }
 
+export default UponorThermostatDevice;
 module.exports = UponorThermostatDevice;

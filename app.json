@@ -34,6 +34,24 @@
     "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
   },
   "homeyCommunityTopicId": 109100,
+  "flow": {
+    "conditions": [
+      {
+        "id": "thermostat_is_heating",
+        "title": {
+          "en": "Is heating",
+          "nl": "Is aan het verwarmen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "id": "uponor",
@@ -57,6 +75,7 @@
         "measure_temperature",
         "target_temperature",
         "measure_humidity",
+        "is_heating",
         "alarm_battery",
         "alarm_tamper",
         "alarm_generic.air_sensor",
@@ -133,6 +152,18 @@
       ]
     }
   ],
+  "capabilities": {
+    "is_heating": {
+      "type": "boolean",
+      "title": {
+        "en": "Is heating",
+        "nl": "Aan het verwarmen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    }
+  },
   "discovery": {
     "uponor": {
       "type": "mac",

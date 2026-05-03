@@ -5,6 +5,7 @@ export const LIST_DEVICES_PAIR_KEY = 'list_devices';
 export const MEASURE_TEMPERATURE_CAPABILITY = 'measure_temperature';
 export const TARGET_TEMPERATURE_CAPABILITY = 'target_temperature';
 export const MEASURE_HUMIDITY_CAPABILITY = 'measure_humidity';
+export const IS_HEATING_CAPABILITY = 'is_heating';
 export const ALARM_BATTERY_CAPABILITY = 'alarm_battery';
 export const ALARM_TAMPER_CAPABILITY = 'alarm_tamper';
 export const ALARM_AIR_SENSOR_CAPABILITY = 'alarm_generic.air_sensor';
