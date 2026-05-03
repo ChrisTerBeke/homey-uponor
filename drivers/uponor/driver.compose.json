@@ -20,6 +20,7 @@
         "measure_temperature",
         "target_temperature",
         "measure_humidity",
+        "is_heating",
         "alarm_battery",
         "alarm_tamper",
         "alarm_generic.air_sensor",
