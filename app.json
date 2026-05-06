@@ -37,6 +37,20 @@
   "flow": {
     "conditions": [
       {
+        "title": {
+          "en": "System is in eco mode",
+          "nl": "Systeem staat in eco modus"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          }
+        ],
+        "id": "device_sys_eco_mode_is"
+      },
+      {
         "id": "thermostat_is_heating",
         "title": {
           "en": "Is heating",
@@ -49,6 +63,30 @@
             "filter": "driver_id=uponor"
           }
         ]
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Set system eco mode",
+          "nl": "Zet systeem eco modus"
+        },
+        "titleFormatted": {
+          "en": "Set system eco mode to [[enabled]]",
+          "nl": "Zet systeem eco modus op [[enabled]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "enabled",
+            "type": "checkbox"
+          }
+        ],
+        "id": "device_set_sys_eco_mode"
       }
     ]
   },
@@ -78,6 +116,7 @@
         "measure_humidity",
         "is_heating",
         "bypass_enabled",
+        "eco_mode",
         "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
@@ -90,8 +129,26 @@
         "alarm_generic.heat_fallback"
       ],
       "capabilitiesOptions": {
+        "measure_temperature": {
+          "insightsTitleTrue": {
+            "en": "Room Temperature",
+            "nl": "Kamertemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Room Temperature",
+            "nl": "Kamertemperatuur"
+          }
+        },
         "measure_temperature.manifold_head": {
           "title": {
+            "en": "Manifold Head Temperature",
+            "nl": "Verdeler Aanvoertemperatuur"
+          },
+          "insightsTitleTrue": {
+            "en": "Manifold Head Temperature",
+            "nl": "Verdeler Aanvoertemperatuur"
+          },
+          "insightsTitleFalse": {
             "en": "Manifold Head Temperature",
             "nl": "Verdeler Aanvoertemperatuur"
           }
@@ -178,6 +235,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor"
+    },
+    "eco_mode": {
+      "type": "boolean",
+      "title": {
+        "en": "Eco Mode",
+        "nl": "Eco Modus"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "toggle"
     },
     "is_heating": {
       "type": "boolean",

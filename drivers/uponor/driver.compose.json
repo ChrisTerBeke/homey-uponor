@@ -23,6 +23,7 @@
         "measure_humidity",
         "is_heating",
         "bypass_enabled",
+        "eco_mode",
         "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
@@ -35,8 +36,26 @@
         "alarm_generic.heat_fallback"
     ],
     "capabilitiesOptions": {
+        "measure_temperature": {
+            "insightsTitleTrue": {
+                "en": "Room Temperature",
+                "nl": "Kamertemperatuur"
+            },
+            "insightsTitleFalse": {
+                "en": "Room Temperature",
+                "nl": "Kamertemperatuur"
+            }
+        },
         "measure_temperature.manifold_head": {
             "title": {
+                "en": "Manifold Head Temperature",
+                "nl": "Verdeler Aanvoertemperatuur"
+            },
+            "insightsTitleTrue": {
+                "en": "Manifold Head Temperature",
+                "nl": "Verdeler Aanvoertemperatuur"
+            },
+            "insightsTitleFalse": {
                 "en": "Manifold Head Temperature",
                 "nl": "Verdeler Aanvoertemperatuur"
             }

@@ -17,6 +17,7 @@ export type Thermostat = {
     humidity: number | undefined;
     active: boolean;
     bypassEnabled: boolean;
+    ecoMode: boolean;
     valvePosPercent: number | undefined;
     alarms: {
         battery: boolean;
@@ -101,6 +102,27 @@ export class UponorHTTPClient {
     }
   }
 
+  public async setThermostatName(controllerID: number, thermostatID: number, name: string): Promise<void> {
+    await this._setAttributes(new Map([[`cust_C${controllerID}_T${thermostatID}_name`, name]]));
+    this._lastSync = undefined; // invalidate cache
+  }
+
+  public async setThermostatEcoMode(controllerID: number, thermostatID: number, enabled: boolean): Promise<void> {
+    const value = enabled ? '1' : '0';
+    await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_mode_comfort_eco`, value]]));
+    this._lastSync = undefined; // invalidate cache
+  }
+
+  public getGlobalEcoMode(): boolean {
+    return this.getAttribute('sys_forced_eco_mode') === '1';
+  }
+
+  public async setGlobalEcoMode(enabled: boolean): Promise<void> {
+    const value = enabled ? '1' : '0';
+    await this._setAttributes(new Map([['sys_forced_eco_mode', value]]));
+    this._lastSync = undefined; // invalidate cache
+  }
+
   public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
@@ -122,6 +144,7 @@ export class UponorHTTPClient {
       const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
       try {
+        console.log(`[JNAP] POST ${this._url} - Action: http://phyn.com/jnap/uponorsky/GetAttributes - Body: {}`);
         const request = await fetch(this._url, {
           method: 'POST',
           headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/GetAttributes' },
@@ -131,6 +154,8 @@ export class UponorHTTPClient {
         clearTimeout(timeout);
         this._lastSync = new Date();
         this._rawAttributes = await request.json();
+        const responseData = this._rawAttributes as AttributesResponse;
+        console.log(`[JNAP] Response status: ${request.status} - Result: ${responseData?.result} - Variables count: ${responseData?.output?.vars?.length || 0}`);
         return request.status === 200;
       } catch (error) {
         clearTimeout(timeout);
@@ -176,6 +201,7 @@ export class UponorHTTPClient {
         humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
         active: this.getAttribute(`${ctKey}_stat_cb_actuator`) === '1',
         bypassEnabled: this.getAttribute(`${ctKey}_bypass_enable`) === '1',
+        ecoMode: this.getAttribute(`${ctKey}_mode_comfort_eco`) === '1',
         valvePosPercent: UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_head1_valve_pos_percent`)),
         alarms: {
           battery: this.getAttribute(`${ctKey}_stat_battery_error`) === '1',
@@ -200,14 +226,17 @@ export class UponorHTTPClient {
 
     try {
       const vars = Array.from(attributes, ([key, value]) => [{ waspVarName: key, waspVarValue: value }]).flat();
+      const body = JSON.stringify({ vars });
+      console.log(`[JNAP] POST ${this._url} - Action: http://phyn.com/jnap/uponorsky/SetAttributes - Body: ${body}`);
       const request = await fetch(this._url, {
         method: 'POST',
         headers: { 'x-jnap-action': 'http://phyn.com/jnap/uponorsky/SetAttributes' },
-        body: JSON.stringify({ vars }),
+        body,
         signal: controller.signal as any,
       });
       clearTimeout(timeout);
       const data: AttributesResponse = await request.json() as AttributesResponse;
+      console.log(`[JNAP] Response status: ${request.status} - Body: ${JSON.stringify(data)}`);
       if (data.result !== 'OK') throw new Error(data.result);
     } catch (error) {
       clearTimeout(timeout);
