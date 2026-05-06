@@ -56,6 +56,21 @@ export class UponorDriver extends Driver {
         return args.device.getClient().getGlobalEcoMode();
       });
     }
+
+    const setSysHeatCoolModeAction = this.homey.flow.getActionCard('device_set_sys_heat_cool_mode');
+    if (setSysHeatCoolModeAction) {
+      setSysHeatCoolModeAction.registerRunListener(async (args: { device: UponorThermostatDevice, mode: 'heat' | 'cool' }, _state: any) => {
+        return args.device.getClient().setGlobalHeatCoolMode(args.mode);
+      });
+    }
+
+    const isSysHeatCoolModeCondition = this.homey.flow.getConditionCard('device_sys_heat_cool_mode_is');
+    if (isSysHeatCoolModeCondition) {
+      isSysHeatCoolModeCondition.registerRunListener(async (args: { device: UponorThermostatDevice, mode: 'heat' | 'cool' }, _state: any) => {
+        await args.device.getClient().syncAttributes();
+        return args.device.getClient().getGlobalHeatCoolMode() === args.mode;
+      });
+    }
   }
 
   async onPair(session: PairSession): Promise<void> {

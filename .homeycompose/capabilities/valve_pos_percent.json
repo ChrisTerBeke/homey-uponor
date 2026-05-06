@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Valve Position",
+    "nl": "Ventielpositie"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "units": {
+    "en": "%"
+  }
+}

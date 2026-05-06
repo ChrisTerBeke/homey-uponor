@@ -1,0 +1,10 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Bypass Enabled",
+    "nl": "Bypass Ingeschakeld"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}

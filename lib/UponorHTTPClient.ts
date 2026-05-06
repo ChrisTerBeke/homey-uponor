@@ -123,6 +123,16 @@ export class UponorHTTPClient {
     this._lastSync = undefined; // invalidate cache
   }
 
+  public getGlobalHeatCoolMode(): 'heat' | 'cool' {
+    return this.getAttribute('sys_heat_cool_mode') === '1' ? 'cool' : 'heat';
+  }
+
+  public async setGlobalHeatCoolMode(mode: 'heat' | 'cool'): Promise<void> {
+    const value = mode === 'cool' ? '1' : '0';
+    await this._setAttributes(new Map([['sys_heat_cool_mode', value]]));
+    this._lastSync = undefined; // invalidate cache
+  }
+
   public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
