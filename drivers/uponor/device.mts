@@ -109,7 +109,7 @@ class UponorThermostatDevice extends Homey.Device {
       if (data.manifoldHeadTemperature !== undefined) {
         await this.setCapabilityValue(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, data.manifoldHeadTemperature);
       }
-      
+
       if (this.hasCapability(TARGET_TEMPERATURE_CAPABILITY)) {
         let currentOptions: any = {};
         try {

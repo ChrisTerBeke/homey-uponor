@@ -262,7 +262,7 @@ export class UponorHTTPClient {
   private static _parseFahrenheit(input: string | undefined): number | undefined {
     if (!input) return undefined;
     const value = parseFloat(input);
-    if (isNaN(value)) return undefined;
+    if (Number.isNaN(value)) return undefined;
     const celsius = (value - 32) * (5 / 9);
     return round(celsius, 1);
   }
@@ -270,7 +270,7 @@ export class UponorHTTPClient {
   private static _parseNumber(input: string | undefined): number | undefined {
     if (!input) return undefined;
     const value = parseInt(input, 10);
-    if (isNaN(value)) return undefined;
+    if (Number.isNaN(value)) return undefined;
     return value;
   }
 

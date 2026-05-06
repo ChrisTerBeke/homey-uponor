@@ -6,9 +6,13 @@
     "strict": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "node/no-missing-import": "off",
+    "node/no-unpublished-import": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "no-use-before-define": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "max-classes-per-file": "off",
+    "prefer-arrow-callback": "off",
+    "func-names": "off"
   }
 }

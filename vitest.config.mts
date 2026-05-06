@@ -7,7 +7,7 @@ export default defineConfig({
     globals: true,
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.mts'],
     alias: {
-      'homey': resolve(__dirname, './tests/__mocks__/homey.mts')
-    }
-  }
+      homey: resolve(__dirname, './tests/__mocks__/homey.mts'),
+    },
+  },
 });
