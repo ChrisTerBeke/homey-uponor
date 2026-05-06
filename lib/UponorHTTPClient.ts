@@ -9,12 +9,15 @@ export type Thermostat = {
     thermostatID: number | undefined;
     name: string | undefined;
     temperature: number | undefined;
+    manifoldHeadTemperature: number | undefined;
     setPoint: number | undefined;
     minimumSetPoint: number | undefined;
     maximumSetPoint: number | undefined;
     mode: Mode | undefined;
     humidity: number | undefined;
     active: boolean;
+    bypassEnabled: boolean;
+    valvePosPercent: number | undefined;
     alarms: {
         battery: boolean;
         tamper: boolean;
@@ -165,12 +168,15 @@ export class UponorHTTPClient {
         controllerID: parseInt(controllerID, 10),
         thermostatID: parseInt(thermostatID, 10),
         temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
+        manifoldHeadTemperature: UponorHTTPClient._parseFahrenheit(this.getAttribute(`${ctKey}_head1_supply_temp`)),
         setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
         mode: 'auto',
         humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
         active: this.getAttribute(`${ctKey}_stat_cb_actuator`) === '1',
+        bypassEnabled: this.getAttribute(`${ctKey}_bypass_enable`) === '1',
+        valvePosPercent: UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_head1_valve_pos_percent`)),
         alarms: {
           battery: this.getAttribute(`${ctKey}_stat_battery_error`) === '1',
           tamper: this.getAttribute(`${ctKey}_stat_tamper_alarm`) === '1',
@@ -213,6 +219,21 @@ export class UponorHTTPClient {
     const fahrenheit = parseFloat(input || '0') / 10;
     const celsius = (fahrenheit - 32) * (5 / 9);
     return round(celsius, 1);
+  }
+
+  private static _parseFahrenheit(input: string | undefined): number | undefined {
+    if (!input) return undefined;
+    const value = parseFloat(input);
+    if (isNaN(value)) return undefined;
+    const celsius = (value - 32) * (5 / 9);
+    return round(celsius, 1);
+  }
+
+  private static _parseNumber(input: string | undefined): number | undefined {
+    if (!input) return undefined;
+    const value = parseInt(input, 10);
+    if (isNaN(value)) return undefined;
+    return value;
   }
 
   private static _createKey(controllerID: string | number, thermostatID: string | number): string {
