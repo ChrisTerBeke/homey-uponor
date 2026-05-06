@@ -108,18 +108,21 @@ class UponorThermostatDevice extends Device {
       if (data.manifoldHeadTemperature !== undefined) {
         await this.setCapabilityValue(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, data.manifoldHeadTemperature);
       }
-      const currentOptions = this.getCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY) || {};
-      const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
-      const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
+      
+      if (this.hasCapability(TARGET_TEMPERATURE_CAPABILITY)) {
+        const currentOptions = this.getCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY) || {};
+        const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
+        const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
 
-      if (shouldUpdateMin || shouldUpdateMax) {
-        await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
-          min: data.minimumSetPoint ?? currentOptions.min,
-          max: data.maximumSetPoint ?? currentOptions.max,
-        });
+        if (shouldUpdateMin || shouldUpdateMax) {
+          await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
+            min: data.minimumSetPoint ?? currentOptions.min,
+            max: data.maximumSetPoint ?? currentOptions.max,
+          });
+        }
+
+        await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
       }
-
-      await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
       if (data.humidity !== undefined) {
         await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
       }
