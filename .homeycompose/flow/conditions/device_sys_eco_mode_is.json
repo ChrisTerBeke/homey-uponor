@@ -1,0 +1,13 @@
+{
+  "title": {
+    "en": "System is in eco mode",
+    "nl": "Systeem staat in eco modus"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=uponor"
+    }
+  ]
+}

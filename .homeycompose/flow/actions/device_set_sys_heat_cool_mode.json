@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Set system to heating/cooling",
+    "nl": "Zet systeem op verwarmen/koelen"
+  },
+  "titleFormatted": {
+    "en": "Set system to [[mode]]",
+    "nl": "Zet systeem op [[mode]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=uponor"
+    },
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "title": {
+        "en": "Mode",
+        "nl": "Modus"
+      },
+      "values": [
+        {
+          "id": "heat",
+          "title": {
+            "en": "Heating",
+            "nl": "Verwarmen"
+          }
+        },
+        {
+          "id": "cool",
+          "title": {
+            "en": "Cooling",
+            "nl": "Koelen"
+          }
+        }
+      ]
+    }
+  ]
+}

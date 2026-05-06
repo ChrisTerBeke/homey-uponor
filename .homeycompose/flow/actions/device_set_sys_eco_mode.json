@@ -1,0 +1,25 @@
+{
+  "title": {
+    "en": "Set system eco mode",
+    "nl": "Zet systeem eco modus"
+  },
+  "titleFormatted": {
+    "en": "Set system eco mode to [[enabled]]",
+    "nl": "Zet systeem eco modus op [[enabled]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=uponor"
+    },
+    {
+      "name": "enabled",
+      "type": "checkbox",
+      "title": {
+        "en": "Enabled",
+        "nl": "Ingeschakeld"
+      }
+    }
+  ]
+}

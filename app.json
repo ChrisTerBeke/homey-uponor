@@ -37,6 +37,62 @@
   "flow": {
     "conditions": [
       {
+        "title": {
+          "en": "System is in eco mode",
+          "nl": "Systeem staat in eco modus"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          }
+        ],
+        "id": "device_sys_eco_mode_is"
+      },
+      {
+        "title": {
+          "en": "System is heating/cooling",
+          "nl": "Systeem verwarmt/koelt"
+        },
+        "titleFormatted": {
+          "en": "System is set to [[mode]]",
+          "nl": "Systeem staat op [[mode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "heat",
+                "title": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              },
+              {
+                "id": "cool",
+                "title": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "device_sys_heat_cool_mode_is"
+      },
+      {
         "id": "thermostat_is_heating",
         "title": {
           "en": "Is heating",
@@ -49,6 +105,76 @@
             "filter": "driver_id=uponor"
           }
         ]
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Set system eco mode",
+          "nl": "Zet systeem eco modus"
+        },
+        "titleFormatted": {
+          "en": "Set system eco mode to [[enabled]]",
+          "nl": "Zet systeem eco modus op [[enabled]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "enabled",
+            "type": "checkbox",
+            "title": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            }
+          }
+        ],
+        "id": "device_set_sys_eco_mode"
+      },
+      {
+        "title": {
+          "en": "Set system to heating/cooling",
+          "nl": "Zet systeem op verwarmen/koelen"
+        },
+        "titleFormatted": {
+          "en": "Set system to [[mode]]",
+          "nl": "Zet systeem op [[mode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "heat",
+                "title": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              },
+              {
+                "id": "cool",
+                "title": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "device_set_sys_heat_cool_mode"
       }
     ]
   },
@@ -73,9 +199,13 @@
       },
       "capabilities": [
         "measure_temperature",
+        "measure_temperature.manifold_head",
         "target_temperature",
         "measure_humidity",
         "is_heating",
+        "bypass_enabled",
+        "eco_mode",
+        "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
         "alarm_generic.air_sensor",
@@ -87,39 +217,70 @@
         "alarm_generic.heat_fallback"
       ],
       "capabilitiesOptions": {
+        "measure_temperature": {
+          "insightsTitleTrue": {
+            "en": "Room Temperature",
+            "nl": "Kamertemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Room Temperature",
+            "nl": "Kamertemperatuur"
+          }
+        },
+        "measure_temperature.manifold_head": {
+          "title": {
+            "en": "Manifold Head Temperature",
+            "nl": "Verdeler Aanvoertemperatuur"
+          },
+          "insightsTitleTrue": {
+            "en": "Manifold Head Temperature",
+            "nl": "Verdeler Aanvoertemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Manifold Head Temperature",
+            "nl": "Verdeler Aanvoertemperatuur"
+          }
+        },
         "alarm_generic.air_sensor": {
           "title": {
-            "en": "Air Sensor Error"
+            "en": "Air Sensor Error",
+            "nl": "Luchtsensor Fout"
           }
         },
         "alarm_generic.ext_sensor": {
           "title": {
-            "en": "External Sensor Error"
+            "en": "External Sensor Error",
+            "nl": "Externe Sensor Fout"
           }
         },
         "alarm_generic.rh_sensor": {
           "title": {
-            "en": "Humidity Sensor Error"
+            "en": "Humidity Sensor Error",
+            "nl": "Vochtigheidssensor Fout"
           }
         },
         "alarm_generic.rf_error": {
           "title": {
-            "en": "RF Error"
+            "en": "RF Error",
+            "nl": "RF Fout"
           }
         },
         "alarm_generic.rf_low_sig": {
           "title": {
-            "en": "RF Low Signal"
+            "en": "RF Low Signal",
+            "nl": "Zwak RF Signaal"
           }
         },
         "alarm_generic.valve_pos": {
           "title": {
-            "en": "Valve Position Error"
+            "en": "Valve Position Error",
+            "nl": "Ventielpositie Fout"
           }
         },
         "alarm_generic.heat_fallback": {
           "title": {
-            "en": "Fallback Heat Alarm"
+            "en": "Fallback Heat Alarm",
+            "nl": "Noodverwarming Alarm"
           }
         }
       },
@@ -153,6 +314,16 @@
     }
   ],
   "capabilities": {
+    "eco_mode": {
+      "type": "boolean",
+      "title": {
+        "en": "Eco Mode",
+        "nl": "Eco Modus"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "toggle"
+    },
     "is_heating": {
       "type": "boolean",
       "title": {
@@ -162,6 +333,19 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor"
+    },
+    "valve_pos_percent": {
+      "type": "number",
+      "title": {
+        "en": "Valve Position",
+        "nl": "Ventielpositie"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "units": {
+        "en": "%"
+      }
     }
   },
   "discovery": {
