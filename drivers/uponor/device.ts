@@ -110,7 +110,14 @@ class UponorThermostatDevice extends Device {
       }
       
       if (this.hasCapability(TARGET_TEMPERATURE_CAPABILITY)) {
-        const currentOptions = this.getCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY) || {};
+        let currentOptions: any = {};
+        try {
+          currentOptions = this.getCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY) || {};
+        } catch (err) {
+          // getCapabilityOptions can throw if options are not yet initialized or undefined in the manifest
+          currentOptions = {};
+        }
+
         const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
         const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
 
