@@ -314,6 +314,16 @@
     }
   ],
   "capabilities": {
+    "bypass_enabled": {
+      "type": "boolean",
+      "title": {
+        "en": "Bypass Enabled",
+        "nl": "Bypass Ingeschakeld"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
     "eco_mode": {
       "type": "boolean",
       "title": {
