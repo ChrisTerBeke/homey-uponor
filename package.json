@@ -1,26 +1,26 @@
 {
   "name": "com.christerbeke.homey-uponor",
   "version": "0.1.0",
-  "main": "app.ts",
+  "main": "app.mts",
   "scripts": {
     "start": "homey app run",
     "build": "tsc",
-    "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
-    "test": "homey app validate"
-  },
-  "dependencies": {
-    "node-fetch": "^2.6.1"
+    "lint": "eslint --ext .js,.ts,.mts --ignore-path .gitignore .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "homey:validate": "homey app validate"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
-    "@types/node": "^18.13.0",
-    "@types/node-fetch": "^2.6.11",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
+    "@vitest/spy": "^4.1.5",
     "eslint": "^8.57.1",
     "eslint-config-athom": "^3.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   }
 }

@@ -3,8 +3,11 @@
     "compilerOptions": {
         "allowJs": true,
         "outDir": ".homeybuild/",
-        "strict": true
+        "strict": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["es2024", "dom"]
     },
-    "include": ["**/*.ts"],
+    "include": ["**/*.mts", "**/*.ts"],
     "exclude": ["node_modules", ".homeybuild"]
 }

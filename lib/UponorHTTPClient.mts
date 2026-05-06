@@ -1,5 +1,4 @@
-import fetch from 'node-fetch';
-import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants';
+import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants.mjs';
 
 export type Mode = 'auto' | 'heat' | 'cool' | 'off';
 

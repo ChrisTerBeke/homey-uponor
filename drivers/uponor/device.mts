@@ -1,14 +1,15 @@
-import { Device, DiscoveryResultMAC } from 'homey';
-import { UponorHTTPClient } from '../../lib/UponorHTTPClient';
-import { UponorDriver } from './driver';
+import Homey from 'homey';
+import type { DiscoveryResultMAC } from 'homey';
+import { UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
+import { UponorDriver } from './driver.mjs';
 import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
   ALARM_HEAT_FALLBACK_CAPABILITY,
-} from '../../lib/constants';
+} from '../../lib/constants.mjs';
 
-class UponorThermostatDevice extends Device {
+class UponorThermostatDevice extends Homey.Device {
 
   private _isHeating: boolean = false;
 
@@ -89,7 +90,7 @@ class UponorThermostatDevice extends Device {
     await this._ensureCapability(ALARM_HEAT_FALLBACK_CAPABILITY);
   }
 
-  private async _ensureCapability(capability: string, callback: Device.CapabilityCallback | undefined = undefined): Promise<void> {
+  private async _ensureCapability(capability: string, callback: any | undefined = undefined): Promise<void> {
     if (!this.hasCapability(capability)) await this.addCapability(capability);
     if (callback) this.registerCapabilityListener(capability, callback);
   }
@@ -180,4 +181,3 @@ class UponorThermostatDevice extends Device {
 }
 
 export default UponorThermostatDevice;
-module.exports = UponorThermostatDevice;

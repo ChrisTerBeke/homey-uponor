@@ -1,15 +1,14 @@
-import { Driver } from 'homey';
-import { PairSession } from 'homey/lib/Driver';
-import { Thermostat, UponorHTTPClient } from '../../lib/UponorHTTPClient';
-import UponorThermostatDevice from './device';
+import Homey from 'homey';
+import { Thermostat, UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
+import UponorThermostatDevice from './device.mjs';
 import {
   CUSTOM_IP_ADDRESS_SETTINGS_KEY,
   DEBUG_DEVICES_SETTINGS_KEY,
   LIST_DEVICES_PAIR_KEY,
   CUSTOM_IP_ADDRESS_PAIR_KEY,
-} from '../../lib/constants';
+} from '../../lib/constants.mjs';
 
-export class UponorDriver extends Driver {
+export class UponorDriver extends Homey.Driver {
 
   private _clients: Map<string, UponorHTTPClient> = new Map();
 
@@ -73,7 +72,7 @@ export class UponorDriver extends Driver {
     }
   }
 
-  async onPair(session: PairSession): Promise<void> {
+  async onPair(session: any): Promise<void> {
     this.homey.settings.unset(CUSTOM_IP_ADDRESS_SETTINGS_KEY);
     session.setHandler(CUSTOM_IP_ADDRESS_PAIR_KEY, this._setCustomIpAddress.bind(this));
     session.setHandler(LIST_DEVICES_PAIR_KEY, this._listDevices.bind(this));
@@ -130,4 +129,4 @@ export class UponorDriver extends Driver {
   }
 }
 
-module.exports = UponorDriver;
+export default UponorDriver;
