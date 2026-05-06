@@ -19,3 +19,7 @@ This repository is a Homey App built with TypeScript and the Homey SDK v3.
 
 ## Testing Quirks
 - **No Unit Test Framework:** There is no Jest, Mocha, or Vitest configured. "Testing" in this repository currently means validating the Homey manifest (`npm run test`) or deploying to a physical Homey device. Do not attempt to run or write `jest` tests without explicit user instructions to set up the framework.
+
+## Git Operations (CRITICAL)
+- **NEVER perform git commits.** Do not use `git commit`, `git merge`, or any other commands that create commits in the repository history unless explicitly requested by the user.
+- **NEVER perform git pushes.** Do not push changes to any remote repository using `git push`. The user prefers to handle all commits and pushes manually.
