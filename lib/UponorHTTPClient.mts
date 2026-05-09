@@ -53,7 +53,7 @@ export class UponorHTTPClient {
   private _rawAttributes: unknown;
   private _attributes: Map<string, string> = new Map();
   private _thermostats: Map<string, Thermostat> = new Map();
-  private _syncPromise: Promise<boolean> | null = null;
+  private _syncPromise: Promise<boolean | null> | null = null;
 
   constructor(ipAddress: string) {
     this._url = `http://${ipAddress}/JNAP/`;
@@ -82,11 +82,15 @@ export class UponorHTTPClient {
   }
 
   public async syncAttributes(): Promise<void> {
-    const syncedRaw = await this._syncRawAttributes();
-    if (!syncedRaw) throw new Error('Could not sync raw attributes');
-    const parsed = await this._parseAttributes();
-    if (!parsed) throw new Error('Could not parse attributes');
-    await this._syncThermostats();
+    const fetchedNew = await this._syncRawAttributes();
+    if (fetchedNew === null) throw new Error('Could not sync raw attributes');
+
+    // If fetchedNew is true, it means we actually got new data from the network
+    if (fetchedNew) {
+      const parsed = await this._parseAttributes();
+      if (!parsed) throw new Error('Could not parse attributes');
+      await this._syncThermostats();
+    }
   }
 
   public async debug(): Promise<unknown> {
@@ -95,7 +99,8 @@ export class UponorHTTPClient {
 
   public async testConnection(): Promise<boolean> {
     try {
-      return await this._syncRawAttributes(true);
+      const result = await this._syncRawAttributes(true);
+      return result === true;
     } catch (error) {
       return false;
     }
@@ -103,13 +108,19 @@ export class UponorHTTPClient {
 
   public async setThermostatName(controllerID: number, thermostatID: number, name: string): Promise<void> {
     await this._setAttributes(new Map([[`cust_C${controllerID}_T${thermostatID}_name`, name]]));
-    this._lastSync = undefined; // invalidate cache
+    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+    this._attributes.set(`cust_C${controllerID}_T${thermostatID}_name`, name);
+    const thermostat = this._thermostats.get(ctKey);
+    if (thermostat) thermostat.name = name;
   }
 
   public async setThermostatEcoMode(controllerID: number, thermostatID: number, enabled: boolean): Promise<void> {
     const value = enabled ? '1' : '0';
     await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_mode_comfort_eco`, value]]));
-    this._lastSync = undefined; // invalidate cache
+    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+    this._attributes.set(`C${controllerID}_T${thermostatID}_mode_comfort_eco`, value);
+    const thermostat = this._thermostats.get(ctKey);
+    if (thermostat) thermostat.ecoMode = enabled;
   }
 
   public getGlobalEcoMode(): boolean {
@@ -119,7 +130,7 @@ export class UponorHTTPClient {
   public async setGlobalEcoMode(enabled: boolean): Promise<void> {
     const value = enabled ? '1' : '0';
     await this._setAttributes(new Map([['sys_forced_eco_mode', value]]));
-    this._lastSync = undefined; // invalidate cache
+    this._attributes.set('sys_forced_eco_mode', value);
   }
 
   public getGlobalHeatCoolMode(): 'heat' | 'cool' {
@@ -129,23 +140,29 @@ export class UponorHTTPClient {
   public async setGlobalHeatCoolMode(mode: 'heat' | 'cool'): Promise<void> {
     const value = mode === 'cool' ? '1' : '0';
     await this._setAttributes(new Map([['sys_heat_cool_mode', value]]));
-    this._lastSync = undefined; // invalidate cache
+    this._attributes.set('sys_heat_cool_mode', value);
   }
 
   public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
     await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]));
-    this._lastSync = undefined; // invalidate cache
+
+    // Optimistically update cache to prevent immediate fetch spikes
+    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+    this._attributes.set(`C${controllerID}_T${thermostatID}_setpoint`, setPoint);
+    const thermostat = this._thermostats.get(ctKey);
+    if (thermostat) thermostat.setPoint = value;
   }
 
-  private async _syncRawAttributes(force: boolean = false): Promise<boolean> {
+  // Returns true if new data was fetched, false if returned from cache, null on error
+  private async _syncRawAttributes(force: boolean = false): Promise<boolean | null> {
     if (!force && this._lastSync && (new Date().getTime() - this._lastSync.getTime()) < CACHE_EXPIRATION_MS) {
-      return true;
+      return false; // from cache
     }
 
     if (this._syncPromise && !force) {
-      return this._syncPromise;
+      return this._syncPromise; // waits for the fetch, so it will be a "fresh" fetch for this caller too
     }
 
     this._syncPromise = (async () => {
@@ -165,7 +182,7 @@ export class UponorHTTPClient {
         this._rawAttributes = await request.json();
         const responseData = this._rawAttributes as AttributesResponse;
         console.log(`[JNAP] Response status: ${request.status} - Result: ${responseData?.result} - Variables count: ${responseData?.output?.vars?.length || 0}`);
-        return request.status === 200;
+        return request.status === 200 ? true : null;
       } catch (error) {
         clearTimeout(timeout);
         throw error;

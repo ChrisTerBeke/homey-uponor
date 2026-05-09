@@ -110,7 +110,7 @@ describe('UponorHTTPClient', () => {
       });
     });
 
-    it('should invalidate cache when setting a value', async () => {
+    it('should update cache when setting a value to prevent fetch spikes', async () => {
       // First sync to set up the cache
       fetchMock.mockResolvedValueOnce({
         ok: true,
@@ -124,23 +124,29 @@ describe('UponorHTTPClient', () => {
       await client.syncAttributes();
       expect(fetchMock).toHaveBeenCalledTimes(1);
 
-      // Set a value, which should invalidate cache
+      // Set a value, which should update cache instead of invalidating it
       fetchMock.mockResolvedValueOnce({
         ok: true,
         status: 200,
         json: async () => ({ result: 'OK' }),
       });
       await client.setGlobalEcoMode(true);
-      expect(fetchMock).toHaveBeenCalledTimes(2); // The SetAttributes call
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(client.getGlobalEcoMode()).toBe(true);
 
-      // Third sync should fetch again because cache was invalidated
-      fetchMock.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => ({ result: 'OK', output: { vars: [] } }),
-      });
+      // We need to mock a GetAttributes call because syncAttributes() runs _parseAttributes()
+      // which OVERWRITES the _attributes map completely with whatever was in _rawAttributes!
+      // Since _rawAttributes still contains the old data (from the first fetch), it will overwrite
+      // the optimistic update! Wait, yes!
+      // To fix this in code, we shouldn't overwrite _attributes if _lastSync is valid,
+      // OR we just don't run _parseAttributes if _syncRawAttributes returns early.
+
+      // Let's first make the test pass so we can see the code fix
+
       await client.syncAttributes();
-      expect(fetchMock).toHaveBeenCalledTimes(3); // The GetAttributes call
+      expect(fetchMock).toHaveBeenCalledTimes(2); // Still 2
+
+      expect(client.getGlobalEcoMode()).toBe(true);
     });
   });
 

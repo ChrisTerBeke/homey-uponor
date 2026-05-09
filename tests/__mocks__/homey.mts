@@ -26,7 +26,6 @@ export class Driver {
 
   log = vi.fn();
   error = vi.fn();
-  onInit = vi.fn();
 }
 
 export class Device {
@@ -49,7 +48,6 @@ export class Device {
   setSettings = vi.fn();
   getStoreValue = vi.fn();
   setStoreValue = vi.fn();
-  onInit = vi.fn();
 }
 
 export default {

@@ -6,22 +6,60 @@ import {
   DEBUG_DEVICES_SETTINGS_KEY,
   LIST_DEVICES_PAIR_KEY,
   CUSTOM_IP_ADDRESS_PAIR_KEY,
+  POLL_INTERVAL_MS,
 } from '../../lib/constants.mjs';
 
 export class UponorDriver extends Homey.Driver {
 
-  private _clients: Map<string, UponorHTTPClient> = new Map();
+  private _client?: UponorHTTPClient;
+  private _pollingInterval?: any;
+  private _address?: string;
 
   getClient(address: string): UponorHTTPClient {
     if (!address) throw new Error('IP address is required to get a client');
-    if (!this._clients.has(address)) {
-      this._clients.set(address, new UponorHTTPClient(address));
+    if (!this._client || this._address !== address) {
+      this._client = new UponorHTTPClient(address);
+      this._address = address;
     }
-    return this._clients.get(address)!;
+    return this._client;
+  }
+
+  async startPolling(): Promise<void> {
+    if (this._pollingInterval) return;
+
+    this._pollingInterval = this.homey.setInterval(async () => {
+      if (!this._client) return;
+      try {
+        await this._client.syncAttributes();
+        const devices = this.getDevices();
+        for (const device of devices) {
+          await (device as UponorThermostatDevice).updateData();
+        }
+      } catch (error) {
+        this.homey.error('Polling sync failed:', error);
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
+  stopPolling(): void {
+    if (this._pollingInterval) {
+      this.homey.clearInterval(this._pollingInterval);
+      this._pollingInterval = undefined;
+    }
+  }
+
+  checkPollingStatus(): void {
+    if (this.getDevices().length === 0) {
+      this.stopPolling();
+    }
   }
 
   removeClient(address: string): void {
-    this._clients.delete(address);
+    if (this._address === address) {
+      this._client = undefined;
+      this._address = undefined;
+      this.stopPolling();
+    }
   }
 
   getCustomIpAddress(): string | undefined {

@@ -69,6 +69,8 @@ describe('UponorThermostatDevice', function() {
     device.homey = {
       setInterval: vi.fn(),
       setTimeout: vi.fn(),
+      clearInterval: vi.fn(),
+      clearTimeout: vi.fn(),
       error: vi.fn(),
       log: vi.fn(),
     } as any;
@@ -77,6 +79,8 @@ describe('UponorThermostatDevice', function() {
     device.driver = {
       getClient: vi.fn().mockReturnValue(new UponorHTTPClient('1.2.3.4')),
       removeClient: vi.fn(),
+      startPolling: vi.fn(),
+      checkPollingStatus: vi.fn(),
     } as any;
   });
 
@@ -88,9 +92,10 @@ describe('UponorThermostatDevice', function() {
 
     await device.onInit();
 
-    // Note: the test calls the internal `_syncAttributes` here directly because `onInit` only registers it in timeouts
-    await (device as any)._syncAttributes();
+    // Note: the test calls the internal `updateData` here directly because `onInit` delegates to the driver
+    await device.updateData();
 
+    expect((device.driver as any).startPolling).toHaveBeenCalled();
     expect(device.homey.error).not.toHaveBeenCalled();
     expect(device.setAvailable).toHaveBeenCalled();
     expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature', 21.5);
@@ -98,6 +103,24 @@ describe('UponorThermostatDevice', function() {
     expect(device.setCapabilityValue).toHaveBeenCalledWith('is_heating', true);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('bypass_enabled', false);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('eco_mode', false);
+  });
+
+  it('should cleanup polling on delete or uninit', async function() {
+    device.hasCapability = vi.fn().mockReturnValue(true);
+    device.addCapability = vi.fn();
+    device.registerCapabilityListener = vi.fn();
+
+    await device.onInit();
+    expect((device.driver as any).startPolling).toHaveBeenCalled();
+
+    await device.onUninit();
+    expect((device.driver as any).checkPollingStatus).toHaveBeenCalled();
+
+    // Call onDeleted and verify the same behaviour
+    await device.onInit();
+    await device.onDeleted();
+
+    expect((device.driver as any).checkPollingStatus).toHaveBeenCalledTimes(2);
   });
 
   describe('capability listeners', function() {
@@ -124,15 +147,24 @@ describe('UponorThermostatDevice', function() {
       await device.onInit();
     });
 
-    it('should handle target temperature changes', async function() {
+    it('should handle target temperature changes with debounce', async function() {
       const setTargetTemperatureSpy = vi.spyOn((device.driver as any).getClient(), 'setTargetTemperature').mockResolvedValue(undefined);
+      device.setCapabilityValue = vi.fn().mockResolvedValue(undefined);
 
-      // Trigger the capability listener as if the user changed the temperature in the Homey App
+      const promise1 = (device as any)._setTargetTemperature(22.0, {});
+      const promise2 = (device as any)._setTargetTemperature(22.5, {});
+      const promise3 = (device as any)._setTargetTemperature(23.0, {});
 
-      // Actually call the method since listener registration mock isn't bound properly
-      await (device as any)._setTargetTemperature(22.5, {});
+      // Fast forward timers for debounce
+      const timeoutMock = device.homey.setTimeout as import('vitest').Mock;
+      const callback = timeoutMock.mock.calls[timeoutMock.mock.calls.length - 1][0];
+      await callback();
 
-      expect(setTargetTemperatureSpy).toHaveBeenCalledWith(0, 0, 22.5);
+      // All promises should resolve but only one API call is made with the latest value
+      await Promise.all([promise1, promise2, promise3]);
+
+      expect(setTargetTemperatureSpy).toHaveBeenCalledTimes(1);
+      expect(setTargetTemperatureSpy).toHaveBeenCalledWith(0, 0, 23.0);
     });
 
     it('should handle eco mode changes', async function() {
@@ -155,12 +187,14 @@ describe('UponorThermostatDevice', function() {
       await device.onInit();
     });
 
-    it('should mark device unavailable on network error', async function() {
-      // Force the mock client to throw an error
-      (device.driver as any).getClient().syncAttributes = vi.fn().mockRejectedValue(new Error('Network offline'));
+    it('should mark device unavailable on error', async function() {
+      // Force the mock client to throw an error when fetching thermostat data
+      (device.driver as any).getClient().getThermostat = vi.fn().mockImplementation(() => {
+        throw new Error('Network offline');
+      });
 
       // Run sync
-      await (device as any)._syncAttributes();
+      await device.updateData();
 
       // Check error handling
       expect(device.homey.error).toHaveBeenCalledWith(expect.any(Error));
@@ -172,7 +206,7 @@ describe('UponorThermostatDevice', function() {
       (device.driver as any).getClient().getThermostat = vi.fn().mockReturnValue(undefined);
 
       // Run sync
-      await (device as any)._syncAttributes();
+      await device.updateData();
 
       // Check error handling
       expect(device.setUnavailable).toHaveBeenCalledWith('Could not find thermostat data');

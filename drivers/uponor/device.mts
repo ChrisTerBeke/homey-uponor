@@ -3,7 +3,7 @@ import type { DiscoveryResultMAC } from 'homey';
 import { UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
 import { UponorDriver } from './driver.mjs';
 import {
-  MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY, POLL_INTERVAL_MS, INIT_TIMEOUT_MS,
+  MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
   ALARM_HEAT_FALLBACK_CAPABILITY,
@@ -19,8 +19,25 @@ class UponorThermostatDevice extends Homey.Device {
 
   async onInit(): Promise<void> {
     await this._syncCapabilities();
-    this.homey.setInterval(this._syncAttributes.bind(this), POLL_INTERVAL_MS);
-    this.homey.setTimeout(this._syncAttributes.bind(this), INIT_TIMEOUT_MS);
+    if (this.driver && typeof (this.driver as any).startPolling === 'function') {
+      (this.driver as UponorDriver).startPolling();
+    }
+
+    // Ensure this device gets initial data populated immediately
+    try {
+      await this.getClient().syncAttributes();
+      await this.updateData();
+    } catch (error) {
+      this.homey.error('Initial device sync failed:', error);
+    }
+  }
+
+  async onDeleted(): Promise<void> {
+    (this.driver as UponorDriver).checkPollingStatus();
+  }
+
+  async onUninit(): Promise<void> {
+    (this.driver as UponorDriver).checkPollingStatus();
   }
 
   onDiscoveryResult(discoveryResult: DiscoveryResultMAC): boolean {
@@ -95,9 +112,8 @@ class UponorThermostatDevice extends Homey.Device {
     if (callback) this.registerCapabilityListener(capability, callback);
   }
 
-  private async _syncAttributes(): Promise<void> {
+  public async updateData(): Promise<void> {
     try {
-      await this.getClient().syncAttributes();
       const { controllerID, thermostatID } = this.getData();
       const data = this.getClient().getThermostat(controllerID, thermostatID);
       if (!data) {
@@ -157,15 +173,37 @@ class UponorThermostatDevice extends Homey.Device {
     }
   }
 
+  private _targetTemperatureDebounce?: any;
+  private _targetTemperatureValue?: number;
+  private _targetTemperatureResolvers: Array<{ resolve: () => void, reject: (err: any) => void }> = [];
+
   private async _setTargetTemperature(value: number, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
-    try {
-      await this.getClient().setTargetTemperature(controllerID, thermostatID, value);
-    } catch (error) {
-      this.homey.error(error);
-      await this.setUnavailable('Could not send data to Uponor controller');
-      throw error; // Rethrow so Homey UI reverts
-    }
+    this._targetTemperatureValue = value;
+
+    return new Promise((resolve, reject) => {
+      this._targetTemperatureResolvers.push({ resolve, reject });
+
+      if (this._targetTemperatureDebounce) {
+        this.homey.clearTimeout(this._targetTemperatureDebounce);
+      }
+
+      this._targetTemperatureDebounce = this.homey.setTimeout(async () => {
+        const resolvers = [...this._targetTemperatureResolvers];
+        this._targetTemperatureResolvers = [];
+        this._targetTemperatureDebounce = undefined;
+
+        try {
+          const finalValue = this._targetTemperatureValue!;
+          await this.getClient().setTargetTemperature(controllerID, thermostatID, finalValue);
+          resolvers.forEach((r) => r.resolve());
+        } catch (error) {
+          this.homey.error('Failed to set target temperature', error);
+          this.setUnavailable('Could not send data to Uponor controller').catch(() => {});
+          resolvers.forEach((r) => r.reject(error));
+        }
+      }, 500); // 500ms debounce
+    });
   }
 
   private async _setEcoMode(value: boolean, _opts: unknown): Promise<void> {
