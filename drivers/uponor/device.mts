@@ -142,6 +142,8 @@ class UponorThermostatDevice extends Homey.Device {
           await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
             min: data.minimumSetPoint ?? currentOptions.min,
             max: data.maximumSetPoint ?? currentOptions.max,
+            step: 0.5,
+            decimals: 1,
           });
         }
 
@@ -181,6 +183,10 @@ class UponorThermostatDevice extends Homey.Device {
     const { controllerID, thermostatID } = this.getData();
     this._targetTemperatureValue = value;
 
+    // Acknowledge the value to Homey immediately to prevent the mobile app from bouncing/rubber-banding,
+    // which can cause it to fire spurious capability listener events.
+    this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, value).catch(err => this.homey.error(err));
+
     return new Promise((resolve, reject) => {
       this._targetTemperatureResolvers.push({ resolve, reject });
 
@@ -208,6 +214,10 @@ class UponorThermostatDevice extends Homey.Device {
 
   private async _setEcoMode(value: boolean, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
+    
+    // Optimistic UI update
+    this.setCapabilityValue(ECO_MODE_CAPABILITY, value).catch(err => this.homey.error(err));
+    
     try {
       await this.getClient().setThermostatEcoMode(controllerID, thermostatID, value);
     } catch (error) {

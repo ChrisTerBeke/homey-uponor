@@ -169,6 +169,7 @@ describe('UponorThermostatDevice', function() {
 
     it('should handle eco mode changes', async function() {
       const setEcoModeSpy = vi.spyOn((device.driver as any).getClient(), 'setThermostatEcoMode').mockResolvedValue(undefined);
+      device.setCapabilityValue = vi.fn().mockResolvedValue(undefined);
 
       // Trigger the capability listener
 
