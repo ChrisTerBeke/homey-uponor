@@ -178,39 +178,40 @@ class UponorThermostatDevice extends Homey.Device {
 
   private _targetTemperatureDebounce?: any;
   private _targetTemperatureValue?: number;
-  private _targetTemperatureResolvers: Array<{ resolve: () => void, reject: (err: any) => void }> = [];
+
 
   private async _setTargetTemperature(value: number, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
     this._targetTemperatureValue = value;
 
-    // Acknowledge the value to Homey immediately to prevent the mobile app from bouncing/rubber-banding,
-    // which can cause it to fire spurious capability listener events.
+    // Acknowledge the value to Homey immediately to prevent the mobile app from bouncing/rubber-banding.
     this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, value).catch(err => this.homey.error(err));
 
-    return new Promise((resolve, reject) => {
-      this._targetTemperatureResolvers.push({ resolve, reject });
+    if (this._targetTemperatureDebounce) {
+      this.homey.clearTimeout(this._targetTemperatureDebounce);
+    }
 
-      if (this._targetTemperatureDebounce) {
-        this.homey.clearTimeout(this._targetTemperatureDebounce);
-      }
-
-      this._targetTemperatureDebounce = this.homey.setTimeout(async () => {
-        const resolvers = [...this._targetTemperatureResolvers];
-        this._targetTemperatureResolvers = [];
-        this._targetTemperatureDebounce = undefined;
-
+    this._targetTemperatureDebounce = this.homey.setTimeout(async () => {
+      this._targetTemperatureDebounce = undefined;
+      
+      try {
+        const finalValue = this._targetTemperatureValue!;
+        await this.getClient().setTargetTemperature(controllerID, thermostatID, finalValue);
+      } catch (error) {
+        this.homey.error('Failed to set target temperature', error);
+        this.setUnavailable('Could not send data to Uponor controller').catch(() => {});
+        // Optionally revert UI here by fetching cached value
         try {
-          const finalValue = this._targetTemperatureValue!;
-          await this.getClient().setTargetTemperature(controllerID, thermostatID, finalValue);
-          resolvers.forEach((r) => r.resolve());
-        } catch (error) {
-          this.homey.error('Failed to set target temperature', error);
-          this.setUnavailable('Could not send data to Uponor controller').catch(() => {});
-          resolvers.forEach((r) => r.reject(error));
-        }
-      }, 500); // 500ms debounce
-    });
+          const thermostat = this.getClient().getThermostat(controllerID, thermostatID);
+          if (thermostat && thermostat.setPoint !== undefined) {
+            await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, thermostat.setPoint);
+          }
+        } catch (e) {}
+      }
+    }, 500); // 500ms debounce
+
+    // Resolve immediately so Homey UI does not time out and cause rubber-banding
+    return Promise.resolve();
   }
 
   private async _setEcoMode(value: boolean, _opts: unknown): Promise<void> {
