@@ -137,14 +137,14 @@ class UponorThermostatDevice extends Homey.Device {
 
         const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
         const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
-        const shouldUpdateStep = currentOptions.step !== 1 || currentOptions.decimals !== 0;
+        const shouldUpdateStep = currentOptions.step !== 0.5 || currentOptions.decimals !== 1;
 
         if (shouldUpdateMin || shouldUpdateMax || shouldUpdateStep) {
           await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
             min: data.minimumSetPoint ?? currentOptions.min,
             max: data.maximumSetPoint ?? currentOptions.max,
-            step: 1,
-            decimals: 0,
+            step: 0.5,
+            decimals: 1,
           });
         }
 
