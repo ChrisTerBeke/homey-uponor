@@ -23,7 +23,7 @@
         "measure_humidity",
         "is_heating",
         "bypass_enabled",
-        "eco_mode",
+        "thermostat_mode",
         "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
@@ -101,6 +101,38 @@
                 "en": "Fallback Heat Alarm",
                 "nl": "Noodverwarming Alarm"
             }
+        },
+        "thermostat_mode": {
+            "values": [
+                {
+                    "id": "heat",
+                    "title": {
+                        "en": "Heating",
+                        "nl": "Verwarmen"
+                    }
+                },
+                {
+                    "id": "cool",
+                    "title": {
+                        "en": "Cooling",
+                        "nl": "Koelen"
+                    }
+                },
+                {
+                    "id": "eco",
+                    "title": {
+                        "en": "Eco",
+                        "nl": "Eco"
+                    }
+                },
+                {
+                    "id": "holiday",
+                    "title": {
+                        "en": "Holiday",
+                        "nl": "Vakantie"
+                    }
+                }
+            ]
         }
     },
     "energy": {

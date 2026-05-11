@@ -3,7 +3,7 @@ import type { DiscoveryResultMAC } from 'homey';
 import { UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
 import { UponorDriver } from './driver.mjs';
 import {
-  MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
+  MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
   ALARM_HEAT_FALLBACK_CAPABILITY,
@@ -94,7 +94,12 @@ class UponorThermostatDevice extends Homey.Device {
     await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
     await this._ensureCapability(IS_HEATING_CAPABILITY);
     await this._ensureCapability(BYPASS_ENABLED_CAPABILITY);
-    await this._ensureCapability(ECO_MODE_CAPABILITY, this._setEcoMode.bind(this));
+
+    if (this.hasCapability(ECO_MODE_CAPABILITY)) {
+      await this.removeCapability(ECO_MODE_CAPABILITY);
+    }
+    await this._ensureCapability(THERMOSTAT_MODE_CAPABILITY, this._setThermostatMode.bind(this));
+
     await this._ensureCapability(VALVE_POS_PERCENT_CAPABILITY);
     await this._ensureCapability(ALARM_BATTERY_CAPABILITY);
     await this._ensureCapability(ALARM_TAMPER_CAPABILITY);
@@ -157,7 +162,20 @@ class UponorThermostatDevice extends Homey.Device {
       this._isHeating = data.active;
       await this.setCapabilityValue(IS_HEATING_CAPABILITY, data.active);
       await this.setCapabilityValue(BYPASS_ENABLED_CAPABILITY, data.bypassEnabled);
-      await this.setCapabilityValue(ECO_MODE_CAPABILITY, data.ecoMode);
+      
+      let currentMode = 'heat';
+      const globalEco = this.getClient().getGlobalEcoMode();
+      const globalCool = this.getClient().getGlobalHeatCoolMode() === 'cool';
+      
+      if (globalEco) {
+        currentMode = 'holiday';
+      } else if (data.ecoMode) {
+        currentMode = 'eco';
+      } else if (globalCool) {
+        currentMode = 'cool';
+      }
+      await this.setCapabilityValue(THERMOSTAT_MODE_CAPABILITY, currentMode);
+      
       if (data.valvePosPercent !== undefined) {
         await this.setCapabilityValue(VALVE_POS_PERCENT_CAPABILITY, data.valvePosPercent);
       }
@@ -214,19 +232,34 @@ class UponorThermostatDevice extends Homey.Device {
     return Promise.resolve();
   }
 
-  private async _setEcoMode(value: boolean, _opts: unknown): Promise<void> {
+  private async _setThermostatMode(value: string, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
     
     // Optimistic UI update
-    this.setCapabilityValue(ECO_MODE_CAPABILITY, value).catch(err => this.homey.error(err));
+    this.setCapabilityValue(THERMOSTAT_MODE_CAPABILITY, value).catch(err => this.homey.error(err));
     
     try {
-      await this.getClient().setThermostatEcoMode(controllerID, thermostatID, value);
+      if (value === 'heat') {
+        await this.getClient().setGlobalHeatCoolMode('heat');
+        await this.getClient().setGlobalEcoMode(false);
+        await this.getClient().setThermostatEcoMode(controllerID, thermostatID, false);
+      } else if (value === 'cool') {
+        await this.getClient().setGlobalHeatCoolMode('cool');
+        await this.getClient().setGlobalEcoMode(false);
+        await this.getClient().setThermostatEcoMode(controllerID, thermostatID, false);
+      } else if (value === 'eco') {
+        await this.getClient().setGlobalEcoMode(false);
+        await this.getClient().setThermostatEcoMode(controllerID, thermostatID, true);
+      } else if (value === 'holiday') {
+        await this.getClient().setGlobalEcoMode(true);
+      }
     } catch (error) {
-      this.homey.error(error);
-      await this.setUnavailable('Could not send data to Uponor controller');
-      throw error;
+      this.homey.error('Failed to set thermostat mode', error);
+      // Let the next poll fix the UI if it failed
     }
+
+    // Resolve immediately to prevent UI rubber-banding
+    return Promise.resolve();
   }
 }
 

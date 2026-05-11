@@ -9,6 +9,7 @@ export const MEASURE_HUMIDITY_CAPABILITY = 'measure_humidity';
 export const IS_HEATING_CAPABILITY = 'is_heating';
 export const BYPASS_ENABLED_CAPABILITY = 'bypass_enabled';
 export const ECO_MODE_CAPABILITY = 'eco_mode';
+export const THERMOSTAT_MODE_CAPABILITY = 'thermostat_mode';
 export const VALVE_POS_PERCENT_CAPABILITY = 'valve_pos_percent';
 export const ALARM_BATTERY_CAPABILITY = 'alarm_battery';
 export const ALARM_TAMPER_CAPABILITY = 'alarm_tamper';

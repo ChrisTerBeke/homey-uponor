@@ -41,6 +41,8 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
       getAttribute: vi.fn().mockReturnValue('0'),
       setTargetTemperature: vi.fn(),
       setThermostatEcoMode: vi.fn(),
+      setGlobalHeatCoolMode: vi.fn(),
+      setGlobalEcoMode: vi.fn(),
       updateAddress: vi.fn(),
       testConnection: vi.fn().mockResolvedValue(true),
     };
@@ -102,7 +104,7 @@ describe('UponorThermostatDevice', function() {
     expect(device.setCapabilityValue).toHaveBeenCalledWith('target_temperature', 21.0);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('is_heating', true);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('bypass_enabled', false);
-    expect(device.setCapabilityValue).toHaveBeenCalledWith('eco_mode', false);
+    expect(device.setCapabilityValue).toHaveBeenCalledWith('thermostat_mode', 'heat');
   });
 
   it('should cleanup polling on delete or uninit', async function() {
@@ -167,15 +169,33 @@ describe('UponorThermostatDevice', function() {
       expect(setTargetTemperatureSpy).toHaveBeenCalledWith(0, 0, 23.0);
     });
 
-    it('should handle eco mode changes', async function() {
-      const setEcoModeSpy = vi.spyOn((device.driver as any).getClient(), 'setThermostatEcoMode').mockResolvedValue(undefined);
+    it('should handle thermostat mode changes', async function() {
+      const setGlobalHeatCoolModeSpy = vi.spyOn((device.driver as any).getClient(), 'setGlobalHeatCoolMode').mockResolvedValue(undefined);
+      const setGlobalEcoModeSpy = vi.spyOn((device.driver as any).getClient(), 'setGlobalEcoMode').mockResolvedValue(undefined);
+      const setThermostatEcoModeSpy = vi.spyOn((device.driver as any).getClient(), 'setThermostatEcoMode').mockResolvedValue(undefined);
+
       device.setCapabilityValue = vi.fn().mockResolvedValue(undefined);
 
-      // Trigger the capability listener
+      // Test heat
+      await (device as any)._setThermostatMode('heat', {});
+      expect(setGlobalHeatCoolModeSpy).toHaveBeenCalledWith('heat');
+      expect(setGlobalEcoModeSpy).toHaveBeenCalledWith(false);
+      expect(setThermostatEcoModeSpy).toHaveBeenCalledWith(0, 0, false);
 
-      await (device as any)._setEcoMode(true, {});
+      // Test cool
+      await (device as any)._setThermostatMode('cool', {});
+      expect(setGlobalHeatCoolModeSpy).toHaveBeenCalledWith('cool');
+      expect(setGlobalEcoModeSpy).toHaveBeenCalledWith(false);
+      expect(setThermostatEcoModeSpy).toHaveBeenCalledWith(0, 0, false);
 
-      expect(setEcoModeSpy).toHaveBeenCalledWith(0, 0, true);
+      // Test eco
+      await (device as any)._setThermostatMode('eco', {});
+      expect(setGlobalEcoModeSpy).toHaveBeenCalledWith(false);
+      expect(setThermostatEcoModeSpy).toHaveBeenCalledWith(0, 0, true);
+
+      // Test holiday
+      await (device as any)._setThermostatMode('holiday', {});
+      expect(setGlobalEcoModeSpy).toHaveBeenCalledWith(true);
     });
   });
 

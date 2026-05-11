@@ -42,6 +42,7 @@ export class Device {
   setAvailable = vi.fn();
   setUnavailable = vi.fn();
   addCapability = vi.fn();
+  removeCapability = vi.fn();
   hasCapability = vi.fn().mockReturnValue(true);
   registerCapabilityListener = vi.fn();
   getSettings = vi.fn().mockReturnValue({});
