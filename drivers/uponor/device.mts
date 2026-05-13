@@ -6,7 +6,8 @@ import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
-  ALARM_HEAT_FALLBACK_CAPABILITY,
+  ALARM_HEAT_FALLBACK_CAPABILITY, ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
+  MEASURE_TEMPERATURE_AVERAGE_CAPABILITY, MEASURE_HUMIDITY_AVERAGE_CAPABILITY,
 } from '../../lib/constants.mjs';
 
 class UponorThermostatDevice extends Homey.Device {
@@ -99,6 +100,10 @@ class UponorThermostatDevice extends Homey.Device {
       await this.removeCapability(ECO_MODE_CAPABILITY);
     }
     await this._ensureCapability(THERMOSTAT_MODE_CAPABILITY, this._setThermostatMode.bind(this));
+    await this._ensureCapability(ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY);
+    await this._ensureCapability(ALARM_GENERAL_SYSTEM_CAPABILITY);
+    await this._ensureCapability(MEASURE_TEMPERATURE_AVERAGE_CAPABILITY);
+    await this._ensureCapability(MEASURE_HUMIDITY_AVERAGE_CAPABILITY);
 
     await this._ensureCapability(VALVE_POS_PERCENT_CAPABILITY);
     await this._ensureCapability(ALARM_BATTERY_CAPABILITY);
@@ -114,7 +119,20 @@ class UponorThermostatDevice extends Homey.Device {
 
   private async _ensureCapability(capability: string, callback: any | undefined = undefined): Promise<void> {
     if (!this.hasCapability(capability)) await this.addCapability(capability);
-    if (callback) this.registerCapabilityListener(capability, callback);
+    // Homey Devices don't have a built-in hasCapabilityListener that is public or typesafe enough
+    if (callback) {
+      try {
+        this.registerCapabilityListener(capability, callback);
+      } catch (err) {
+        // Ignore if already registered
+      }
+    }
+  }
+
+  private async _removeCapabilityIfExists(capability: string): Promise<void> {
+    if (this.hasCapability(capability)) {
+      await this.removeCapability(capability);
+    }
   }
 
   public async updateData(): Promise<void> {
@@ -126,9 +144,14 @@ class UponorThermostatDevice extends Homey.Device {
         return;
       }
       await this.setAvailable();
+
       await this.setCapabilityValue(MEASURE_TEMPERATURE_CAPABILITY, data.temperature);
+
       if (data.manifoldHeadTemperature !== undefined) {
+        await this._ensureCapability(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY);
         await this.setCapabilityValue(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, data.manifoldHeadTemperature);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY);
       }
 
       if (this.hasCapability(TARGET_TEMPERATURE_CAPABILITY)) {
@@ -142,43 +165,45 @@ class UponorThermostatDevice extends Homey.Device {
 
         const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
         const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
-        const shouldUpdateStep = currentOptions.step !== 0.5 || currentOptions.decimals !== 1;
 
-        if (shouldUpdateMin || shouldUpdateMax || shouldUpdateStep) {
+        if (shouldUpdateMin || shouldUpdateMax) {
           await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
-            min: data.minimumSetPoint ?? currentOptions.min,
-            max: data.maximumSetPoint ?? currentOptions.max,
-            step: 0.5,
-            decimals: 1,
-          });
+            min: data.minimumSetPoint,
+            max: data.maximumSetPoint,
+          }).catch((err) => this.homey.error('Failed to set capability options', err));
         }
 
         await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
       }
 
       if (data.humidity !== undefined) {
+        await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
         await this.setCapabilityValue(MEASURE_HUMIDITY_CAPABILITY, data.humidity);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_HUMIDITY_CAPABILITY);
       }
+
       this._isHeating = data.active;
       await this.setCapabilityValue(IS_HEATING_CAPABILITY, data.active);
       await this.setCapabilityValue(BYPASS_ENABLED_CAPABILITY, data.bypassEnabled);
-      
-      let currentMode = 'heat';
-      const globalEco = this.getClient().getGlobalEcoMode();
-      const globalCool = this.getClient().getGlobalHeatCoolMode() === 'cool';
-      
-      if (globalEco) {
+
+      const isHoliday = this.getClient().getGlobalEcoMode();
+      let currentMode = data.mode;
+      if (isHoliday) {
         currentMode = 'holiday';
       } else if (data.ecoMode) {
         currentMode = 'eco';
-      } else if (globalCool) {
-        currentMode = 'cool';
       }
+
       await this.setCapabilityValue(THERMOSTAT_MODE_CAPABILITY, currentMode);
-      
+
       if (data.valvePosPercent !== undefined) {
+        await this._ensureCapability(VALVE_POS_PERCENT_CAPABILITY);
         await this.setCapabilityValue(VALVE_POS_PERCENT_CAPABILITY, data.valvePosPercent);
+      } else {
+        await this._removeCapabilityIfExists(VALVE_POS_PERCENT_CAPABILITY);
       }
+
       await this.setCapabilityValue(ALARM_BATTERY_CAPABILITY, data.alarms.battery);
       await this.setCapabilityValue(ALARM_TAMPER_CAPABILITY, data.alarms.tamper);
       await this.setCapabilityValue(ALARM_AIR_SENSOR_CAPABILITY, data.alarms.airSensor);
@@ -188,6 +213,38 @@ class UponorThermostatDevice extends Homey.Device {
       await this.setCapabilityValue(ALARM_RF_LOW_SIG_CAPABILITY, data.alarms.rfLowSig);
       await this.setCapabilityValue(ALARM_VALVE_POS_CAPABILITY, data.alarms.valvePos);
       await this.setCapabilityValue(ALARM_HEAT_FALLBACK_CAPABILITY, data.alarms.heatFallback);
+
+      const metrics = this.getClient().getSystemMetrics(controllerID);
+      await this.setCapabilityValue(ALARM_GENERAL_SYSTEM_CAPABILITY, metrics.generalSystemAlarm);
+
+      const alarmStr = this.getClient().getAttribute('sys_supply_diagnostic');
+      if (alarmStr !== undefined) {
+        await this.setCapabilityValue(ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, alarmStr === '1');
+      }
+
+      if (metrics.averageRoomTemperature !== undefined) {
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_AVERAGE_CAPABILITY, metrics.averageRoomTemperature);
+      }
+
+      if (metrics.averageRelativeHumidity !== undefined) {
+        await this.setCapabilityValue(MEASURE_HUMIDITY_AVERAGE_CAPABILITY, metrics.averageRelativeHumidity);
+      }
+
+      // Dynamically update cooling capability options if cooling isn't supported
+      if (!metrics.coolingAvailable) {
+        const currentOptions = this.getCapabilityOptions(THERMOSTAT_MODE_CAPABILITY) || {};
+        const hasCoolOption = currentOptions.values?.some((v: any) => v.id === 'cool');
+
+        if (hasCoolOption === undefined || hasCoolOption) {
+          await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
+            values: [
+              { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+              { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+              { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+            ],
+          }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
+        }
+      }
     } catch (error) {
       this.homey.error(error);
       await this.setUnavailable('Could not fetch data from Uponor controller');
@@ -197,13 +254,12 @@ class UponorThermostatDevice extends Homey.Device {
   private _targetTemperatureDebounce?: any;
   private _targetTemperatureValue?: number;
 
-
   private async _setTargetTemperature(value: number, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
     this._targetTemperatureValue = value;
 
     // Acknowledge the value to Homey immediately to prevent the mobile app from bouncing/rubber-banding.
-    this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, value).catch(err => this.homey.error(err));
+    this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, value).catch((err) => this.homey.error(err));
 
     if (this._targetTemperatureDebounce) {
       this.homey.clearTimeout(this._targetTemperatureDebounce);
@@ -211,7 +267,7 @@ class UponorThermostatDevice extends Homey.Device {
 
     this._targetTemperatureDebounce = this.homey.setTimeout(async () => {
       this._targetTemperatureDebounce = undefined;
-      
+
       try {
         const finalValue = this._targetTemperatureValue!;
         await this.getClient().setTargetTemperature(controllerID, thermostatID, finalValue);
@@ -234,10 +290,10 @@ class UponorThermostatDevice extends Homey.Device {
 
   private async _setThermostatMode(value: string, _opts: unknown): Promise<void> {
     const { controllerID, thermostatID } = this.getData();
-    
+
     // Optimistic UI update
-    this.setCapabilityValue(THERMOSTAT_MODE_CAPABILITY, value).catch(err => this.homey.error(err));
-    
+    this.setCapabilityValue(THERMOSTAT_MODE_CAPABILITY, value).catch((err) => this.homey.error(err));
+
     try {
       if (value === 'heat') {
         await this.getClient().setGlobalHeatCoolMode('heat');

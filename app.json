@@ -214,10 +214,18 @@
         "alarm_generic.rf_error",
         "alarm_generic.rf_low_sig",
         "alarm_generic.valve_pos",
-        "alarm_generic.heat_fallback"
+        "alarm_generic.heat_fallback",
+        "alarm_generic.sys_supply_diagnostic",
+        "alarm_generic.system",
+        "measure_temperature.average",
+        "measure_humidity.average"
       ],
       "capabilitiesOptions": {
         "measure_temperature": {
+          "title": {
+            "en": "Room Temperature",
+            "nl": "Kamertemperatuur"
+          },
           "insightsTitleTrue": {
             "en": "Room Temperature",
             "nl": "Kamertemperatuur"
@@ -239,6 +247,34 @@
           "insightsTitleFalse": {
             "en": "Manifold Head Temperature",
             "nl": "Verdeler Aanvoertemperatuur"
+          }
+        },
+        "measure_temperature.average": {
+          "title": {
+            "en": "Average Room Temperature",
+            "nl": "Gemiddelde Kamertemperatuur"
+          },
+          "insightsTitleTrue": {
+            "en": "Average Room Temperature",
+            "nl": "Gemiddelde Kamertemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Average Room Temperature",
+            "nl": "Gemiddelde Kamertemperatuur"
+          }
+        },
+        "measure_humidity.average": {
+          "title": {
+            "en": "Average Relative Humidity",
+            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
+          },
+          "insightsTitleTrue": {
+            "en": "Average Relative Humidity",
+            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
+          },
+          "insightsTitleFalse": {
+            "en": "Average Relative Humidity",
+            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
           }
         },
         "alarm_generic.air_sensor": {
@@ -281,6 +317,18 @@
           "title": {
             "en": "Fallback Heat Alarm",
             "nl": "Noodverwarming Alarm"
+          }
+        },
+        "alarm_generic.sys_supply_diagnostic": {
+          "title": {
+            "en": "Supply Diagnostic Alarm",
+            "nl": "Aanvoer Diagnose Alarm"
+          }
+        },
+        "alarm_generic.system": {
+          "title": {
+            "en": "General System Alarm",
+            "nl": "Algemeen Systeem Alarm"
           }
         },
         "thermostat_mode": {

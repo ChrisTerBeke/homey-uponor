@@ -1,6 +1,6 @@
 import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants.mjs';
 
-export type Mode = 'auto' | 'heat' | 'cool' | 'off';
+export type Mode = 'auto' | 'heat' | 'cool' | 'off' | 'holiday' | 'eco';
 
 export type Thermostat = {
     id: string | undefined;
@@ -137,6 +137,20 @@ export class UponorHTTPClient {
     return this.getAttribute('sys_heat_cool_mode') === '1' ? 'cool' : 'heat';
   }
 
+  public getSystemMetrics(controllerID: number = 1): {
+    averageRoomTemperature?: number;
+    averageRelativeHumidity?: number;
+    generalSystemAlarm: boolean;
+    coolingAvailable: boolean;
+    } {
+    return {
+      averageRoomTemperature: UponorHTTPClient._formatTemperature(this.getAttribute(`C${controllerID}_average_room_temperature`)),
+      averageRelativeHumidity: parseInt(this.getAttribute('sys_average_relative_humidity') || '', 10) || undefined,
+      generalSystemAlarm: this.getAttribute(`C${controllerID}_stat_general_system_alarm`) === '1',
+      coolingAvailable: this.getAttribute('sys_cooling_available') === '1',
+    };
+  }
+
   public async setGlobalHeatCoolMode(mode: 'heat' | 'cool'): Promise<void> {
     const value = mode === 'cool' ? '1' : '0';
     await this._setAttributes(new Map([['sys_heat_cool_mode', value]]));
@@ -223,7 +237,7 @@ export class UponorHTTPClient {
         setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
-        mode: 'auto',
+        mode: this.getGlobalHeatCoolMode(),
         humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
         active: this.getAttribute(`${ctKey}_stat_cb_actuator`) === '1',
         bypassEnabled: this.getAttribute(`${ctKey}_bypass_enable`) === '1',

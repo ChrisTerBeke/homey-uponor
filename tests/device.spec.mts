@@ -38,6 +38,7 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
       }),
       getGlobalHeatCoolMode: vi.fn().mockReturnValue('heat'),
       getGlobalEcoMode: vi.fn().mockReturnValue(false),
+      getSystemMetrics: vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: true }),
       getAttribute: vi.fn().mockReturnValue('0'),
       setTargetTemperature: vi.fn(),
       setThermostatEcoMode: vi.fn(),
@@ -65,9 +66,9 @@ describe('UponorThermostatDevice', function() {
     });
 
     device.getData = vi.fn().mockReturnValue({ id: 'C0_T0' });
-    device.setCapabilityOptions = vi.fn();
-    device.setAvailable = vi.fn();
-    device.setCapabilityValue = vi.fn();
+    device.setCapabilityOptions = vi.fn().mockResolvedValue(undefined);
+    device.setAvailable = vi.fn().mockResolvedValue(undefined);
+    device.setCapabilityValue = vi.fn().mockResolvedValue(undefined);
     device.homey = {
       setInterval: vi.fn(),
       setTimeout: vi.fn(),
