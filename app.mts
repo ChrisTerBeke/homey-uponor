@@ -10,13 +10,13 @@ class UponorApp extends Homey.App {
     // This method will be called by the widget API to get the current state of devices
     const driver = this.homey.drivers.getDriver('uponor') as UponorDriver;
     const devices = driver.getDevices();
-    
-    return devices.map(device => {
+
+    return devices.map((device) => {
       // safely cast device since driver 'getDevices' returns generic Device[]
       const dev = device as any;
       const data = dev.getData();
       const cId = data.controllerID || 1;
-      
+
       return {
         id: dev.id || device.getName(),
         name: device.getName(),
@@ -51,7 +51,7 @@ class UponorApp extends Homey.App {
   async getWidgetStats() {
     const driver = this.homey.drivers.getDriver('uponor') as UponorDriver;
     const allDevices = driver.getDevices();
-    
+
     let globalData = {};
     const formattedDevices = [];
 
@@ -61,32 +61,32 @@ class UponorApp extends Homey.App {
         const address = firstDev.getStoreValue('address');
         if (address) {
           const client = driver.getClient(address);
-          
+
           let outdoorTemp = null;
           const rawOutdoor = client.getAttribute('Sys_ext_outdoor_temp');
           // 32767 usually means no sensor connected in Uponor hardware
           if (rawOutdoor && rawOutdoor !== '32767') {
-              // Usually sent in deci-celsius or fahrenheit depending on locale, Assuming F -> C logic based on API wrapper
-              const parsed = parseInt(rawOutdoor, 10);
-              if (!isNaN(parsed) && parsed !== 32767) {
-                 outdoorTemp = ((parsed / 10) - 32) * (5 / 9); // Assuming raw is deci-fahrenheit like setpoints
-              }
+            // Usually sent in deci-celsius or fahrenheit depending on locale, Assuming F -> C logic based on API wrapper
+            const parsed = parseInt(rawOutdoor, 10);
+            if (!Number.isNaN(parsed) && parsed !== 32767) {
+              outdoorTemp = ((parsed / 10) - 32) * (5 / 9); // Assuming raw is deci-fahrenheit like setpoints
+            }
           }
 
           const hasUpdate = client.getAttribute('cust_SW_version_update') === '1';
 
           const controllersData: Record<number, any> = {};
-          
+
           for (const device of allDevices) {
             const dev = device as any;
             const data = dev.getData();
             const cId = data.controllerID || 1;
-            
+
             if (!controllersData[cId]) {
               const parseTemp = (val: string | undefined) => {
                 if (!val || val === '32767') return null;
                 const parsed = parseInt(val, 10);
-                if (isNaN(parsed)) return null;
+                if (Number.isNaN(parsed)) return null;
                 return ((parsed / 10) - 32) * (5 / 9);
               };
 
@@ -99,7 +99,7 @@ class UponorApp extends Homey.App {
                 swVersion: client.getAttribute(`C${cId}_sw_version`),
                 alarmSupplyHigh: client.getAttribute(`C${cId}_stat_supply_temp_hi_alarm`) === '1',
                 alarmSupplyLow: client.getAttribute(`C${cId}_stat_supply_temp_low_alarm`) === '1',
-                alarmGeneral: client.getAttribute(`C${cId}_stat_general_system_alarm`) === '1'
+                alarmGeneral: client.getAttribute(`C${cId}_stat_general_system_alarm`) === '1',
               };
             }
 
@@ -112,14 +112,15 @@ class UponorApp extends Homey.App {
               thermostatID: data.thermostatID || 1,
               measure_temperature: device.getCapabilityValue('measure_temperature'),
               target_temperature: device.getCapabilityValue('target_temperature'),
-              min_temperature: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_minimum_setpoint`) ? 
-                    (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_minimum_setpoint`)!, 10) / 10) - 32) * (5/9)) : 5,
-              max_temperature: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`) ? 
-                    (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`)!, 10) / 10) - 32) * (5/9)) : 35,
+              min_temperature: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_minimum_setpoint`)
+                ? (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_minimum_setpoint`)!, 10) / 10) - 32) * (5 / 9)) : 5,
+              max_temperature: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`)
+                ? (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`)!, 10) / 10) - 32) * (5 / 9)) : 35,
               manifold_temp: device.hasCapability('measure_temperature.manifold_head') ? device.getCapabilityValue('measure_temperature.manifold_head') : null,
               measure_humidity: device.hasCapability('measure_humidity') ? device.getCapabilityValue('measure_humidity') : null,
-              external_temp: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`) && client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`) !== '32767' ? 
-                    (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`)!, 10) / 10) - 32) * (5/9)) : null,
+              external_temp: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`)
+                && client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`) !== '32767'
+                ? (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`)!, 10) / 10) - 32) * (5 / 9)) : null,
               is_heating: device.getCapabilityValue('is_heating'),
               thermostat_mode: device.getCapabilityValue('thermostat_mode'),
               eco_mode: device.hasCapability('eco_mode') ? device.getCapabilityValue('eco_mode') : false,
@@ -149,16 +150,16 @@ class UponorApp extends Homey.App {
             wifi: client.getWifiName(),
             outdoorTemp: outdoorTemp != null ? outdoorTemp : null,
             hasUpdate,
-            controllers: controllersData
+            controllers: controllersData,
           };
-          
+
           return { devices: formattedDevices, globalData };
         }
       } catch (e) {
         this.log('Failed to fetch global client data for widget', e);
       }
     }
-    
+
     // Fallback if client access fails
     const devices = await this.getWidgetDevices();
     return { devices, globalData };
@@ -167,7 +168,7 @@ class UponorApp extends Homey.App {
   async setWidgetTemperature(deviceId: string, temperature: number): Promise<boolean> {
     const driver = this.homey.drivers.getDriver('uponor') as UponorDriver;
     const device = driver.getDevice({ id: deviceId });
-    
+
     if (device) {
       try {
         await device.setCapabilityValue('target_temperature', temperature);

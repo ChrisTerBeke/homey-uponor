@@ -1,5 +1,3 @@
-import Homey from 'homey';
-import type UponorApp from './app.mjs';
 import { UponorDriver } from './drivers/uponor/driver.mjs';
 
 export default {
@@ -8,6 +6,6 @@ export default {
     if (!driver) {
       return { error: 'Uponor driver not found' };
     }
-    return await driver.getDebugData();
-  }
+    return driver.getDebugData();
+  },
 };

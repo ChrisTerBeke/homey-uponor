@@ -27,7 +27,7 @@ export class UponorDriver extends Homey.Driver {
     if (!this._client) {
       return { error: 'No active connection to Uponor controller' };
     }
-    
+
     try {
       await this._client.syncAttributes();
       return await this._client.debug();
@@ -155,7 +155,6 @@ export class UponorDriver extends Homey.Driver {
       const success = await client.updateAddress(address);
       if (!success) throw new Error(`Could not connect to Uponor controller at IP address ${address}`);
       await client.syncAttributes();
-      const debug = await client.debug();
       const thermostats = Array.from(client.getThermostats().values());
       return thermostats.map(this._mapDevice.bind(this, address, systemID));
     } catch (error) {

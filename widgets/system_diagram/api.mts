@@ -1,7 +1,7 @@
-import type UponorApp from "../../app.mjs";
+import type UponorApp from '../../app.mjs';
 
 type RequestWithoutBody = {
-  homey: UponorApp["homey"];
+  homey: UponorApp['homey'];
   query: Record<string, string>;
   params: Record<string, string>;
   body: Record<never, never>;
@@ -17,5 +17,5 @@ export default {
       homey.error('Widget API Error:', error);
       return { success: false, error: String(error) };
     }
-  }
+  },
 };
