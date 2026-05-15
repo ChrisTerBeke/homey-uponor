@@ -1,0 +1,419 @@
+{
+  "result": "OK",
+  "output": {
+    "vars": [
+      {
+        "waspVarName": "cust_New_ControllerSW",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "cust_CX_SW_Distributed",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "cust_Start_SW_Update",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "cust_Update_Counter_TimeOut",
+        "waspVarValue": "8"
+      },
+      {
+        "waspVarName": "cust_Update_SW_Retries",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "cust_SW_Update_Fail",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "cust_Mini_FW_Updated",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "cust_General_RH_Setpoint",
+        "waspVarValue": "75"
+      },
+      {
+        "waspVarName": "cust_controller_1_lost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "cust_SW_version_update",
+        "waspVarValue": "X265_121.hex"
+      },
+      {
+        "waspVarName": "cust_Config_Name_1",
+        "waspVarValue": "REDACTED_SECRET"
+      },
+      {
+        "waspVarName": "cust_Config_Name_l",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "cust_wifi_device",
+        "waspVarValue": "REDACTED_SSID"
+      },
+      {
+        "waspVarName": "cust_ip_device",
+        "waspVarValue": "192.168.x.x"
+      },
+      {
+        "waspVarName": "cust_Enable_SW_Update",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "cust_Succesfull_SW_Instal",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_valve_exercise",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_pump_exercise",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_supply_diagnostic",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_autobalance",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_pump_management",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_rh_control_activation",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_supply_water_activation",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_cooling_available",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_forced_eco_mode",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_heat_cool_mode",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_comm_module_exist",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_time_limit_bypass",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_heat_pump_dynamic_heatcurve",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_heat_pump_response",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_heat_pump_defrost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_heat_cool_master_switch",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "Sys_CeilingCooling_Type",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_HC_supply_limit",
+        "waspVarValue": "644"
+      },
+      {
+        "waspVarName": "sys_HC_supply_hyst",
+        "waspVarValue": "72"
+      },
+      {
+        "waspVarName": "sys_first_stage_offset",
+        "waspVarValue": "36"
+      },
+      {
+        "waspVarName": "sys_day",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_Month",
+        "waspVarValue": "5"
+      },
+      {
+        "waspVarName": "sys_year",
+        "waspVarValue": "26"
+      },
+      {
+        "waspVarName": "sys_minutes",
+        "waspVarValue": "33"
+      },
+      {
+        "waspVarName": "sys_hour",
+        "waspVarValue": "11"
+      },
+      {
+        "waspVarName": "sys_days",
+        "waspVarValue": "5"
+      },
+      {
+        "waspVarName": "sys_seconds",
+        "waspVarValue": "34"
+      },
+      {
+        "waspVarName": "Sys_ext_outdoor_temp",
+        "waspVarValue": "32767"
+      },
+      {
+        "waspVarName": "sys_heat_cool_offset",
+        "waspVarValue": "36"
+      },
+      {
+        "waspVarName": "sys_eco_mode_offset",
+        "waspVarValue": "72"
+      },
+      {
+        "waspVarName": "sys_indoor_temp_switch",
+        "waspVarValue": "788"
+      },
+      {
+        "waspVarName": "sys_outdoor_temp_hyst",
+        "waspVarValue": "36"
+      },
+      {
+        "waspVarName": "sys_outdoor_temp_switch",
+        "waspVarValue": "824"
+      },
+      {
+        "waspVarName": "sys_indoor_temp_hyst",
+        "waspVarValue": "72"
+      },
+      {
+        "waspVarName": "sys_indoor_temp_delay",
+        "waspVarValue": "24"
+      },
+      {
+        "waspVarName": "sys_pun_protocol_version",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_OTA_status",
+        "waspVarValue": "3"
+      },
+      {
+        "waspVarName": "sys_controller_1_presence",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_controller_2_presence",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "sys_controller_3_presence",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_controller_4_presence",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_controller_1_lost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_controller_2_lost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_controller_3_lost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_controller_4_lost",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "sys_average_relative_humidity",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_1_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_1_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_2_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_2_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_3_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_3_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_4_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_4_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_5_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_5_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_6_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_6_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_7_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_7_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_8_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_8_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_9_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_9_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_10_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_10_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_11_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_11_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_channel_12_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_channel_12_fancoil",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_out_relay_heat_cool_SwFunct",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C2_out_relay_heat_cool_SwFunct",
+        "waspVarValue": "0"
+      },
+      {
+        "waspVarName": "C1_general_purpose_input",
+        "waspVarValue": "3"
+      },
+      {
+        "waspVarName": "C2_general_purpose_input",
+        "waspVarValue": "3"
+      },
+      {
+        "waspVarName": "C1_output_module_configuration",
+        "waspVarValue": "3"
+      },
+      {
+        "waspVarName": "C2_output_module_configuration",
+        "waspVarValue": "7"
+      },
+      {
+        "waspVarName": "C1_controller_relays_config",
+        "waspVarValue": "3"
+      },
+      {
+        "waspVarName": "C2_controller_relays_config",
+        "waspVarValue": "1"
+      },
+      {
+        "waspVarName": "C1_rh_dead_zone",
+        "waspVarValue": "5"
+      },
+      {
+        "waspVarName": "C2_rh_dead_zone",
+        "waspVarValue": "5"
+      },
+      {
+        "waspVarName": "C1_sw_version",
+        "waspVarValue": "289"
+      },
+      {
+        "waspVarName": "C2_sw_version",
+        "waspVarValue": "289"
+      },
+      {
+        "waspVarName": "C1_thermostat1_id",
+        "waspVarValue": "000000000"
+      },
+      {
+        "waspVarName": "C2_thermostat1_id",
+        "waspVarValue": "000000000"
+      },
+      {
+        "waspVarName": "controller1_id",
+        "waspVarValue": "000000000"
+      },
+      {
+        "waspVarName": "controller2_id",
+        "waspVarValue": "000000000"
+      },
+      {
+        "waspVarName": "cust_UFC_Available",
+        "waspVarValue": "1"
+      }
+    ]
+  }
+}
