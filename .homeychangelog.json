@@ -40,5 +40,8 @@
   },
   "1.0.1": {
     "en": "Improve capabilities and flow cards, add widget"
+  },
+  "1.0.2": {
+    "en": "Add widget"
   }
 }
