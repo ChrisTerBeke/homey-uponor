@@ -37,5 +37,8 @@
   },
   "1.0.0": {
     "en": "Added several new features based on GitHub requests"
+  },
+  "1.0.1": {
+    "en": "Improve capabilities and flow cards, add widget"
   }
 }
