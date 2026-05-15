@@ -3,7 +3,6 @@ import { Thermostat, UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
 import UponorThermostatDevice from './device.mjs';
 import {
   CUSTOM_IP_ADDRESS_SETTINGS_KEY,
-  DEBUG_DEVICES_SETTINGS_KEY,
   LIST_DEVICES_PAIR_KEY,
   CUSTOM_IP_ADDRESS_PAIR_KEY,
   POLL_INTERVAL_MS,
@@ -22,6 +21,20 @@ export class UponorDriver extends Homey.Driver {
       this._address = address;
     }
     return this._client;
+  }
+
+  async getDebugData(): Promise<any> {
+    if (!this._client) {
+      return { error: 'No active connection to Uponor controller' };
+    }
+    
+    try {
+      await this._client.syncAttributes();
+      return await this._client.debug();
+    } catch (err: any) {
+      this.homey.error('Failed to get debug data:', err);
+      return { error: err.message || 'Failed to fetch debug data' };
+    }
   }
 
   async startPolling(): Promise<void> {
@@ -143,7 +156,6 @@ export class UponorDriver extends Homey.Driver {
       if (!success) throw new Error(`Could not connect to Uponor controller at IP address ${address}`);
       await client.syncAttributes();
       const debug = await client.debug();
-      this.homey.settings.set(DEBUG_DEVICES_SETTINGS_KEY, JSON.stringify(debug));
       const thermostats = Array.from(client.getThermostats().values());
       return thermostats.map(this._mapDevice.bind(this, address, systemID));
     } catch (error) {

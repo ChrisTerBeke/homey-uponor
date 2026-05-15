@@ -18,13 +18,10 @@
     },
     "capabilities": [
         "measure_temperature",
-        "measure_temperature.manifold_head",
         "target_temperature",
-        "measure_humidity",
         "is_heating",
         "bypass_enabled",
         "thermostat_mode",
-        "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
         "alarm_generic.air_sensor",
@@ -34,10 +31,8 @@
         "alarm_generic.rf_low_sig",
         "alarm_generic.valve_pos",
         "alarm_generic.heat_fallback",
-        "alarm_generic.sys_supply_diagnostic",
-        "alarm_generic.system",
-        "measure_temperature.average",
-        "measure_humidity.average"
+        "sys_supply_diagnostic",
+        "alarm_generic.system"
     ],
     "capabilitiesOptions": {
         "measure_temperature": {
@@ -66,34 +61,6 @@
             "insightsTitleFalse": {
                 "en": "Manifold Head Temperature",
                 "nl": "Verdeler Aanvoertemperatuur"
-            }
-        },
-        "measure_temperature.average": {
-            "title": {
-                "en": "Average Room Temperature",
-                "nl": "Gemiddelde Kamertemperatuur"
-            },
-            "insightsTitleTrue": {
-                "en": "Average Room Temperature",
-                "nl": "Gemiddelde Kamertemperatuur"
-            },
-            "insightsTitleFalse": {
-                "en": "Average Room Temperature",
-                "nl": "Gemiddelde Kamertemperatuur"
-            }
-        },
-        "measure_humidity.average": {
-            "title": {
-                "en": "Average Relative Humidity",
-                "nl": "Gemiddelde Relatieve Luchtvochtigheid"
-            },
-            "insightsTitleTrue": {
-                "en": "Average Relative Humidity",
-                "nl": "Gemiddelde Relatieve Luchtvochtigheid"
-            },
-            "insightsTitleFalse": {
-                "en": "Average Relative Humidity",
-                "nl": "Gemiddelde Relatieve Luchtvochtigheid"
             }
         },
         "alarm_generic.air_sensor": {
@@ -132,19 +99,13 @@
                 "nl": "Ventielpositie Fout"
             }
         },
-        "alarm_generic.heat_fallback": {
-            "title": {
-                "en": "Fallback Heat Alarm",
-                "nl": "Noodverwarming Alarm"
-            }
-        },
-        "alarm_generic.sys_supply_diagnostic": {
-            "title": {
-                "en": "Supply Diagnostic Alarm",
-                "nl": "Aanvoer Diagnose Alarm"
-            }
-        },
-        "alarm_generic.system": {
+      "alarm_generic.heat_fallback": {
+        "title": {
+          "en": "Fallback Heat Alarm",
+          "nl": "Noodverwarming Alarm"
+        }
+      },
+      "alarm_generic.system": {
             "title": {
                 "en": "General System Alarm",
                 "nl": "Algemeen Systeem Alarm"

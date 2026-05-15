@@ -1,0 +1,10 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Supply Diagnostics Available",
+    "nl": "Aanvoer Diagnostiek Beschikbaar"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}

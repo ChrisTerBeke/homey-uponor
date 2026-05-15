@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uponor System Topology</title>
+    <style>
+        @import url("/homey.css");
+
+        :root {
+            /* Uponor Brand Colors */
+            --uponor-navy: #004B87;
+            --uponor-blue: #00A2E1;
+            --uponor-orange: #F37021;
+            
+            /* Theme Variables */
+            --bg-color: transparent;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-main: #333333;
+            --text-muted: #888888;
+            
+            /* Hardware Colors */
+            --hw-bg: #22272b;
+            --hw-text: #ffffff;
+            --hw-border: #333a40;
+            --wire-color: #cbd5e1;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card-bg: #1c1c1e;
+                --card-border: rgba(255, 255, 255, 0.08);
+                --text-main: #f5f5f5;
+                --text-muted: #a1a1aa;
+                
+                --hw-bg: #15181a;
+                --hw-border: #22272b;
+                --wire-color: #334155;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: var(--homey-font-family, -apple-system, sans-serif);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            box-sizing: border-box;
+            overflow: hidden; /* Height is dynamically managed */
+        }
+
+        /* --- NEW TREE LAYOUT --- */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 12px;
+        }
+
+        .tree-children {
+            display: flex;
+            flex-direction: column;
+            margin-left: 24px;
+            padding-top: 12px;
+            width: calc(100% - 24px); /* ensure it expands but accounts for left margin */
+            box-sizing: border-box;
+        }
+
+        .tree-node {
+            position: relative;
+            padding-left: 24px;
+            padding-bottom: 12px;
+            display: flex;
+            flex-direction: column; /* To stack the card and its children */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .tree-node:last-child {
+            padding-bottom: 0;
+        }
+
+        /* Vertical Trunk */
+        .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            background: var(--wire-color);
+            opacity: 0.5;
+            border-radius: 1px;
+        }
+
+        /* Horizontal Branch */
+        .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 24px; /* Center of 48px card */
+            left: 0;
+            width: 24px;
+            height: 2px;
+            background: var(--wire-color);
+            opacity: 0.5;
+            border-radius: 1px;
+        }
+
+        /* Trunk reaches up to parent */
+        .tree-node:first-child::before {
+            top: -12px;
+        }
+
+        /* Last trunk stops at center */
+        .tree-node:last-child::before {
+            bottom: auto;
+            height: 24px;
+        }
+
+        /* First and last trunk */
+        .tree-node:first-child:last-child::before {
+            top: -12px;
+            bottom: auto;
+            height: 36px;
+        }
+
+        /* Dot at connection point */
+        .tree-dot {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: var(--wire-color);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px var(--bg-color);
+            z-index: 3;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .tree-node:hover > .tree-dot {
+            background: var(--uponor-blue);
+            box-shadow: 0 0 0 3px var(--bg-color), 0 0 8px rgba(0, 162, 225, 0.5);
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .tree-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            height: 48px; /* Fixed height for pixel-perfect centering */
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            z-index: 2;
+            width: 100%;
+        }
+
+        .tree-item:hover {
+            border-color: rgba(0, 75, 135, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transform: translateY(-1px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tree-item:hover {
+                border-color: rgba(255, 255, 255, 0.25);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            }
+        }
+
+        .tree-item:active {
+            transform: scale(0.98) translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            transition: all 0.1s;
+        }
+
+        /* System Node */
+        .tree-item.system-item {
+            background: linear-gradient(135deg, var(--uponor-navy) 0%, #003666 100%);
+            color: #ffffff;
+            border: none;
+            height: auto;
+            min-height: 60px;
+            box-shadow: 0 4px 12px rgba(0, 75, 135, 0.2);
+            border-radius: 12px;
+            padding: 14px 20px;
+            z-index: 3;
+        }
+
+        .tree-item.system-item:hover {
+            box-shadow: 0 6px 20px rgba(0, 75, 135, 0.3);
+        }
+
+        .tree-item.system-item::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: -20px;
+            bottom: -20px;
+            width: 140px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: skewX(-20deg);
+            pointer-events: none;
+        }
+
+        .sys-title {
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .sys-title svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+            stroke: none;
+            display: block;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+
+        .sys-badges {
+            display: flex;
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge.eco { background: #34c759; color: #fff; }
+        .badge.alarm { background: #ff3b30; color: #fff; animation: pulseAlarm 2s infinite; }
+        .badge.heat { background: var(--uponor-orange); color: #fff; }
+        .badge.cool { background: var(--uponor-blue); color: #fff; }
+
+        @keyframes pulseAlarm {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5); }
+            70% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+        }
+
+        /* Controller Node */
+        .tree-item.controller-item {
+            background: var(--hw-bg);
+            color: var(--hw-text);
+            border: 1px solid var(--hw-border);
+        }
+
+        .hw-block-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            line-height: 1;
+        }
+
+        .hw-led {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+            border: 1px solid rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        /* Device Node */
+        .tree-item.device-item.has-error {
+            border: 1px solid rgba(255, 59, 48, 0.4);
+            background: linear-gradient(90deg, var(--card-bg) 0%, rgba(255, 59, 48, 0.05) 100%);
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+        }
+
+        .device-name {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-main);
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .t-name-alert {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff3b30;
+            animation: pulseAlarm 2s infinite;
+            border-radius: 50%;
+            background: rgba(255, 59, 48, 0.1);
+            padding: 3px;
+        }
+
+        .t-name-alert svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: block;
+        }
+
+        .device-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            /* Removed the grey background bounding box */
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        .tree-item.device-item:hover .device-status {
+            /* Removed the hover background change to keep it clean */
+            transform: scale(1.1);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .device-status { background: transparent; }
+            .tree-item.device-item:hover .device-status { background: transparent; }
+        }
+
+        .device-status svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: block;
+        }
+
+        .device-temps-wrapper {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 8px;
+        }
+
+        .device-temps {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-left: 8px;
+            padding-right: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .cur-temp {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        .tar-temp {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            opacity: 0.8;
+            line-height: 1;
+        }
+
+        .actuator-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--text-muted);
+            transition: width 0.5s ease, background-color 0.5s ease;
+            opacity: 0.2;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+
+        .device-item.has-error .actuator-bar { background: rgba(255, 59, 48, 0.8); opacity: 1; }
+        .device-item.is-heating .actuator-bar { background: var(--uponor-orange); opacity: 1; }
+        .device-item.is-cooling .actuator-bar { background: var(--uponor-blue); opacity: 1; }
+
+        .icon-error { color: #ff3b30; }
+        .icon-warn { color: #ff9500; }
+        .icon-orange { color: var(--uponor-orange); }
+        .icon-eco { color: #34c759; }
+        .icon-blue { color: var(--uponor-blue); }
+        .icon-muted { color: var(--text-muted); }
+
+        .t-icon {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+        /* Details Modal */
+        #details-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        #details-overlay.open {
+            opacity: 1;
+        }
+
+        #details-modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transform: scale(0.95);
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        #details-overlay.open #details-modal {
+            transform: scale(1);
+        }
+
+        .dt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(250, 250, 250, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .dt-header { 
+                background: rgba(30, 30, 30, 0.95); 
+            }
+        }
+
+        .dt-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .dt-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .dt-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .dt-close {
+            background: rgba(128, 128, 128, 0.15);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .dt-close:active { background: rgba(128, 128, 128, 0.3); }
+        .dt-close svg {
+            fill: none;
+            stroke: var(--text-main);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dt-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .dt-box {
+            background: rgba(128, 128, 128, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dt-box-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dt-box-val {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .dt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--card-border);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dt-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: var(--card-bg);
+            font-size: 13px;
+        }
+
+        .dt-row-label {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .dt-row-label svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dt-row-val {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .dt-alarms {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dt-alarm-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .dt-alarm-item svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        /* Loading / Error */
+        .status-msg {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px auto;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="content">
+        <div class="status-msg">
+            <div class="loader"></div>
+            Connecting to Smatrix...
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="details-overlay" onclick="closeDetails(event)">
+        <div id="details-modal" onclick="event.stopPropagation()">
+            <div class="dt-header">
+                <div class="dt-title-block">
+                    <div class="dt-title" id="dt-name">Zone Name</div>
+                    <div class="dt-subtitle" id="dt-id">Controller 1 &bull; Channel 1</div>
+                </div>
+                <div class="dt-close" onclick="closeDetails(event)">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </div>
+            </div>
+            <div class="dt-body">
+                <div class="dt-grid" id="dt-temp-grid">
+                    <div class="dt-box">
+                        <div class="dt-box-label">Current</div>
+                        <div class="dt-box-val" id="dt-current">--&deg;</div>
+                    </div>
+                    <div class="dt-box">
+                        <div class="dt-box-label">Target</div>
+                        <div class="dt-box-val" id="dt-target">--&deg;</div>
+                    </div>
+                </div>
+                <div id="dt-alarms-container" class="dt-alarms" style="display: none;"></div>
+                <div class="dt-list" id="dt-list">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // SVG Icons (Lucide)
+                const icons = {
+            battery: `<svg class="t-icon icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h.01"/><path d="M10 7v6"/><path d="M14 6h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2"/><path d="M22 14v-4"/><path d="M6 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2"/></svg>`,
+            error: `<svg class="t-icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+            bypass: `<svg class="t-icon icon-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>`,
+            uponor: `<svg class="t-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 6l6 12H6l6-12z"/></svg>`,
+            manifold: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>`,
+            eco: `<svg class="t-icon icon-eco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
+            wifi: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></svg>`,
+            outdoor: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>`,
+            humidity: `<svg class="t-icon" style="color:#0ea5e9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
+            balance: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+            update: `<svg class="t-icon icon-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg>`,
+            pump: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>`,
+            demand: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>`,
+            info: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>`,
+            valve: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg>`,
+            mode: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>`,
+            flame: `<svg class="t-icon icon-orange" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>`,
+            snowflake: `<svg class="t-icon icon-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/></svg>`,
+            limits: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>`,
+            idle: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>`,
+            floor: `<svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17v-8a3 3 0 0 1 6 0v8a3 3 0 0 0 6 0v-8a3 3 0 0 1 6 0v8"/><path d="M2 21h20"/></svg>`
+        };
+
+        let cachedDevices = [];
+        let cachedGlobalData = null;
+        let homeyInstance = null;
+
+        function openSystemDetails() {
+            if (!cachedGlobalData) return;
+
+            document.getElementById('dt-name').innerText = "Smatrix Pulse System";
+            document.getElementById('dt-id').innerHTML = `Master Configuration`;
+            
+            document.getElementById('dt-temp-grid').style.display = 'none';
+            document.getElementById('dt-alarms-container').style.display = 'none';
+
+            let listHtml = '';
+            
+            const sysModeIcon = cachedGlobalData.heatCoolMode === 'cool' ? icons.snowflake : icons.flame;
+            const sysModeColor = cachedGlobalData.heatCoolMode === 'cool' ? 'var(--uponor-blue)' : 'var(--uponor-orange)';
+            const sysModeText = cachedGlobalData.heatCoolMode === 'cool' ? 'Cooling' : 'Heating';
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${sysModeIcon} System Mode</div><div class="dt-row-val"><span style="color:${sysModeColor}">${sysModeText}</span></div></div>`;
+            
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.snowflake} Cooling Available</div><div class="dt-row-val">${cachedGlobalData.coolingAvailable ? 'Yes' : 'No'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.eco} Global Eco Mode</div><div class="dt-row-val">${cachedGlobalData.ecoMode ? '<span style="color:#34c759">Active</span>' : 'Off'}</div></div>`;
+
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.balance} Auto-balance</div><div class="dt-row-val">${cachedGlobalData.autoBalance !== undefined ? (cachedGlobalData.autoBalance ? '<span style="color:#34c759">Active</span>' : 'Off') : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.humidity} Average Humidity</div><div class="dt-row-val">${cachedGlobalData.averageHumidity != null ? cachedGlobalData.averageHumidity + '%' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.outdoor} Outdoor Temperature</div><div class="dt-row-val">${cachedGlobalData.outdoorTemp != null ? cachedGlobalData.outdoorTemp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.wifi} Wi-Fi Network</div><div class="dt-row-val">${cachedGlobalData.wifi ? cachedGlobalData.wifi : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+
+            let alarmStr = cachedGlobalData.metrics?.generalSystemAlarm ? '<span style="color:#ff3b30">Active</span>' : 'Clear';
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.error} General System Alarm</div><div class="dt-row-val">${alarmStr}</div></div>`;
+
+            if (cachedGlobalData.hasUpdate) {
+                listHtml += `<div class="dt-row"><div class="dt-row-label" style="color:var(--uponor-blue)">${icons.update} Firmware Update</div><div class="dt-row-val" style="color:var(--uponor-blue)">Available</div></div>`;
+            }
+
+            document.getElementById('dt-list').innerHTML = listHtml;
+
+            const overlay = document.getElementById('details-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('open'), 10);
+        }
+
+        function openControllerDetails(cId) {
+            if (!cachedGlobalData || !cachedGlobalData.controllers || !cachedGlobalData.controllers[cId]) return;
+            const cData = cachedGlobalData.controllers[cId];
+
+            document.getElementById('dt-name').innerText = cData.name || `Controller ${cId}`;
+            document.getElementById('dt-id').innerHTML = `Hardware Module`;
+            
+            document.getElementById('dt-temp-grid').style.display = 'none';
+
+            const activeAlarms = [];
+            if (cData.alarmSupplyHigh) activeAlarms.push({ name: "Supply Temp Too High", icon: icons.error });
+            if (cData.alarmSupplyLow) activeAlarms.push({ name: "Supply Temp Too Low", icon: icons.error });
+            if (cData.alarmGeneral) activeAlarms.push({ name: "Module Fault", icon: icons.error });
+
+            const alarmsContainer = document.getElementById('dt-alarms-container');
+            if (activeAlarms.length > 0) {
+                alarmsContainer.innerHTML = activeAlarms.map(a => `
+                    <div class="dt-alarm-item">
+                        ${a.icon} ${a.name}
+                    </div>
+                `).join('');
+                alarmsContainer.style.display = 'flex';
+            } else {
+                alarmsContainer.style.display = 'none';
+            }
+
+            let listHtml = '';
+            
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.demand} Heat/Cool Demand</div><div class="dt-row-val">${cData.demand ? '<span style="color:var(--uponor-orange)">Yes</span>' : 'No'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.pump} Circulation Pump Relay</div><div class="dt-row-val">${cData.pumpRelay ? 'Active' : 'Idle'}</div></div>`;
+
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.manifold} Module Supply Temp</div><div class="dt-row-val">${cData.supplyTemp != null ? cData.supplyTemp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.info} Firmware Version</div><div class="dt-row-val" style="font-family:monospace">${cData.swVersion ? 'v' + cData.swVersion : '<span style="color:var(--text-muted);font-family:var(--homey-font-family)">n/a</span>'}</div></div>`;
+            
+            document.getElementById('dt-list').innerHTML = listHtml;
+
+            const overlay = document.getElementById('details-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('open'), 10);
+        }
+
+        function openDetails(deviceId) {
+            const device = cachedDevices.find(d => d.id === deviceId);
+            if (!device) return;
+
+            document.getElementById('dt-name').innerText = device.zoneName || device.name;
+            document.getElementById('dt-id').innerHTML = `${device.controllerName} &bull; Channel ${device.thermostatID || '-'}`;
+            
+            document.getElementById('dt-temp-grid').style.display = 'grid';
+            
+            const curTemp = device.measure_temperature != null ? device.measure_temperature.toFixed(1) : '--';
+            const tarTemp = device.target_temperature != null ? device.target_temperature.toFixed(1) : '--';
+            
+            document.getElementById('dt-current').innerHTML = `${curTemp}&deg;`;
+            document.getElementById('dt-target').innerHTML = `${tarTemp}&deg;`;
+
+            const activeAlarms = [];
+            if (device.alarm_battery) activeAlarms.push({ name: "Low Battery", icon: icons.battery });
+            if (device.alarm_tamper) activeAlarms.push({ name: "Tamper Alarm", icon: icons.error });
+            if (device.alarm_air) activeAlarms.push({ name: "Air Sensor Fault", icon: icons.error });
+            if (device.alarm_ext) activeAlarms.push({ name: "External Sensor Fault", icon: icons.error });
+            if (device.alarm_rh) activeAlarms.push({ name: "Humidity Sensor Fault", icon: icons.error });
+            if (device.alarm_rf) activeAlarms.push({ name: "Radio Communication Error", icon: icons.error });
+            if (device.alarm_rf_low) activeAlarms.push({ name: "Low Radio Signal", icon: icons.error });
+            if (device.alarm_valve) activeAlarms.push({ name: "Actuator/Valve Error", icon: icons.error });
+            if (device.alarm_heat_fallback) activeAlarms.push({ name: "Heating Fallback Active", icon: icons.error });
+            if (device.alarm_sys_supply) activeAlarms.push({ name: "Supply Diagnostic Alarm", icon: icons.error });
+            if (device.alarm_system) activeAlarms.push({ name: "General System Error", icon: icons.error });
+
+            const alarmsContainer = document.getElementById('dt-alarms-container');
+            if (activeAlarms.length > 0) {
+                alarmsContainer.innerHTML = activeAlarms.map(a => `
+                    <div class="dt-alarm-item">
+                        ${a.icon} ${a.name}
+                    </div>
+                `).join('');
+                alarmsContainer.style.display = 'flex';
+            } else {
+                alarmsContainer.style.display = 'none';
+            }
+
+            let listHtml = '';
+            
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.floor} Floor Temperature</div><div class="dt-row-val">${device.external_temp != null ? device.external_temp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.humidity} Relative Humidity</div><div class="dt-row-val">${device.measure_humidity != null ? device.measure_humidity + '%' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+
+            let statusVal = 'Idle';
+            let statusColor = 'inherit';
+            let statusIcon = icons.idle;
+
+            if (device.is_heating) { 
+                statusVal = 'Heating'; 
+                statusColor = 'var(--uponor-orange)'; 
+                statusIcon = icons.flame;
+            } else if (device.thermostat_mode === 'cool' && device.measure_temperature > device.target_temperature) { 
+                statusVal = 'Cooling'; 
+                statusColor = 'var(--uponor-blue)'; 
+                statusIcon = icons.snowflake;
+            }
+            
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.mode} System State</div><div class="dt-row-val" style="color:${statusColor};display:flex;align-items:center;gap:6px;">${statusIcon} ${statusVal}</div></div>`;
+
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.valve} Valve Position</div><div class="dt-row-val">${device.valve_pos != null ? device.valve_pos + '%' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.manifold} Supply Temp</div><div class="dt-row-val">${device.manifold_temp != null ? device.manifold_temp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.eco} Eco Mode</div><div class="dt-row-val">${device.eco_mode ? '<span style="color:#34c759">Active</span>' : 'Off'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.bypass} Bypass Enabled</div><div class="dt-row-val">${device.bypass_enabled ? '<span style="color:var(--uponor-orange)">Yes</span>' : 'No'}</div></div>`;
+
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.limits} Setpoint Limits</div><div class="dt-row-val" style="font-family:monospace;font-size:12px;">${device.min_temperature != null && device.max_temperature != null ? device.min_temperature + '&deg; - ' + device.max_temperature + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+
+            document.getElementById('dt-list').innerHTML = listHtml;
+
+            const overlay = document.getElementById('details-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('open'), 10);
+        }
+
+        function closeDetails(e) {
+            if (e) e.stopPropagation();
+            const overlay = document.getElementById('details-overlay');
+            overlay.classList.remove('open');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 200);
+        }
+
+        function renderTopology(devices, globalData) {
+            const container = document.getElementById('content');
+            
+            if (!devices || devices.length === 0) {
+                container.innerHTML = `<div class="status-msg">No Uponor devices found.<br>Please pair your Smatrix Pulse.</div>`;
+                return;
+            }
+
+            const controllers = {};
+            devices.forEach(d => {
+                const cId = d.controllerID || 1;
+                if (!controllers[cId]) controllers[cId] = [];
+                controllers[cId].push(d);
+            });
+
+            const sortedCIds = Object.keys(controllers).sort((a, b) => parseInt(a) - parseInt(b));
+
+            let html = '<div class="tree-container">';
+
+            if (globalData) {
+                let badges = '';
+                if (globalData.ecoMode) badges += `<div class="badge eco">ECO</div>`;
+                if (globalData.heatCoolMode === 'cool') badges += `<div class="badge cool">COOL</div>`;
+                else badges += `<div class="badge heat">HEAT</div>`;
+                if (globalData.metrics && globalData.metrics.generalSystemAlarm) {
+                    badges += `<div class="badge alarm">SYS ALARM</div>`;
+                }
+
+                html += `
+                <div class="tree-item system-item" onclick="openSystemDetails()">
+                    <div style="display:flex; flex-direction:column; gap:${globalData.outdoorTemp != null ? '8px' : '0'};">
+                        <div class="sys-title">
+                            Smatrix Pulse ${globalData.hasUpdate ? `<span title="Firmware Update Available" style="color:var(--uponor-blue);display:block;">${icons.update}</span>` : ''}
+                        </div>
+                        ${globalData.outdoorTemp != null ? `<div style="font-size:12px;opacity:0.85;display:flex;align-items:center;gap:12px;font-weight:500;line-height:1;">
+                            <span style="display:flex;align-items:center;gap:6px;"><svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:block;" viewBox="0 0 24 24"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg> ${globalData.outdoorTemp.toFixed(1)}&deg;</span>
+                        </div>` : ''}
+                    </div>
+                    <div class="sys-badges">${badges}</div>
+                </div>
+                `;
+            }
+
+            html += '<div class="tree-children">';
+
+            sortedCIds.forEach(cId => {
+                const list = controllers[cId].sort((a, b) => (a.thermostatID || 0) - (b.thermostatID || 0));
+                const controllerName = list[0].controllerName || `Controller ${cId}`;
+
+                const displayStyle = 'display: flex; flex-direction: column;';
+
+                html += `
+                <div class="tree-node">
+                    <div class="tree-dot"></div>
+                    <div class="tree-item controller-item" onclick="openControllerDetails(${cId})">
+                        <div class="hw-block-left">
+                            <div class="hw-led"></div>
+                            ${controllerName}
+                        </div>
+                    </div>
+                    <div id="children-${cId}" class="tree-children" style="${displayStyle}">
+                `;
+
+                list.forEach(device => {
+                    const isHeating = device.is_heating;
+                    const mode = device.thermostat_mode; 
+                    const isCooling = mode === 'cool' && device.measure_temperature > device.target_temperature; 
+                    
+                    let stateClass = '';
+                    if (isHeating) stateClass = 'is-heating';
+                    else if (isCooling) stateClass = 'is-cooling';
+
+                    const activeAlarms = [];
+                    if (device.alarm_battery) activeAlarms.push({ name: "Low Battery", icon: icons.battery });
+                    if (device.alarm_tamper) activeAlarms.push({ name: "Tamper", icon: icons.error });
+                    if (device.alarm_air) activeAlarms.push({ name: "Air Sensor", icon: icons.error });
+                    if (device.alarm_ext) activeAlarms.push({ name: "Ext Sensor", icon: icons.error });
+                    if (device.alarm_rh) activeAlarms.push({ name: "RH Sensor", icon: icons.error });
+                    if (device.alarm_rf) activeAlarms.push({ name: "RF Error", icon: icons.error });
+                    if (device.alarm_rf_low) activeAlarms.push({ name: "Low RF", icon: icons.error });
+                    if (device.alarm_valve) activeAlarms.push({ name: "Valve Error", icon: icons.error });
+                    if (device.alarm_heat_fallback) activeAlarms.push({ name: "Heat Fallback", icon: icons.error });
+                    if (device.alarm_sys_supply) activeAlarms.push({ name: "Supply Diag", icon: icons.error });
+                    if (device.alarm_system) activeAlarms.push({ name: "Sys Error", icon: icons.error });
+
+                    const hasError = activeAlarms.length > 0 ? 'has-error' : '';
+
+                    let nameAlertHtml = '';
+                    if (hasError) {
+                        nameAlertHtml = `<div class="t-name-alert" title="Click for details">${icons.error}</div>`;
+                    }
+
+                    const curTemp = device.measure_temperature != null ? device.measure_temperature.toFixed(1) : '--';
+                    const tarTemp = device.target_temperature != null ? device.target_temperature.toFixed(1) : '--';
+                    
+                    let fillPercent = 0;
+                    if (device.valve_pos != null) {
+                        fillPercent = device.valve_pos; 
+                    } else if (isHeating || isCooling) {
+                        fillPercent = 100; 
+                    }
+                    
+                    let statusIconHtml = '';
+                    if (isHeating) statusIconHtml = icons.flame;
+                    else if (isCooling) statusIconHtml = icons.snowflake;
+                    else if (device.eco_mode) statusIconHtml = icons.eco;
+                    
+                    let subMetricsHtml = '';
+                    const subMetrics = [];
+                    if (device.external_temp != null) {
+                        subMetrics.push(`${icons.floor} ${device.external_temp.toFixed(1)}&deg;`);
+                    }
+                    if (device.measure_humidity != null) {
+                        subMetrics.push(`${icons.humidity} ${device.measure_humidity}%`);
+                    }
+                    if (subMetrics.length > 0) {
+                        subMetricsHtml = `<div style="font-size:11px;opacity:0.65;display:flex;align-items:center;gap:8px;margin-top:4px;">${subMetrics.map(m => `<span style="display:flex;align-items:center;gap:4px;">${m}</span>`).join('')}</div>`;
+                    }
+
+                    html += `
+                        <div class="tree-node">
+                            <div class="tree-dot"></div>
+                            <div class="tree-item device-item ${stateClass} ${hasError}" onclick="openDetails('${device.id}')">
+                                <div class="device-info">
+                                    <div class="device-name"><span class="name-text">${device.zoneName || device.name}</span> ${nameAlertHtml}</div>
+                                    ${subMetricsHtml}
+                                </div>
+                                <div style="display:flex;align-items:center;flex-shrink:0;gap:8px;">
+                                    <div class="device-status">${statusIconHtml}</div>
+                                    <div class="device-temps">
+                                        <span class="cur-temp">${curTemp}&deg;</span>
+                                    </div>
+                                </div>
+                                <div class="actuator-bar" style="width: ${fillPercent}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                </div>
+                `;
+            });
+
+            html += `
+                </div>
+            </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function fetchStats(Homey, isFirstLoad = false) {
+            Homey.api('GET', '/stats', {})
+                .then((result) => {
+                    if (result && result.success) {
+                        cachedDevices = result.devices;
+                        cachedGlobalData = result.globalData;
+                        renderTopology(result.devices, result.globalData);
+                        
+                        setTimeout(() => {
+                            const container = document.getElementById('content');
+                            const desiredHeight = container.scrollHeight + 32;
+                            
+                            if (isFirstLoad) {
+                                Homey.ready({ height: desiredHeight });
+                            } else {
+                                Homey.setHeight(desiredHeight).catch(console.error);
+                            }
+                        }, 50);
+                    } else {
+                        throw new Error(result.error || 'Failed to fetch');
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    document.getElementById('content').innerHTML = `<div class="status-msg" style="color:#ff3b30">Error communicating with App.</div>`;
+                    if (isFirstLoad) Homey.ready({ height: 180 });
+                });
+        }
+
+        function onHomeyReady(Homey) {
+            window.homeyInstance = Homey;
+            homeyInstance = Homey;
+            fetchStats(Homey, true);
+            setInterval(() => fetchStats(Homey, false), 5000);
+        }
+    </script>
+</body>
+</html>

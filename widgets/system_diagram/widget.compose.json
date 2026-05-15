@@ -1,0 +1,14 @@
+{
+  "id": "system_diagram",
+  "name": {
+    "en": "System Diagram",
+    "nl": "Systeemdiagram"
+  },
+  "height": 180,
+  "api": {
+    "getStats": {
+      "method": "GET",
+      "path": "/stats"
+    }
+  }
+}

@@ -2,13 +2,39 @@
 <html>
     <head>
         <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+        <style>
+            #debug_devices_container {
+                position: relative;
+                width: 100%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f8f8f8;
+            }
+            #debug_devices {
+                display: block;
+                padding: 10px;
+                margin: 0;
+                overflow: auto;
+                max-height: 400px;
+                font-family: monospace;
+                white-space: pre;
+                font-size: 12px;
+            }
+            .debug-actions {
+                display: flex;
+                gap: 10px;
+                margin-top: 10px;
+            }
+        </style>
         <script type="text/javascript">
             function onHomeyReady(Homey) {
                 Homey.ready()
 
                 var ipAddressInput = document.getElementById('ip_address')
                 var customIpAdressInput = document.getElementById('custom_ip_address')
-                var debugDevicesInput = document.getElementById('debug_devices')
+                var debugDevicesOutput = document.getElementById('debug_devices')
+                var refreshBtn = document.getElementById('refresh_debug')
+                var copyBtn = document.getElementById('copy_debug')
 
                 Homey.get('ip_address', function (err, ip_address) {
                     if (err) return Homey.alert(err)
@@ -20,10 +46,40 @@
                     customIpAdressInput.value = ip_address
                 })
 
-                Homey.get('debug_devices', function (err, debug_devices) {
-                    if (err) return Homey.alert(err)
-                    debugDevicesInput.value = debug_devices
-                })
+                function fetchDebugData() {
+                    debugDevicesOutput.textContent = 'Loading...';
+                    refreshBtn.disabled = true;
+                    Homey.api('GET', '/debug')
+                        .then(function(data) {
+                            debugDevicesOutput.textContent = JSON.stringify(data, null, 2);
+                        })
+                        .catch(function(err) {
+                            debugDevicesOutput.textContent = 'Error: ' + err.message;
+                        })
+                        .finally(function() {
+                            refreshBtn.disabled = false;
+                        });
+                }
+
+                refreshBtn.addEventListener('click', fetchDebugData);
+
+                copyBtn.addEventListener('click', function() {
+                    var text = debugDevicesOutput.textContent;
+                    if (text && text !== 'Loading...') {
+                        navigator.clipboard.writeText(text).then(function() {
+                            var originalText = copyBtn.textContent;
+                            copyBtn.textContent = 'Copied!';
+                            setTimeout(function() {
+                                copyBtn.textContent = originalText;
+                            }, 2000);
+                        }).catch(function(err) {
+                            console.error('Could not copy text: ', err);
+                        });
+                    }
+                });
+
+                // Fetch initially
+                fetchDebugData();
             }
         </script>
     </head>
@@ -43,7 +99,13 @@
 
             <div class="homey-form-group">
                 <label class="homey-form-label" data-i18n="settings.debug_devices_label"></label>
-                <textarea class="homey-form-textarea" id="debug_devices" disabled></textarea>
+                <div id="debug_devices_container">
+                    <pre><code id="debug_devices"></code></pre>
+                </div>
+                <div class="debug-actions">
+                    <button id="refresh_debug" class="homey-button homey-button-primary" data-i18n="settings.debug_refresh"></button>
+                    <button id="copy_debug" class="homey-button" data-i18n="settings.debug_copy"></button>
+                </div>
             </div>
         </fieldset>
     </body>

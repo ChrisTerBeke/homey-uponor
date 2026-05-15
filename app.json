@@ -2,7 +2,7 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.christerbeke.uponor-smatrix",
   "version": "1.0.0",
-  "compatibility": ">=12.0.1",
+  "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
     "local"
@@ -34,6 +34,12 @@
     "url": "https://github.com/ChrisTerBeke/homey-uponor/issues"
   },
   "homeyCommunityTopicId": 109100,
+  "api": {
+    "get_debug": {
+      "method": "get",
+      "path": "/debug"
+    }
+  },
   "flow": {
     "conditions": [
       {
@@ -199,13 +205,10 @@
       },
       "capabilities": [
         "measure_temperature",
-        "measure_temperature.manifold_head",
         "target_temperature",
-        "measure_humidity",
         "is_heating",
         "bypass_enabled",
         "thermostat_mode",
-        "valve_pos_percent",
         "alarm_battery",
         "alarm_tamper",
         "alarm_generic.air_sensor",
@@ -215,10 +218,8 @@
         "alarm_generic.rf_low_sig",
         "alarm_generic.valve_pos",
         "alarm_generic.heat_fallback",
-        "alarm_generic.sys_supply_diagnostic",
-        "alarm_generic.system",
-        "measure_temperature.average",
-        "measure_humidity.average"
+        "sys_supply_diagnostic",
+        "alarm_generic.system"
       ],
       "capabilitiesOptions": {
         "measure_temperature": {
@@ -247,34 +248,6 @@
           "insightsTitleFalse": {
             "en": "Manifold Head Temperature",
             "nl": "Verdeler Aanvoertemperatuur"
-          }
-        },
-        "measure_temperature.average": {
-          "title": {
-            "en": "Average Room Temperature",
-            "nl": "Gemiddelde Kamertemperatuur"
-          },
-          "insightsTitleTrue": {
-            "en": "Average Room Temperature",
-            "nl": "Gemiddelde Kamertemperatuur"
-          },
-          "insightsTitleFalse": {
-            "en": "Average Room Temperature",
-            "nl": "Gemiddelde Kamertemperatuur"
-          }
-        },
-        "measure_humidity.average": {
-          "title": {
-            "en": "Average Relative Humidity",
-            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
-          },
-          "insightsTitleTrue": {
-            "en": "Average Relative Humidity",
-            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
-          },
-          "insightsTitleFalse": {
-            "en": "Average Relative Humidity",
-            "nl": "Gemiddelde Relatieve Luchtvochtigheid"
           }
         },
         "alarm_generic.air_sensor": {
@@ -317,12 +290,6 @@
           "title": {
             "en": "Fallback Heat Alarm",
             "nl": "Noodverwarming Alarm"
-          }
-        },
-        "alarm_generic.sys_supply_diagnostic": {
-          "title": {
-            "en": "Supply Diagnostic Alarm",
-            "nl": "Aanvoer Diagnose Alarm"
           }
         },
         "alarm_generic.system": {
@@ -393,6 +360,23 @@
       ]
     }
   ],
+  "widgets": {
+    "system_diagram": {
+      "id": "system_diagram",
+      "name": {
+        "en": "System Diagram",
+        "nl": "Systeemdiagram"
+      },
+      "height": 180,
+      "api": {
+        "getStats": {
+          "method": "GET",
+          "path": "/stats"
+        }
+      },
+      "settings": []
+    }
+  },
   "capabilities": {
     "bypass_enabled": {
       "type": "boolean",
@@ -419,6 +403,16 @@
       "title": {
         "en": "Is heating",
         "nl": "Aan het verwarmen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "sys_supply_diagnostic": {
+      "type": "boolean",
+      "title": {
+        "en": "Supply Diagnostics Available",
+        "nl": "Aanvoer Diagnostiek Beschikbaar"
       },
       "getable": true,
       "setable": false,

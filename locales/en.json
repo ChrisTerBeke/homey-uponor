@@ -10,6 +10,8 @@
         "info_title": "Info",
         "ip_address_label": "Discovered IP address",
         "custom_ip_address_label": "Custom pairing IP address",
-        "debug_devices_label": "Debug data"
+        "debug_devices_label": "Debug data",
+        "debug_refresh": "Refresh",
+        "debug_copy": "Copy to clipboard"
     }
 }

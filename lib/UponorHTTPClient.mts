@@ -137,15 +137,19 @@ export class UponorHTTPClient {
     return this.getAttribute('sys_heat_cool_mode') === '1' ? 'cool' : 'heat';
   }
 
+  public getControllerName(controllerID: number): string {
+    return this.getAttribute(`cust_Controller${controllerID}_Name`) || `Controller ${controllerID}`;
+  }
+
+  public getWifiName(): string | undefined {
+    return this.getAttribute('cust_wifi_device');
+  }
+
   public getSystemMetrics(controllerID: number = 1): {
-    averageRoomTemperature?: number;
-    averageRelativeHumidity?: number;
     generalSystemAlarm: boolean;
     coolingAvailable: boolean;
     } {
     return {
-      averageRoomTemperature: UponorHTTPClient._formatTemperature(this.getAttribute(`C${controllerID}_average_room_temperature`)),
-      averageRelativeHumidity: parseInt(this.getAttribute('sys_average_relative_humidity') || '', 10) || undefined,
       generalSystemAlarm: this.getAttribute(`C${controllerID}_stat_general_system_alarm`) === '1',
       coolingAvailable: this.getAttribute('sys_cooling_available') === '1',
     };
@@ -284,8 +288,11 @@ export class UponorHTTPClient {
     }
   }
 
-  private static _formatTemperature(input: string | undefined): number {
-    const fahrenheit = parseFloat(input || '0') / 10;
+  private static _formatTemperature(input: string | undefined): number | undefined {
+    if (!input) return undefined;
+    const fahrenheitRaw = parseFloat(input);
+    if (Number.isNaN(fahrenheitRaw)) return undefined;
+    const fahrenheit = fahrenheitRaw / 10;
     const celsius = (fahrenheit - 32) * (5 / 9);
     return round(celsius, 1);
   }

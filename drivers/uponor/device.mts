@@ -6,8 +6,7 @@ import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY, THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
-  ALARM_HEAT_FALLBACK_CAPABILITY, ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
-  MEASURE_TEMPERATURE_AVERAGE_CAPABILITY, MEASURE_HUMIDITY_AVERAGE_CAPABILITY,
+  ALARM_HEAT_FALLBACK_CAPABILITY, SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
 } from '../../lib/constants.mjs';
 
 class UponorThermostatDevice extends Homey.Device {
@@ -20,6 +19,25 @@ class UponorThermostatDevice extends Homey.Device {
 
   async onInit(): Promise<void> {
     await this._syncCapabilities();
+
+    // Clean up deprecated capabilities from previously paired devices
+    const deprecatedCapabilities = [
+      'measure_temperature.average',
+      'measure_humidity.average',
+      'alarm_generic.sys_supply_diagnostic',
+    ];
+
+    for (const cap of deprecatedCapabilities) {
+      if (this.hasCapability(cap)) {
+        try {
+          await this.removeCapability(cap);
+          this.homey.log(`Removed deprecated capability ${cap}`);
+        } catch (err) {
+          this.homey.error(`Failed to remove deprecated capability ${cap}:`, err);
+        }
+      }
+    }
+
     if (this.driver && typeof (this.driver as any).startPolling === 'function') {
       (this.driver as UponorDriver).startPolling();
     }
@@ -90,9 +108,7 @@ class UponorThermostatDevice extends Homey.Device {
 
   private async _syncCapabilities(): Promise<void> {
     await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY);
-    await this._ensureCapability(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY);
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
-    await this._ensureCapability(MEASURE_HUMIDITY_CAPABILITY);
     await this._ensureCapability(IS_HEATING_CAPABILITY);
     await this._ensureCapability(BYPASS_ENABLED_CAPABILITY);
 
@@ -100,12 +116,9 @@ class UponorThermostatDevice extends Homey.Device {
       await this.removeCapability(ECO_MODE_CAPABILITY);
     }
     await this._ensureCapability(THERMOSTAT_MODE_CAPABILITY, this._setThermostatMode.bind(this));
-    await this._ensureCapability(ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY);
+    await this._ensureCapability(SYS_SUPPLY_DIAGNOSTIC_CAPABILITY);
     await this._ensureCapability(ALARM_GENERAL_SYSTEM_CAPABILITY);
-    await this._ensureCapability(MEASURE_TEMPERATURE_AVERAGE_CAPABILITY);
-    await this._ensureCapability(MEASURE_HUMIDITY_AVERAGE_CAPABILITY);
 
-    await this._ensureCapability(VALVE_POS_PERCENT_CAPABILITY);
     await this._ensureCapability(ALARM_BATTERY_CAPABILITY);
     await this._ensureCapability(ALARM_TAMPER_CAPABILITY);
     await this._ensureCapability(ALARM_AIR_SENSOR_CAPABILITY);
@@ -219,15 +232,7 @@ class UponorThermostatDevice extends Homey.Device {
 
       const alarmStr = this.getClient().getAttribute('sys_supply_diagnostic');
       if (alarmStr !== undefined) {
-        await this.setCapabilityValue(ALARM_SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, alarmStr === '1');
-      }
-
-      if (metrics.averageRoomTemperature !== undefined) {
-        await this.setCapabilityValue(MEASURE_TEMPERATURE_AVERAGE_CAPABILITY, metrics.averageRoomTemperature);
-      }
-
-      if (metrics.averageRelativeHumidity !== undefined) {
-        await this.setCapabilityValue(MEASURE_HUMIDITY_AVERAGE_CAPABILITY, metrics.averageRelativeHumidity);
+        await this.setCapabilityValue(SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, alarmStr === '1');
       }
 
       // Dynamically update cooling capability options if cooling isn't supported
