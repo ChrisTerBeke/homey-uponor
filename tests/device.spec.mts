@@ -24,6 +24,7 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
         active: true,
         bypassEnabled: false,
         ecoMode: false,
+        coolingAllowed: true,
         alarms: {
           battery: false,
           tamper: false,
@@ -66,6 +67,7 @@ describe('UponorThermostatDevice', function() {
     });
 
     device.getData = vi.fn().mockReturnValue({ id: 'C0_T0' });
+    device.getCapabilityOptions = vi.fn().mockReturnValue(undefined);
     device.setCapabilityOptions = vi.fn().mockResolvedValue(undefined);
     device.setAvailable = vi.fn().mockResolvedValue(undefined);
     device.setCapabilityValue = vi.fn().mockResolvedValue(undefined);
@@ -232,6 +234,106 @@ describe('UponorThermostatDevice', function() {
 
       // Check error handling
       expect(device.setUnavailable).toHaveBeenCalledWith('Could not find thermostat data');
+    });
+  });
+
+  describe('cooling capability options', function() {
+    beforeEach(async function() {
+      device.hasCapability = vi.fn().mockReturnValue(true);
+      device.addCapability = vi.fn();
+      device.registerCapabilityListener = vi.fn();
+      await device.onInit();
+    });
+
+    it('should remove cool option when system cooling is unavailable', async function() {
+      (device.driver as any).getClient().getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: false });
+      device.getCapabilityOptions = vi.fn().mockReturnValue({
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+
+      await device.updateData();
+
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('thermostat_mode', {
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+    });
+
+    it('should remove cool option when thermostat coolingAllowed is false', async function() {
+      (device.driver as any).getClient().getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: true });
+      (device.driver as any).getClient().getThermostat = vi.fn().mockReturnValue({
+        id: 'C0_T0',
+        controllerID: 0,
+        thermostatID: 0,
+        temperature: 20,
+        setPoint: 20,
+        active: false,
+        bypassEnabled: false,
+        ecoMode: false,
+        coolingAllowed: false,
+        alarms: {},
+      });
+      device.getCapabilityOptions = vi.fn().mockReturnValue({
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+
+      await device.updateData();
+
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('thermostat_mode', {
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+    });
+
+    it('should restore cool option when cooling becomes available and was previously missing', async function() {
+      (device.driver as any).getClient().getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: true });
+      (device.driver as any).getClient().getThermostat = vi.fn().mockReturnValue({
+        id: 'C0_T0',
+        controllerID: 0,
+        thermostatID: 0,
+        temperature: 20,
+        setPoint: 20,
+        active: false,
+        bypassEnabled: false,
+        ecoMode: false,
+        coolingAllowed: true,
+        alarms: {},
+      });
+      // Cool option currently missing in persistent capability options
+      device.getCapabilityOptions = vi.fn().mockReturnValue({
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+
+      await device.updateData();
+
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('thermostat_mode', {
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
     });
   });
 

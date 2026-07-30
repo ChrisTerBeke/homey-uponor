@@ -238,11 +238,12 @@ class UponorThermostatDevice extends Homey.Device {
         await this.setCapabilityValue(SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, alarmStr === '1');
       }
 
-      // Dynamically update cooling capability options if cooling isn't supported
-      if (!metrics.coolingAvailable) {
-        const currentOptions = this.getCapabilityOptions(THERMOSTAT_MODE_CAPABILITY) || {};
-        const hasCoolOption = currentOptions.values?.some((v: any) => v.id === 'cool');
+      // Dynamically update cooling capability options based on cooling availability and thermostat settings
+      const isCoolingSupported = metrics.coolingAvailable && (data.coolingAllowed ?? true);
+      const currentOptions = this.getCapabilityOptions(THERMOSTAT_MODE_CAPABILITY) || {};
+      const hasCoolOption = currentOptions.values?.some((v: any) => v.id === 'cool');
 
+      if (!isCoolingSupported) {
         if (hasCoolOption === undefined || hasCoolOption) {
           await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
             values: [
@@ -252,6 +253,15 @@ class UponorThermostatDevice extends Homey.Device {
             ],
           }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
         }
+      } else if (hasCoolOption === false) {
+        await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
+          values: [
+            { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+            { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
+            { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+            { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+          ],
+        }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
       }
     } catch (error) {
       this.homey.error(error);

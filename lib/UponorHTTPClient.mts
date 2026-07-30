@@ -17,6 +17,7 @@ export type Thermostat = {
     active: boolean;
     bypassEnabled: boolean;
     ecoMode: boolean;
+    coolingAllowed: boolean;
     valvePosPercent: number | undefined;
     alarms: {
         battery: boolean;
@@ -231,6 +232,8 @@ export class UponorHTTPClient {
       const thermostatID = matches[2]; // second capture group
       const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
 
+      const coolingAllowedAttr = this.getAttribute(`${ctKey}_cooling_allowed`) ?? this.getAttribute(`${ctKey}_cool_allowed`);
+
       thermostats.set(ctKey, {
         id: ctKey,
         name: value,
@@ -246,6 +249,7 @@ export class UponorHTTPClient {
         active: this.getAttribute(`${ctKey}_stat_cb_actuator`) === '1',
         bypassEnabled: this.getAttribute(`${ctKey}_bypass_enable`) === '1',
         ecoMode: this.getAttribute(`${ctKey}_mode_comfort_eco`) === '1',
+        coolingAllowed: coolingAllowedAttr !== undefined ? coolingAllowedAttr === '1' : true,
         valvePosPercent: UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_head1_valve_pos_percent`)),
         alarms: {
           battery: this.getAttribute(`${ctKey}_stat_battery_error`) === '1',

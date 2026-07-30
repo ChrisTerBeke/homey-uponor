@@ -188,5 +188,36 @@ describe('UponorHTTPClient', () => {
       await client.syncAttributes();
       expect(client.getGlobalHeatCoolMode()).toBe('heat');
     });
+
+    it('should correctly parse thermostat coolingAllowed with fallback to true when missing', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          result: 'OK',
+          output: {
+            vars: [
+              { waspVarName: 'cust_C1_T1_name', waspVarValue: 'Room 1' },
+              { waspVarName: 'C1_T1_cooling_allowed', waspVarValue: '1' },
+              { waspVarName: 'cust_C1_T2_name', waspVarValue: 'Room 2' },
+              { waspVarName: 'C1_T2_cooling_allowed', waspVarValue: '0' },
+              { waspVarName: 'cust_C1_T3_name', waspVarValue: 'Room 3' },
+              { waspVarName: 'C1_T3_cool_allowed', waspVarValue: '1' },
+              { waspVarName: 'cust_C1_T4_name', waspVarValue: 'Room 4' },
+            ],
+          },
+        }),
+      });
+      await client.syncAttributes();
+      const t1 = client.getThermostat(1, 1);
+      const t2 = client.getThermostat(1, 2);
+      const t3 = client.getThermostat(1, 3);
+      const t4 = client.getThermostat(1, 4);
+
+      expect(t1?.coolingAllowed).toBe(true);
+      expect(t2?.coolingAllowed).toBe(false);
+      expect(t3?.coolingAllowed).toBe(true);
+      expect(t4?.coolingAllowed).toBe(true);
+    });
   });
 });
