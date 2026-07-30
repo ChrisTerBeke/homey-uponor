@@ -250,6 +250,32 @@
             "nl": "Verdeler Aanvoertemperatuur"
           }
         },
+        "measure_temperature.floor": {
+          "title": {
+            "en": "Floor Temperature",
+            "nl": "Vloertemperatuur"
+          },
+          "insightsTitleTrue": {
+            "en": "Floor Temperature",
+            "nl": "Vloertemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Floor Temperature",
+            "nl": "Vloertemperatuur"
+          }
+        },
+        "measure_temperature.floor_min_setpoint": {
+          "title": {
+            "en": "Floor Minimum Limit",
+            "nl": "Minimale Vloertemperatuur"
+          }
+        },
+        "measure_temperature.floor_max_setpoint": {
+          "title": {
+            "en": "Floor Maximum Limit",
+            "nl": "Maximale Vloertemperatuur"
+          }
+        },
         "alarm_generic.air_sensor": {
           "title": {
             "en": "Air Sensor Error",
@@ -290,6 +316,12 @@
           "title": {
             "en": "Fallback Heat Alarm",
             "nl": "Noodverwarming Alarm"
+          }
+        },
+        "alarm_generic.floor_limit": {
+          "title": {
+            "en": "Floor Temperature Limit Reached",
+            "nl": "Vloertemperatuurlimiet Bereikt"
           }
         },
         "alarm_generic.system": {

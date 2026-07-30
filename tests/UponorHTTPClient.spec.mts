@@ -219,5 +219,31 @@ describe('UponorHTTPClient', () => {
       expect(t3?.coolingAllowed).toBe(true);
       expect(t4?.coolingAllowed).toBe(true);
     });
+
+    it('should correctly parse floor temperatures, setpoint limits, and floor limit alarm', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          result: 'OK',
+          output: {
+            vars: [
+              { waspVarName: 'cust_C1_T1_name', waspVarValue: 'Living Room' },
+              { waspVarName: 'C1_T1_external_temperature', waspVarValue: '725' }, // 72.5 F -> 22.5 C
+              { waspVarName: 'C1_T1_minimum_floor_setpoint', waspVarValue: '680' }, // 68.0 F -> 20.0 C
+              { waspVarName: 'C1_T1_maximum_floor_setpoint', waspVarValue: '788' }, // 78.8 F -> 26.0 C
+              { waspVarName: 'C1_T1_stat_cb_floor_limit_reach', waspVarValue: '1' },
+            ],
+          },
+        }),
+      });
+      await client.syncAttributes();
+      const t1 = client.getThermostat(1, 1);
+
+      expect(t1?.floorTemperature).toBe(22.5);
+      expect(t1?.minimumFloorSetPoint).toBe(20.0);
+      expect(t1?.maximumFloorSetPoint).toBe(26.0);
+      expect(t1?.alarms.floorLimit).toBe(true);
+    });
   });
 });

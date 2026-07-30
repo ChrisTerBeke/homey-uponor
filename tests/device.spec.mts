@@ -25,6 +25,9 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
         bypassEnabled: false,
         ecoMode: false,
         coolingAllowed: true,
+        floorTemperature: 21.0,
+        minimumFloorSetPoint: 20.0,
+        maximumFloorSetPoint: 26.0,
         alarms: {
           battery: false,
           tamper: false,
@@ -35,6 +38,7 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
           rfLowSig: false,
           valvePos: false,
           heatFallback: false,
+          floorLimit: false,
         },
       }),
       getGlobalHeatCoolMode: vi.fn().mockReturnValue('heat'),
@@ -234,6 +238,46 @@ describe('UponorThermostatDevice', function() {
 
       // Check error handling
       expect(device.setUnavailable).toHaveBeenCalledWith('Could not find thermostat data');
+    });
+  });
+
+  describe('floor capabilities', function() {
+    beforeEach(async function() {
+      device.hasCapability = vi.fn().mockReturnValue(false);
+      device.addCapability = vi.fn();
+      device.removeCapability = vi.fn();
+      device.registerCapabilityListener = vi.fn();
+      await device.onInit();
+    });
+
+    it('should dynamically add floor capabilities when present and remove when absent', async function() {
+      (device.driver as any).getClient().getThermostat = vi.fn().mockReturnValue({
+        id: 'C0_T0',
+        controllerID: 0,
+        thermostatID: 0,
+        temperature: 20,
+        setPoint: 20,
+        active: false,
+        bypassEnabled: false,
+        ecoMode: false,
+        coolingAllowed: true,
+        floorTemperature: 22.5,
+        minimumFloorSetPoint: 20.0,
+        maximumFloorSetPoint: 26.0,
+        alarms: {
+          floorLimit: true,
+        },
+      });
+
+      await device.updateData();
+
+      expect(device.addCapability).toHaveBeenCalledWith('measure_temperature.floor');
+      expect(device.addCapability).toHaveBeenCalledWith('measure_temperature.floor_min_setpoint');
+      expect(device.addCapability).toHaveBeenCalledWith('measure_temperature.floor_max_setpoint');
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature.floor', 22.5);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature.floor_min_setpoint', 20.0);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature.floor_max_setpoint', 26.0);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('alarm_generic.floor_limit', true);
     });
   });
 

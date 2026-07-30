@@ -4,12 +4,13 @@ import { UponorHTTPClient } from '../../lib/UponorHTTPClient.mjs';
 import { UponorDriver } from './driver.mjs';
 import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY,
+  MEASURE_TEMPERATURE_FLOOR_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY,
   TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY,
   IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY,
   THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
-  ALARM_HEAT_FALLBACK_CAPABILITY, SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
+  ALARM_HEAT_FALLBACK_CAPABILITY, ALARM_FLOOR_LIMIT_CAPABILITY, SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
 } from '../../lib/constants.mjs';
 
 class UponorThermostatDevice extends Homey.Device {
@@ -131,6 +132,7 @@ class UponorThermostatDevice extends Homey.Device {
     await this._ensureCapability(ALARM_RF_LOW_SIG_CAPABILITY);
     await this._ensureCapability(ALARM_VALVE_POS_CAPABILITY);
     await this._ensureCapability(ALARM_HEAT_FALLBACK_CAPABILITY);
+    await this._ensureCapability(ALARM_FLOOR_LIMIT_CAPABILITY);
   }
 
   private async _ensureCapability(capability: string, callback: any | undefined = undefined): Promise<void> {
@@ -168,6 +170,27 @@ class UponorThermostatDevice extends Homey.Device {
         await this.setCapabilityValue(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY, data.manifoldHeadTemperature);
       } else {
         await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY);
+      }
+
+      if (data.floorTemperature !== undefined) {
+        await this._ensureCapability(MEASURE_TEMPERATURE_FLOOR_CAPABILITY);
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_FLOOR_CAPABILITY, data.floorTemperature);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_FLOOR_CAPABILITY);
+      }
+
+      if (data.minimumFloorSetPoint !== undefined) {
+        await this._ensureCapability(MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY);
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY, data.minimumFloorSetPoint);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY);
+      }
+
+      if (data.maximumFloorSetPoint !== undefined) {
+        await this._ensureCapability(MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY);
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY, data.maximumFloorSetPoint);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY);
       }
 
       if (this.hasCapability(TARGET_TEMPERATURE_CAPABILITY)) {
@@ -229,6 +252,7 @@ class UponorThermostatDevice extends Homey.Device {
       await this.setCapabilityValue(ALARM_RF_LOW_SIG_CAPABILITY, data.alarms.rfLowSig);
       await this.setCapabilityValue(ALARM_VALVE_POS_CAPABILITY, data.alarms.valvePos);
       await this.setCapabilityValue(ALARM_HEAT_FALLBACK_CAPABILITY, data.alarms.heatFallback);
+      await this.setCapabilityValue(ALARM_FLOOR_LIMIT_CAPABILITY, data.alarms.floorLimit);
 
       const metrics = this.getClient().getSystemMetrics(controllerID);
       await this.setCapabilityValue(ALARM_GENERAL_SYSTEM_CAPABILITY, metrics.generalSystemAlarm);

@@ -27,6 +27,9 @@ class UponorApp extends Homey.App {
         measure_temperature: device.getCapabilityValue('measure_temperature'),
         target_temperature: device.getCapabilityValue('target_temperature'),
         manifold_temp: device.hasCapability('measure_temperature.manifold_head') ? device.getCapabilityValue('measure_temperature.manifold_head') : null,
+        floor_temp: device.hasCapability('measure_temperature.floor') ? device.getCapabilityValue('measure_temperature.floor') : null,
+        min_floor_setpoint: device.hasCapability('measure_temperature.floor_min_setpoint') ? device.getCapabilityValue('measure_temperature.floor_min_setpoint') : null,
+        max_floor_setpoint: device.hasCapability('measure_temperature.floor_max_setpoint') ? device.getCapabilityValue('measure_temperature.floor_max_setpoint') : null,
         measure_humidity: device.hasCapability('measure_humidity') ? device.getCapabilityValue('measure_humidity') : null,
         is_heating: device.getCapabilityValue('is_heating'),
         thermostat_mode: device.getCapabilityValue('thermostat_mode'),
@@ -42,6 +45,7 @@ class UponorApp extends Homey.App {
         alarm_rf_low: device.hasCapability('alarm_generic.rf_low_sig') ? device.getCapabilityValue('alarm_generic.rf_low_sig') : false,
         alarm_valve: device.hasCapability('alarm_generic.valve_pos') ? device.getCapabilityValue('alarm_generic.valve_pos') : false,
         alarm_heat_fallback: device.hasCapability('alarm_generic.heat_fallback') ? device.getCapabilityValue('alarm_generic.heat_fallback') : false,
+        alarm_floor_limit: device.hasCapability('alarm_generic.floor_limit') ? device.getCapabilityValue('alarm_generic.floor_limit') : false,
         sys_supply_diagnostic: device.hasCapability('sys_supply_diagnostic') ? device.getCapabilityValue('sys_supply_diagnostic') : false,
         alarm_system: device.hasCapability('alarm_generic.system') ? device.getCapabilityValue('alarm_generic.system') : false,
       };
@@ -117,6 +121,9 @@ class UponorApp extends Homey.App {
               max_temperature: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`)
                 ? (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_maximum_setpoint`)!, 10) / 10) - 32) * (5 / 9)) : 35,
               manifold_temp: device.hasCapability('measure_temperature.manifold_head') ? device.getCapabilityValue('measure_temperature.manifold_head') : null,
+              floor_temp: device.hasCapability('measure_temperature.floor') ? device.getCapabilityValue('measure_temperature.floor') : null,
+              min_floor_setpoint: device.hasCapability('measure_temperature.floor_min_setpoint') ? device.getCapabilityValue('measure_temperature.floor_min_setpoint') : null,
+              max_floor_setpoint: device.hasCapability('measure_temperature.floor_max_setpoint') ? device.getCapabilityValue('measure_temperature.floor_max_setpoint') : null,
               measure_humidity: device.hasCapability('measure_humidity') ? device.getCapabilityValue('measure_humidity') : null,
               external_temp: client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`)
                 && client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`) !== '32767'
@@ -135,6 +142,7 @@ class UponorApp extends Homey.App {
               alarm_rf_low: device.hasCapability('alarm_generic.rf_low_sig') ? device.getCapabilityValue('alarm_generic.rf_low_sig') : false,
               alarm_valve: device.hasCapability('alarm_generic.valve_pos') ? device.getCapabilityValue('alarm_generic.valve_pos') : false,
               alarm_heat_fallback: device.hasCapability('alarm_generic.heat_fallback') ? device.getCapabilityValue('alarm_generic.heat_fallback') : false,
+              alarm_floor_limit: device.hasCapability('alarm_generic.floor_limit') ? device.getCapabilityValue('alarm_generic.floor_limit') : false,
               sys_supply_diagnostic: device.hasCapability('sys_supply_diagnostic') ? device.getCapabilityValue('sys_supply_diagnostic') : false,
               alarm_system: device.hasCapability('alarm_generic.system') ? device.getCapabilityValue('alarm_generic.system') : false,
             });

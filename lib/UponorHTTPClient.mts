@@ -18,6 +18,9 @@ export type Thermostat = {
     bypassEnabled: boolean;
     ecoMode: boolean;
     coolingAllowed: boolean;
+    floorTemperature: number | undefined;
+    minimumFloorSetPoint: number | undefined;
+    maximumFloorSetPoint: number | undefined;
     valvePosPercent: number | undefined;
     alarms: {
         battery: boolean;
@@ -29,6 +32,7 @@ export type Thermostat = {
         rfLowSig: boolean;
         valvePos: boolean;
         heatFallback: boolean;
+        floorLimit: boolean;
     };
 };
 
@@ -233,6 +237,7 @@ export class UponorHTTPClient {
       const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
 
       const coolingAllowedAttr = this.getAttribute(`${ctKey}_cooling_allowed`) ?? this.getAttribute(`${ctKey}_cool_allowed`);
+      const externalTempRaw = this.getAttribute(`${ctKey}_external_temperature`);
 
       thermostats.set(ctKey, {
         id: ctKey,
@@ -244,6 +249,9 @@ export class UponorHTTPClient {
         setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
+        floorTemperature: externalTempRaw && externalTempRaw !== '32767' ? UponorHTTPClient._formatTemperature(externalTempRaw) : undefined,
+        minimumFloorSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_floor_setpoint`)),
+        maximumFloorSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_floor_setpoint`)),
         mode: this.getGlobalHeatCoolMode(),
         humidity: parseInt(this.getAttribute(`${ctKey}_rh`) || '', 10) || undefined,
         active: this.getAttribute(`${ctKey}_stat_cb_actuator`) === '1',
@@ -261,6 +269,7 @@ export class UponorHTTPClient {
           rfLowSig: this.getAttribute(`${ctKey}_stat_rf_low_sig_warning`) === '1',
           valvePos: this.getAttribute(`${ctKey}_stat_valve_position_err`) === '1',
           heatFallback: this.getAttribute(`${ctKey}_stat_cb_fallbk_heatalarm`) === '1',
+          floorLimit: this.getAttribute(`${ctKey}_stat_cb_floor_limit_reach`) === '1',
         },
       });
     });
