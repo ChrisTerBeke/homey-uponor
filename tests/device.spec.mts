@@ -379,6 +379,23 @@ describe('UponorThermostatDevice', function() {
         ],
       });
     });
+
+    it('should handle getCapabilityOptions throwing an error gracefully', async function() {
+      (device.driver as any).getClient().getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: false });
+      device.getCapabilityOptions = vi.fn().mockImplementation(() => {
+        throw new Error('Invalid Capability: thermostat_mode');
+      });
+
+      await device.updateData();
+
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('thermostat_mode', {
+        values: [
+          { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+          { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+          { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+        ],
+      });
+    });
   });
 
   describe('discovery', function() {

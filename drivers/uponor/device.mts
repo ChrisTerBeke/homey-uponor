@@ -263,29 +263,37 @@ class UponorThermostatDevice extends Homey.Device {
       }
 
       // Dynamically update cooling capability options based on cooling availability and thermostat settings
-      const isCoolingSupported = metrics.coolingAvailable && (data.coolingAllowed ?? true);
-      const currentOptions = this.getCapabilityOptions(THERMOSTAT_MODE_CAPABILITY) || {};
-      const hasCoolOption = currentOptions.values?.some((v: any) => v.id === 'cool');
+      if (this.hasCapability(THERMOSTAT_MODE_CAPABILITY)) {
+        const isCoolingSupported = metrics.coolingAvailable && (data.coolingAllowed ?? true);
+        let currentOptions: any = {};
+        try {
+          currentOptions = this.getCapabilityOptions(THERMOSTAT_MODE_CAPABILITY) || {};
+        } catch (err) {
+          // getCapabilityOptions can throw if options are not yet initialized or undefined in the manifest
+          currentOptions = {};
+        }
+        const hasCoolOption = currentOptions.values?.some((v: any) => v.id === 'cool');
 
-      if (!isCoolingSupported) {
-        if (hasCoolOption === undefined || hasCoolOption) {
+        if (!isCoolingSupported) {
+          if (hasCoolOption === undefined || hasCoolOption) {
+            await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
+              values: [
+                { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+                { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
+                { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
+              ],
+            }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
+          }
+        } else if (hasCoolOption === false) {
           await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
             values: [
               { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
+              { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
               { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
               { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
             ],
           }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
         }
-      } else if (hasCoolOption === false) {
-        await this.setCapabilityOptions(THERMOSTAT_MODE_CAPABILITY, {
-          values: [
-            { id: 'heat', title: { en: 'Heating', nl: 'Verwarmen' } },
-            { id: 'cool', title: { en: 'Cooling', nl: 'Koelen' } },
-            { id: 'eco', title: { en: 'Eco', nl: 'Eco' } },
-            { id: 'holiday', title: { en: 'Holiday', nl: 'Vakantie' } },
-          ],
-        }).catch((err) => this.homey.error('Failed to update thermostat mode options', err));
       }
     } catch (error) {
       this.homey.error(error);
