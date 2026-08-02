@@ -1,2 +1,7 @@
 Unofficial support for Uponor Smatrix.
-Currently only the Smatrix Pulse R-208 controller is tested.
+
+Tested controller versions:
+
+* Uponor Smatrix Base T-145
+* Uponor Smatrix Base T-146
+* Uponor Smatrix Pulse R-208
