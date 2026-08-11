@@ -46,5 +46,8 @@
   },
   "1.0.3": {
     "en": "Added widget preview"
+  },
+  "1.0.4": {
+    "en": "Dynamicall add/remove capability on discovery"
   }
 }
