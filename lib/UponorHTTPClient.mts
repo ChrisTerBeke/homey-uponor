@@ -94,6 +94,7 @@ export class UponorHTTPClient {
     if (fetchedNew) {
       const parsed = await this._parseAttributes();
       if (!parsed) throw new Error('Could not parse attributes');
+      this._lastSync = new Date();
       await this._syncThermostats();
     }
   }
@@ -108,6 +109,7 @@ export class UponorHTTPClient {
       if (result !== true) return false;
       // parse right away, otherwise a following syncAttributes() hits the cache and never parses this response
       if (!(await this._parseAttributes())) return false;
+      this._lastSync = new Date();
       await this._syncThermostats();
       return true;
     } catch (error) {
@@ -205,7 +207,6 @@ export class UponorHTTPClient {
           signal: controller.signal as any,
         });
         clearTimeout(timeout);
-        this._lastSync = new Date();
         this._rawAttributes = await request.json();
         const responseData = this._rawAttributes as AttributesResponse;
         console.log(`[JNAP] Response status: ${request.status} - Result: ${responseData?.result} - Variables count: ${responseData?.output?.vars?.length || 0}`);
