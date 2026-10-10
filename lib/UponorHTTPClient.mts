@@ -105,7 +105,11 @@ export class UponorHTTPClient {
   public async testConnection(): Promise<boolean> {
     try {
       const result = await this._syncRawAttributes(true);
-      return result === true;
+      if (result !== true) return false;
+      // parse right away, otherwise a following syncAttributes() hits the cache and never parses this response
+      if (!(await this._parseAttributes())) return false;
+      await this._syncThermostats();
+      return true;
     } catch (error) {
       return false;
     }

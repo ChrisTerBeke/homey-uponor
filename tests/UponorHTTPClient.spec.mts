@@ -58,6 +58,30 @@ describe('UponorHTTPClient', () => {
       const promise = client.syncAttributes();
       await expect(promise).rejects.toThrow('Could not sync raw attributes');
     });
+
+    it('should expose thermostats after updateAddress followed by a cached syncAttributes', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          result: 'OK',
+          output: {
+            vars: [
+              { waspVarName: 'sys_controller_0_th_0_temp_room_value', waspVarValue: '21.5' },
+              { waspVarName: 'cust_C0_T0_name', waspVarValue: 'Living Room' },
+            ],
+          },
+        }),
+      });
+
+      // same sequence as the driver's pairing flow
+      const success = await client.updateAddress('192.168.1.101');
+      await client.syncAttributes();
+
+      expect(success).toBe(true);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(client.getThermostats().size).toBe(1);
+    });
   });
 
   describe('setters and cache invalidation', () => {
