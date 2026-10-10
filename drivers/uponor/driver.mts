@@ -6,6 +6,7 @@ import {
   LIST_DEVICES_PAIR_KEY,
   CUSTOM_IP_ADDRESS_PAIR_KEY,
   POLL_INTERVAL_MS,
+  INCLUDE_SETBACK_SETTINGS_KEY,
 } from '../../lib/constants.mjs';
 
 export class UponorDriver extends Homey.Driver {
@@ -20,6 +21,7 @@ export class UponorDriver extends Homey.Driver {
       this._client = new UponorHTTPClient(address);
       this._address = address;
     }
+    this._client.setIncludeSetback(this.isSetbackIncluded());
     return this._client;
   }
 
@@ -72,6 +74,24 @@ export class UponorDriver extends Homey.Driver {
       this._client = undefined;
       this._address = undefined;
       this.stopPolling();
+    }
+  }
+
+  isSetbackIncluded(): boolean {
+    return this.homey.settings.get(INCLUDE_SETBACK_SETTINGS_KEY) === true;
+  }
+
+  // Called when the app setting changes: apply to the client and re-sync all devices (no re-pair needed).
+  async onSetbackSettingChanged(): Promise<void> {
+    if (!this._client) return;
+    this._client.setIncludeSetback(this.isSetbackIncluded());
+    try {
+      await this._client.syncAttributes();
+    } catch (error) {
+      this.homey.error('Sync after setting change failed:', error);
+    }
+    for (const device of this.getDevices()) {
+      await (device as UponorThermostatDevice).updateData();
     }
   }
 

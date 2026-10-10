@@ -1,9 +1,18 @@
 import Homey from 'homey';
 import type { UponorDriver } from './drivers/uponor/driver.mjs';
+import { INCLUDE_SETBACK_SETTINGS_KEY } from './lib/constants.mjs';
 
 class UponorApp extends Homey.App {
   async onInit() {
     this.log('UponorApp is running...');
+    this.homey.settings.on('set', (key: string) => this._onSettingChanged(key));
+    this.homey.settings.on('unset', (key: string) => this._onSettingChanged(key));
+  }
+
+  private _onSettingChanged(key: string) {
+    if (key !== INCLUDE_SETBACK_SETTINGS_KEY) return;
+    const driver = this.homey.drivers.getDriver('uponor') as UponorDriver;
+    driver.onSetbackSettingChanged().catch((err) => this.error('Failed to apply setting change', err));
   }
 
   async getWidgetDevices() {

@@ -5,7 +5,7 @@ import { UponorDriver } from './driver.mjs';
 import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY,
   MEASURE_TEMPERATURE_FLOOR_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY,
-  TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY,
+  TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, MEASURE_TEMPERATURE_COMFORT_SETPOINT_CAPABILITY,
   IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY,
   THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
@@ -202,17 +202,32 @@ class UponorThermostatDevice extends Homey.Device {
           currentOptions = {};
         }
 
-        const shouldUpdateMin = data.minimumSetPoint !== undefined && currentOptions.min !== data.minimumSetPoint;
-        const shouldUpdateMax = data.maximumSetPoint !== undefined && currentOptions.max !== data.maximumSetPoint;
+        // When offsets are included, the effective target can range from (limit - setback) to the limit itself
+        // (setpoint parked at min/max has no offset applied), so widen the range to cover both.
+        const setback = this.getClient().isSetbackIncluded?.() ? (data.activeSetback ?? 0) : 0;
+        const minimum = data.minimumSetPoint !== undefined
+          ? Math.round(Math.min(data.minimumSetPoint, data.minimumSetPoint - setback) * 10) / 10 : undefined;
+        const maximum = data.maximumSetPoint !== undefined
+          ? Math.round(Math.max(data.maximumSetPoint, data.maximumSetPoint - setback) * 10) / 10 : undefined;
+        const shouldUpdateMin = minimum !== undefined && currentOptions.min !== minimum;
+        const shouldUpdateMax = maximum !== undefined && currentOptions.max !== maximum;
 
         if (shouldUpdateMin || shouldUpdateMax) {
           await this.setCapabilityOptions(TARGET_TEMPERATURE_CAPABILITY, {
-            min: data.minimumSetPoint,
-            max: data.maximumSetPoint,
+            min: minimum,
+            max: maximum,
           }).catch((err) => this.homey.error('Failed to set capability options', err));
         }
 
         await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
+      }
+
+      // Read-only stored (comfort) setpoint, only exposed when offsets are included in the target temperature
+      if (this.getClient().isSetbackIncluded?.() && data.baseSetPoint !== undefined) {
+        await this._ensureCapability(MEASURE_TEMPERATURE_COMFORT_SETPOINT_CAPABILITY);
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_COMFORT_SETPOINT_CAPABILITY, data.baseSetPoint);
+      } else {
+        await this._removeCapabilityIfExists(MEASURE_TEMPERATURE_COMFORT_SETPOINT_CAPABILITY);
       }
 
       if (data.humidity !== undefined) {

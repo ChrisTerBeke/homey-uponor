@@ -264,6 +264,20 @@
             "nl": "Vloertemperatuur"
           }
         },
+        "measure_temperature.comfort_setpoint": {
+          "title": {
+            "en": "Comfort Setpoint",
+            "nl": "Comfort Instelwaarde"
+          },
+          "insightsTitleTrue": {
+            "en": "Comfort Setpoint",
+            "nl": "Comfort Instelwaarde"
+          },
+          "insightsTitleFalse": {
+            "en": "Comfort Setpoint",
+            "nl": "Comfort Instelwaarde"
+          }
+        },
         "measure_temperature.floor_min_setpoint": {
           "title": {
             "en": "Floor Minimum Limit",

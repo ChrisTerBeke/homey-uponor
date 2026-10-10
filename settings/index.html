@@ -32,6 +32,17 @@
 
                 var ipAddressInput = document.getElementById('ip_address')
                 var customIpAdressInput = document.getElementById('custom_ip_address')
+                var includeSetbackInput = document.getElementById('include_setback_in_target')
+                Homey.get('include_setback_in_target', function (err, value) {
+                    if (err) return Homey.alert(err)
+                    includeSetbackInput.checked = value === true
+                })
+                includeSetbackInput.addEventListener('change', function () {
+                    Homey.set('include_setback_in_target', includeSetbackInput.checked, function (err) {
+                        if (err) return Homey.alert(err)
+                    })
+                })
+
                 var debugDevicesOutput = document.getElementById('debug_devices')
                 var refreshBtn = document.getElementById('refresh_debug')
                 var copyBtn = document.getElementById('copy_debug')
@@ -95,6 +106,15 @@
             <div class="homey-form-group">
                 <label class="homey-form-label" data-i18n="settings.custom_ip_address_label"></label>
                 <input class="homey-form-input" id="custom_ip_address" type="text"></input>
+            </div>
+
+            <div class="homey-form-group">
+                <label class="homey-form-checkbox">
+                    <input class="homey-form-checkbox-input" id="include_setback_in_target" type="checkbox" />
+                    <span class="homey-form-checkbox-checkmark"></span>
+                    <span class="homey-form-checkbox-text" data-i18n="settings.include_setback_label"></span>
+                </label>
+                <p class="homey-form-hint" data-i18n="settings.include_setback_hint"></p>
             </div>
 
             <div class="homey-form-group">

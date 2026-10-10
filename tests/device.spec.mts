@@ -409,4 +409,41 @@ describe('UponorThermostatDevice', function() {
       expect(getClientSpy).toHaveBeenCalledWith('192.168.1.101');
     });
   });
+
+  describe('effective setpoint setting', function() {
+    function setup(included: boolean, activeSetback: number) {
+      const client = new UponorHTTPClient('1.2.3.4') as any;
+      client.isSetbackIncluded = vi.fn().mockReturnValue(included);
+      const base = client.getThermostat();
+      client.getThermostat = vi.fn().mockReturnValue({
+        ...base, setPoint: 21.0 - activeSetback, baseSetPoint: 21.0, activeSetback,
+      });
+      (device.driver as any).getClient = vi.fn().mockReturnValue(client);
+      device.hasCapability = vi.fn().mockReturnValue(true);
+      device.addCapability = vi.fn();
+      device.removeCapability = vi.fn();
+      device.getCapabilityOptions = vi.fn().mockReturnValue({});
+    }
+
+    it('keeps legacy min/max and removes comfort capability when off', async function() {
+      setup(false, 4);
+      await device.updateData();
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('target_temperature', { min: 5, max: 35 });
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('target_temperature', 17);
+      expect(device.removeCapability).toHaveBeenCalledWith('measure_temperature.comfort_setpoint');
+    });
+
+    it('widens min when heating eco offset is active', async function() {
+      setup(true, 4);
+      await device.updateData();
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('target_temperature', { min: 1, max: 35 });
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature.comfort_setpoint', 21);
+    });
+
+    it('widens max when cooling offset is active', async function() {
+      setup(true, -2);
+      await device.updateData();
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('target_temperature', { min: 5, max: 37 });
+    });
+  });
 });
