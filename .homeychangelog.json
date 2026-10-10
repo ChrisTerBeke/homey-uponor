@@ -52,5 +52,8 @@
   },
   "1.0.5": {
     "en": "Fix initial loading of cached thermostats"
+  },
+  "1.0.6": {
+    "en": "Fixed sync retry: failed or invalid responses from the Uponor controller no longer block updates until the cache expires."
   }
 }
