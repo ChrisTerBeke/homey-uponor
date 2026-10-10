@@ -59,6 +59,33 @@ describe('UponorHTTPClient', () => {
       await expect(promise).rejects.toThrow('Could not sync raw attributes');
     });
 
+    describe('should not cache failed syncs and retry on next call', () => {
+      const goodResponse = {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          result: 'OK',
+          output: { vars: [{ waspVarName: 'cust_C1_T1_name', waspVarValue: 'Living Room' }] },
+        }),
+      };
+
+      it.each([
+        ['non-200 response', { ok: false, status: 500, json: async () => ({}) }],
+        ['json() rejecting', { ok: true, status: 200, json: () => Promise.reject(new SyntaxError('Unexpected token')) }],
+        ["200 with result 'ERROR'", { ok: true, status: 200, json: async () => ({ result: 'ERROR' }) }],
+      ])('%s', async (_name, badResponse) => {
+        fetchMock.mockResolvedValueOnce(badResponse);
+        await expect(client.syncAttributes()).rejects.toThrow();
+
+        fetchMock.mockResolvedValueOnce(goodResponse);
+        await client.syncAttributes();
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        expect(client.getThermostats().size).toBe(1);
+        expect(client.getThermostat(1, 1)?.name).toBe('Living Room');
+      });
+    });
+
     it('should expose thermostats after updateAddress followed by a cached syncAttributes', async () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
