@@ -49,5 +49,8 @@
   },
   "1.0.4": {
     "en": "Dynamicall add/remove capability on discovery"
+  },
+  "1.0.5": {
+    "en": "Fix initial loading of cached thermostats"
   }
 }
