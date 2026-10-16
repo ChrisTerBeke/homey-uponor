@@ -10,8 +10,6 @@
         "info_title": "Info",
         "ip_address_label": "Discovered IP address",
         "custom_ip_address_label": "Custom pairing IP address",
-        "include_setback_label": "Include eco/cooling offset in target temperature",
-        "include_setback_hint": "When enabled, the target temperature shows the effective target (comfort setpoint minus active eco or cooling offset), matching the thermostat display. Setting a target compensates for the active offset. The stored comfort setpoint is shown separately.",
         "debug_devices_label": "Debug data",
         "debug_refresh": "Refresh",
         "debug_copy": "Copy to clipboard"

@@ -9,9 +9,8 @@ export type Thermostat = {
     name: string | undefined;
     temperature: number | undefined;
     manifoldHeadTemperature: number | undefined;
-    setPoint: number | undefined; // effective target (base setpoint minus active setback), °C
-    baseSetPoint: number | undefined; // raw C{c}_T{t}_setpoint as stored on the controller, °C
-    activeSetback: number; // active offset in °C (positive lowers target in heating, negative raises in cooling)
+    setPoint: number | undefined;
+    effectiveSetPoint: number | undefined; // setPoint minus active eco/cooling setback, °C (read-only)
     minimumSetPoint: number | undefined;
     maximumSetPoint: number | undefined;
     mode: Mode | undefined;
@@ -61,7 +60,6 @@ export class UponorHTTPClient {
   private _attributes: Map<string, string> = new Map();
   private _thermostats: Map<string, Thermostat> = new Map();
   private _syncPromise: Promise<boolean | null> | null = null;
-  private _includeSetback: boolean = false;
 
   constructor(ipAddress: string) {
     this._url = `http://${ipAddress}/JNAP/`;
@@ -70,21 +68,6 @@ export class UponorHTTPClient {
   public async updateAddress(newAddress: string): Promise<boolean> {
     this._url = `http://${newAddress}/JNAP/`;
     return this.testConnection();
-  }
-
-  /**
-   * When enabled, setPoint is the effective target (stored setpoint minus active eco/cooling setback)
-   * and setTargetTemperature compensates for the active setback. When disabled (default), behaviour is legacy.
-   */
-  public setIncludeSetback(enabled: boolean): void {
-    if (this._includeSetback === enabled) return;
-    this._includeSetback = enabled;
-    // re-derive thermostats from cached attributes so the change is visible without a new fetch
-    if (this._attributes.size > 0) this._syncThermostats().catch(() => {});
-  }
-
-  public isSetbackIncluded(): boolean {
-    return this._includeSetback;
   }
 
   public getAttributes(): Map<string, string> {
@@ -191,9 +174,8 @@ export class UponorHTTPClient {
   }
 
   // Active setback in raw units (tenths of °F delta, no -32), mirroring asev/homeassistant-uponor get_active_setback.
-  // Returns 0 when the setting is disabled.
+  // Positive lowers the effective target (heating eco), negative raises it (cooling).
   public getActiveSetbackRaw(controllerID: number, thermostatID: number, rawSetPoint?: number): number {
-    if (!this._includeSetback) return 0;
     const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
     if (rawSetPoint !== undefined) {
       const min = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_minimum_setpoint`));
@@ -212,34 +194,6 @@ export class UponorHTTPClient {
   }
 
   public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
-    if (!this._includeSetback) {
-      await this._setTargetTemperatureLegacy(controllerID, thermostatID, value);
-      return;
-    }
-    const ctKey0 = UponorHTTPClient._createKey(controllerID, thermostatID);
-    const min = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey0}_minimum_setpoint`));
-    const max = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey0}_maximum_setpoint`));
-    const effectiveRaw = round(((value * (9 / 5)) + 32) * 10, 0);
-    // Writing exactly the min/max limit means "off"/limit: no compensation (same as HA).
-    const atLimit = effectiveRaw === min || effectiveRaw === max;
-    let raw = atLimit ? effectiveRaw : effectiveRaw + this.getActiveSetbackRaw(controllerID, thermostatID);
-    if (min !== undefined) raw = Math.max(min, raw);
-    if (max !== undefined) raw = Math.min(max, raw);
-    const setPoint = raw.toString();
-    await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]));
-
-    // Optimistically update cache to prevent immediate fetch spikes
-    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
-    this._attributes.set(`C${controllerID}_T${thermostatID}_setpoint`, setPoint);
-    const thermostat = this._thermostats.get(ctKey);
-    if (thermostat) {
-      thermostat.baseSetPoint = UponorHTTPClient._formatTemperature(setPoint);
-      thermostat.activeSetback = round(this.getActiveSetbackRaw(controllerID, thermostatID, raw) / 18, 1);
-      thermostat.setPoint = UponorHTTPClient._effectiveFromRaw(raw, this.getActiveSetbackRaw(controllerID, thermostatID, raw));
-    }
-  }
-
-  private async _setTargetTemperatureLegacy(controllerID: number, thermostatID: number, value: number): Promise<void> {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
     await this._setAttributes(new Map([[`C${controllerID}_T${thermostatID}_setpoint`, setPoint]]));
@@ -248,11 +202,7 @@ export class UponorHTTPClient {
     const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
     this._attributes.set(`C${controllerID}_T${thermostatID}_setpoint`, setPoint);
     const thermostat = this._thermostats.get(ctKey);
-    if (thermostat) {
-      thermostat.setPoint = value;
-      thermostat.baseSetPoint = value;
-      thermostat.activeSetback = 0;
-    }
+    if (thermostat) thermostat.setPoint = value;
   }
 
   // Returns true if new data was fetched, false if returned from cache, null on error
@@ -313,9 +263,8 @@ export class UponorHTTPClient {
       const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
 
       const coolingAllowedAttr = this.getAttribute(`${ctKey}_cooling_allowed`) ?? this.getAttribute(`${ctKey}_cool_allowed`);
-      const rawSetPoint = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_setpoint`));
-      const setbackRaw = this.getActiveSetbackRaw(parseInt(controllerID, 10), parseInt(thermostatID, 10), rawSetPoint);
       const externalTempRaw = this.getAttribute(`${ctKey}_external_temperature`);
+      const rawSetPoint = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_setpoint`));
 
       thermostats.set(ctKey, {
         id: ctKey,
@@ -324,11 +273,10 @@ export class UponorHTTPClient {
         thermostatID: parseInt(thermostatID, 10),
         temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
         manifoldHeadTemperature: UponorHTTPClient._parseFahrenheit(this.getAttribute(`${ctKey}_head1_supply_temp`)),
-        setPoint: this._includeSetback && rawSetPoint !== undefined
-          ? UponorHTTPClient._effectiveFromRaw(rawSetPoint, setbackRaw)
-          : UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-        baseSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
-        activeSetback: round(setbackRaw / 18, 1),
+        setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
+        effectiveSetPoint: rawSetPoint !== undefined
+          ? UponorHTTPClient._formatTemperature(String(rawSetPoint - this.getActiveSetbackRaw(parseInt(controllerID, 10), parseInt(thermostatID, 10), rawSetPoint)))
+          : undefined,
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
         floorTemperature: externalTempRaw && externalTempRaw !== '32767' ? UponorHTTPClient._formatTemperature(externalTempRaw) : undefined,
@@ -390,10 +338,6 @@ export class UponorHTTPClient {
     const fahrenheit = fahrenheitRaw / 10;
     const celsius = (fahrenheit - 32) * (5 / 9);
     return round(celsius, 1);
-  }
-
-  private static _effectiveFromRaw(raw: number, setbackRaw: number): number {
-    return UponorHTTPClient._formatTemperature(String(raw - setbackRaw))!;
   }
 
   private static _parseFahrenheit(input: string | undefined): number | undefined {
