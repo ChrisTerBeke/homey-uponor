@@ -5,7 +5,7 @@ import { UponorDriver } from './driver.mjs';
 import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY,
   MEASURE_TEMPERATURE_FLOOR_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY,
-  TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY,
+  TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, MEASURE_TEMPERATURE_EFFECTIVE_SETPOINT_CAPABILITY,
   IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY,
   THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
@@ -113,6 +113,7 @@ class UponorThermostatDevice extends Homey.Device {
   private async _syncCapabilities(): Promise<void> {
     await this._ensureCapability(MEASURE_TEMPERATURE_CAPABILITY);
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
+    await this._ensureCapability(MEASURE_TEMPERATURE_EFFECTIVE_SETPOINT_CAPABILITY);
     await this._ensureCapability(IS_HEATING_CAPABILITY);
     await this._ensureCapability(BYPASS_ENABLED_CAPABILITY);
 
@@ -213,6 +214,11 @@ class UponorThermostatDevice extends Homey.Device {
         }
 
         await this.setCapabilityValue(TARGET_TEMPERATURE_CAPABILITY, data.setPoint);
+      }
+
+      // Read-only effective target: setpoint minus active eco/cooling setback (target_temperature is unchanged)
+      if (data.effectiveSetPoint !== undefined) {
+        await this.setCapabilityValue(MEASURE_TEMPERATURE_EFFECTIVE_SETPOINT_CAPABILITY, data.effectiveSetPoint);
       }
 
       if (data.humidity !== undefined) {

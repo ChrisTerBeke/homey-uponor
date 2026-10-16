@@ -206,6 +206,7 @@
       "capabilities": [
         "measure_temperature",
         "target_temperature",
+        "measure_temperature.effective_setpoint",
         "is_heating",
         "bypass_enabled",
         "thermostat_mode",
@@ -262,6 +263,20 @@
           "insightsTitleFalse": {
             "en": "Floor Temperature",
             "nl": "Vloertemperatuur"
+          }
+        },
+        "measure_temperature.effective_setpoint": {
+          "title": {
+            "en": "Effective target",
+            "nl": "Effectieve doeltemperatuur"
+          },
+          "insightsTitleTrue": {
+            "en": "Effective target",
+            "nl": "Effectieve doeltemperatuur"
+          },
+          "insightsTitleFalse": {
+            "en": "Effective target",
+            "nl": "Effectieve doeltemperatuur"
           }
         },
         "measure_temperature.floor_min_setpoint": {

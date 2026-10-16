@@ -10,6 +10,7 @@ export type Thermostat = {
     temperature: number | undefined;
     manifoldHeadTemperature: number | undefined;
     setPoint: number | undefined;
+    effectiveSetPoint: number | undefined; // setPoint minus active eco/cooling setback, °C (read-only)
     minimumSetPoint: number | undefined;
     maximumSetPoint: number | undefined;
     mode: Mode | undefined;
@@ -172,6 +173,26 @@ export class UponorHTTPClient {
     this._attributes.set('sys_heat_cool_mode', value);
   }
 
+  // Active setback in raw units (tenths of °F delta, no -32), mirroring asev/homeassistant-uponor get_active_setback.
+  // Positive lowers the effective target (heating eco), negative raises it (cooling).
+  public getActiveSetbackRaw(controllerID: number, thermostatID: number, rawSetPoint?: number): number {
+    const ctKey = UponorHTTPClient._createKey(controllerID, thermostatID);
+    if (rawSetPoint !== undefined) {
+      const min = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_minimum_setpoint`));
+      const max = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_maximum_setpoint`));
+      if (rawSetPoint === min || rawSetPoint === max) return 0; // at limit ("off"): controller does not apply offsets
+    }
+    const cooling = this.getGlobalHeatCoolMode() === 'cool';
+    const coolOffset = cooling ? -(UponorHTTPClient._parseNumber(this.getAttribute('sys_heat_cool_offset')) ?? 0) : 0;
+    const ecoOffset = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_eco_offset`)) ?? 0;
+    // NOTE: HA also treats `cust_Temporary_ECO_Activation` === '1' as eco active. We deliberately ignore it:
+    // a real attribute dump (community.homey.app/t/109100/7) has it set to '1' while no thermostat is in eco
+    // (all `_stat_cb_comfort_eco_mode` = 0), which would wrongly lower every target by the eco offset.
+    const ecoActive = ecoOffset !== 0
+      && (this.getAttribute(`${ctKey}_stat_cb_comfort_eco_mode`) === '1' || this.getGlobalEcoMode());
+    return coolOffset + (ecoActive ? ecoOffset * (cooling ? -1 : 1) : 0);
+  }
+
   public async setTargetTemperature(controllerID: number, thermostatID: number, value: number): Promise<void> {
     const fahrenheit = (value * (9 / 5)) + 32;
     const setPoint = round(fahrenheit * 10, 0).toString();
@@ -243,6 +264,7 @@ export class UponorHTTPClient {
 
       const coolingAllowedAttr = this.getAttribute(`${ctKey}_cooling_allowed`) ?? this.getAttribute(`${ctKey}_cool_allowed`);
       const externalTempRaw = this.getAttribute(`${ctKey}_external_temperature`);
+      const rawSetPoint = UponorHTTPClient._parseNumber(this.getAttribute(`${ctKey}_setpoint`));
 
       thermostats.set(ctKey, {
         id: ctKey,
@@ -252,6 +274,9 @@ export class UponorHTTPClient {
         temperature: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_room_temperature`)),
         manifoldHeadTemperature: UponorHTTPClient._parseFahrenheit(this.getAttribute(`${ctKey}_head1_supply_temp`)),
         setPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_setpoint`)),
+        effectiveSetPoint: rawSetPoint !== undefined
+          ? UponorHTTPClient._formatTemperature(String(rawSetPoint - this.getActiveSetbackRaw(parseInt(controllerID, 10), parseInt(thermostatID, 10), rawSetPoint)))
+          : undefined,
         minimumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_minimum_setpoint`)),
         maximumSetPoint: UponorHTTPClient._formatTemperature(this.getAttribute(`${ctKey}_maximum_setpoint`)),
         floorTemperature: externalTempRaw && externalTempRaw !== '32767' ? UponorHTTPClient._formatTemperature(externalTempRaw) : undefined,

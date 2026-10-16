@@ -17,6 +17,7 @@ vi.mock('../lib/UponorHTTPClient.mjs', function() {
         temperature: 21.5,
         manifoldHeadTemperature: 22.0,
         setPoint: 21.0,
+        effectiveSetPoint: 17.0,
         minimumSetPoint: 5.0,
         maximumSetPoint: 35.0,
         mode: 'heat',
@@ -407,6 +408,32 @@ describe('UponorThermostatDevice', function() {
 
       expect(device.setStoreValue).toHaveBeenCalledWith('address', '192.168.1.101');
       expect(getClientSpy).toHaveBeenCalledWith('192.168.1.101');
+    });
+  });
+
+  describe('effective setpoint', function() {
+    it('always adds the read-only effective setpoint capability', async function() {
+      device.hasCapability = vi.fn().mockReturnValue(false);
+      device.addCapability = vi.fn();
+      device.removeCapability = vi.fn();
+      device.registerCapabilityListener = vi.fn();
+
+      await device.onInit();
+
+      expect(device.addCapability).toHaveBeenCalledWith('measure_temperature.effective_setpoint');
+      expect(device.registerCapabilityListener).not.toHaveBeenCalledWith('measure_temperature.effective_setpoint', expect.anything());
+    });
+
+    it('sets the effective setpoint and leaves target_temperature unchanged', async function() {
+      device.hasCapability = vi.fn().mockReturnValue(true);
+      device.addCapability = vi.fn();
+      device.registerCapabilityListener = vi.fn();
+
+      await device.updateData();
+
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature.effective_setpoint', 17.0);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('target_temperature', 21.0);
+      expect(device.setCapabilityOptions).toHaveBeenCalledWith('target_temperature', { min: 5.0, max: 35.0 });
     });
   });
 });
