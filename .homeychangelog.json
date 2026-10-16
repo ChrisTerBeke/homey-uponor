@@ -55,5 +55,8 @@
   },
   "1.0.6": {
     "en": "Fixed sync retry: failed or invalid responses from the Uponor controller no longer block updates until the cache expires."
+  },
+  "1.0.7": {
+    "en": "Added a read-only 'Effective target' sensor showing the target temperature including active eco/cooling offset. Dependency and security updates."
   }
 }
