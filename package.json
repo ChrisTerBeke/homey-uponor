@@ -5,22 +5,30 @@
   "scripts": {
     "start": "homey app run",
     "build": "tsc",
-    "lint": "eslint --ext .js,.ts,.mts --ignore-path .gitignore .",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
     "homey:validate": "homey app validate"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.1.1",
+    "@eslint/eslintrc": "^3.3.7",
     "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
-    "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.59.1",
-    "@typescript-eslint/parser": "^8.59.1",
-    "@vitest/spy": "^4.1.5",
-    "eslint": "^8.57.1",
+    "@types/node": "^25.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.71.2",
+    "@typescript-eslint/parser": "^8.59.3",
+    "@vitest/spy": "^4.1.12",
+    "eslint": "^10.12.0",
     "eslint-config-athom": "^3.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "minimatch@9.0.3": "^9.0.7",
+    "eslint-config-athom": {
+      "eslint": "$eslint"
+    }
   }
 }
