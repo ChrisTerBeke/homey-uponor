@@ -15,7 +15,7 @@
     "@eslint/eslintrc": "^3.3.7",
     "@tsconfig/node22": "^22.0.5",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
-    "@types/node": "^25.7.0",
+    "@types/node": "^26.6.5",
     "@typescript-eslint/eslint-plugin": "^8.71.2",
     "@typescript-eslint/parser": "^8.59.3",
     "@vitest/spy": "^4.1.12",
