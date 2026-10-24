@@ -1,4 +1,5 @@
 import { CACHE_EXPIRATION_MS, FETCH_TIMEOUT_MS } from './constants.mjs';
+import { normalizeIpv4Address } from './ipAddress.mjs';
 
 export type Mode = 'auto' | 'heat' | 'cool' | 'off' | 'holiday' | 'eco';
 
@@ -62,11 +63,13 @@ export class UponorHTTPClient {
   private _syncPromise: Promise<boolean | null> | null = null;
 
   constructor(ipAddress: string) {
-    this._url = `http://${ipAddress}/JNAP/`;
+    const address = normalizeIpv4Address(ipAddress);
+    this._url = `http://${address}/JNAP/`;
   }
 
   public async updateAddress(newAddress: string): Promise<boolean> {
-    this._url = `http://${newAddress}/JNAP/`;
+    const address = normalizeIpv4Address(newAddress);
+    this._url = `http://${address}/JNAP/`;
     return this.testConnection();
   }
 

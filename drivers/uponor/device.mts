@@ -12,6 +12,7 @@ import {
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
   ALARM_HEAT_FALLBACK_CAPABILITY, ALARM_FLOOR_LIMIT_CAPABILITY, SYS_SUPPLY_DIAGNOSTIC_CAPABILITY, ALARM_GENERAL_SYSTEM_CAPABILITY,
 } from '../../lib/constants.mjs';
+import { normalizeIpv4Address } from '../../lib/ipAddress.mjs';
 
 class UponorThermostatDevice extends Homey.Device {
 
@@ -93,11 +94,12 @@ class UponorThermostatDevice extends Homey.Device {
   }
 
   private async _updateAddress(newAddress: string): Promise<boolean> {
+    const normalized = normalizeIpv4Address(newAddress);
     const oldAddress = this.getStoreValue('address');
-    if (oldAddress === newAddress) return true;
+    if (oldAddress === normalized) return true;
 
     const driver = this.driver as UponorDriver;
-    const testClient = driver.getClient(newAddress);
+    const testClient = driver.getClient(normalized);
 
     // Only save the new address if the controller is actually reachable there
     const success = await testClient.testConnection();
@@ -105,7 +107,7 @@ class UponorThermostatDevice extends Homey.Device {
       if (oldAddress) {
         driver.removeClient(oldAddress);
       }
-      await this.setStoreValue('address', newAddress);
+      await this.setStoreValue('address', normalized);
     }
     return success;
   }

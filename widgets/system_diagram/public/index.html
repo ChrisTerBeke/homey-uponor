@@ -750,6 +750,17 @@
         let cachedGlobalData = null;
         let homeyInstance = null;
 
+        // Escape untrusted controller/device strings before interpolating into innerHTML
+        function escapeHtml(value) {
+            if (value == null) return '';
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function openSystemDetails() {
             if (!cachedGlobalData) return;
 
@@ -770,9 +781,9 @@
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.eco} Global Eco Mode</div><div class="dt-row-val">${cachedGlobalData.ecoMode ? '<span style="color:#34c759">Active</span>' : 'Off'}</div></div>`;
 
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.balance} Auto-balance</div><div class="dt-row-val">${cachedGlobalData.autoBalance !== undefined ? (cachedGlobalData.autoBalance ? '<span style="color:#34c759">Active</span>' : 'Off') : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
-            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.humidity} Average Humidity</div><div class="dt-row-val">${cachedGlobalData.averageHumidity != null ? cachedGlobalData.averageHumidity + '%' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.humidity} Average Humidity</div><div class="dt-row-val">${cachedGlobalData.averageHumidity != null ? escapeHtml(cachedGlobalData.averageHumidity) + '%' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.outdoor} Outdoor Temperature</div><div class="dt-row-val">${cachedGlobalData.outdoorTemp != null ? cachedGlobalData.outdoorTemp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
-            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.wifi} Wi-Fi Network</div><div class="dt-row-val">${cachedGlobalData.wifi ? cachedGlobalData.wifi : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.wifi} Wi-Fi Network</div><div class="dt-row-val">${cachedGlobalData.wifi ? escapeHtml(cachedGlobalData.wifi) : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
 
             let alarmStr = cachedGlobalData.metrics?.generalSystemAlarm ? '<span style="color:#ff3b30">Active</span>' : 'Clear';
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.error} General System Alarm</div><div class="dt-row-val">${alarmStr}</div></div>`;
@@ -820,7 +831,7 @@
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.pump} Circulation Pump Relay</div><div class="dt-row-val">${cData.pumpRelay ? 'Active' : 'Idle'}</div></div>`;
 
             listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.manifold} Module Supply Temp</div><div class="dt-row-val">${cData.supplyTemp != null ? cData.supplyTemp.toFixed(1) + '&deg;' : '<span style="color:var(--text-muted)">n/a</span>'}</div></div>`;
-            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.info} Firmware Version</div><div class="dt-row-val" style="font-family:monospace">${cData.swVersion ? 'v' + cData.swVersion : '<span style="color:var(--text-muted);font-family:var(--homey-font-family)">n/a</span>'}</div></div>`;
+            listHtml += `<div class="dt-row"><div class="dt-row-label">${icons.info} Firmware Version</div><div class="dt-row-val" style="font-family:monospace">${cData.swVersion ? 'v' + escapeHtml(cData.swVersion) : '<span style="color:var(--text-muted);font-family:var(--homey-font-family)">n/a</span>'}</div></div>`;
             
             document.getElementById('dt-list').innerHTML = listHtml;
 
@@ -834,7 +845,7 @@
             if (!device) return;
 
             document.getElementById('dt-name').innerText = device.zoneName || device.name;
-            document.getElementById('dt-id').innerHTML = `${device.controllerName} &bull; Channel ${device.thermostatID || '-'}`;
+            document.getElementById('dt-id').innerHTML = `${escapeHtml(device.controllerName)} &bull; Channel ${escapeHtml(device.thermostatID || '-')}`;
             
             document.getElementById('dt-temp-grid').style.display = 'grid';
             
@@ -961,7 +972,7 @@
 
             sortedCIds.forEach(cId => {
                 const list = controllers[cId].sort((a, b) => (a.thermostatID || 0) - (b.thermostatID || 0));
-                const controllerName = list[0].controllerName || `Controller ${cId}`;
+                const controllerName = escapeHtml(list[0].controllerName || `Controller ${cId}`);
 
                 const displayStyle = 'display: flex; flex-direction: column;';
 
@@ -1036,9 +1047,9 @@
                     html += `
                         <div class="tree-node">
                             <div class="tree-dot"></div>
-                            <div class="tree-item device-item ${stateClass} ${hasError}" onclick="openDetails('${device.id}')">
+                            <div class="tree-item device-item ${stateClass} ${hasError}" data-device-id="${escapeHtml(device.id)}" onclick="openDetails(this.dataset.deviceId)">
                                 <div class="device-info">
-                                    <div class="device-name"><span class="name-text">${device.zoneName || device.name}</span> ${nameAlertHtml}</div>
+                                    <div class="device-name"><span class="name-text">${escapeHtml(device.zoneName || device.name)}</span> ${nameAlertHtml}</div>
                                     ${subMetricsHtml}
                                 </div>
                                 <div style="display:flex;align-items:center;flex-shrink:0;gap:8px;">
