@@ -7,6 +7,7 @@ import {
   CUSTOM_IP_ADDRESS_PAIR_KEY,
   POLL_INTERVAL_MS,
 } from '../../lib/constants.mjs';
+import { normalizeIpv4Address } from '../../lib/ipAddress.mjs';
 
 export class UponorDriver extends Homey.Driver {
 
@@ -15,10 +16,10 @@ export class UponorDriver extends Homey.Driver {
   private _address?: string;
 
   getClient(address: string): UponorHTTPClient {
-    if (!address) throw new Error('IP address is required to get a client');
-    if (!this._client || this._address !== address) {
-      this._client = new UponorHTTPClient(address);
-      this._address = address;
+    const normalized = normalizeIpv4Address(address);
+    if (!this._client || this._address !== normalized) {
+      this._client = new UponorHTTPClient(normalized);
+      this._address = normalized;
     }
     return this._client;
   }
@@ -80,7 +81,13 @@ export class UponorDriver extends Homey.Driver {
   }
 
   private async _setCustomIpAddress(address: string): Promise<void> {
-    return this.homey.settings.set(CUSTOM_IP_ADDRESS_SETTINGS_KEY, address);
+    const trimmed = (address ?? '').trim();
+    if (!trimmed) {
+      this.homey.settings.unset(CUSTOM_IP_ADDRESS_SETTINGS_KEY);
+      return;
+    }
+    const normalized = normalizeIpv4Address(trimmed);
+    await this.homey.settings.set(CUSTOM_IP_ADDRESS_SETTINGS_KEY, normalized);
   }
 
   async onInit(): Promise<void> {
@@ -151,12 +158,13 @@ export class UponorDriver extends Homey.Driver {
 
   private async _findDevices(address: string, systemID: string): Promise<unknown[]> {
     try {
-      const client = this.getClient(address);
-      const success = await client.updateAddress(address);
-      if (!success) throw new Error(`Could not connect to Uponor controller at IP address ${address}`);
+      const normalized = normalizeIpv4Address(address);
+      const client = this.getClient(normalized);
+      const success = await client.updateAddress(normalized);
+      if (!success) throw new Error(`Could not connect to Uponor controller at IP address ${normalized}`);
       await client.syncAttributes();
       const thermostats = Array.from(client.getThermostats().values());
-      return thermostats.map(this._mapDevice.bind(this, address, systemID));
+      return thermostats.map(this._mapDevice.bind(this, normalized, systemID));
     } catch (error) {
       this.homey.error(error);
       return [];
