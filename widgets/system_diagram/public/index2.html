@@ -978,7 +978,8 @@
                 list.forEach(device => {
                     const isHeating = device.is_heating;
                     const mode = device.thermostat_mode; 
-                    const isCooling = mode === 'cool' && device.measure_temperature > device.target_temperature; 
+                    const isCooling = device.is_cooling
+                      || (mode === 'cool' && device.measure_temperature > device.target_temperature); 
                     
                     let stateClass = '';
                     if (isHeating) stateClass = 'is-heating';

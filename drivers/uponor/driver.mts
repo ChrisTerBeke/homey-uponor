@@ -98,6 +98,13 @@ export class UponorDriver extends Homey.Driver {
       });
     }
 
+    const isCoolingCondition = this.homey.flow.getConditionCard('thermostat_is_cooling');
+    if (isCoolingCondition) {
+      isCoolingCondition.registerRunListener(async (args: { device: UponorThermostatDevice }, _state: any) => {
+        return args.device.isCooling();
+      });
+    }
+
     const setSysEcoModeAction = this.homey.flow.getActionCard('device_set_sys_eco_mode');
     if (setSysEcoModeAction) {
       setSysEcoModeAction.registerRunListener(async (args: { device: UponorThermostatDevice, enabled: boolean }, _state: any) => {

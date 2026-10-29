@@ -1,0 +1,14 @@
+{
+  "id": "thermostat_is_cooling",
+  "title": {
+    "en": "Is cooling",
+    "nl": "Is aan het koelen"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=uponor"
+    }
+  ]
+}

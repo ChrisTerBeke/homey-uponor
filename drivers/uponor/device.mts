@@ -6,7 +6,7 @@ import {
   MEASURE_TEMPERATURE_CAPABILITY, MEASURE_TEMPERATURE_MANIFOLD_HEAD_CAPABILITY,
   MEASURE_TEMPERATURE_FLOOR_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MIN_CAPABILITY, MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY,
   TARGET_TEMPERATURE_CAPABILITY, MEASURE_HUMIDITY_CAPABILITY, MEASURE_TEMPERATURE_EFFECTIVE_SETPOINT_CAPABILITY,
-  IS_HEATING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY,
+  IS_HEATING_CAPABILITY, IS_COOLING_CAPABILITY, BYPASS_ENABLED_CAPABILITY, ECO_MODE_CAPABILITY,
   THERMOSTAT_MODE_CAPABILITY, VALVE_POS_PERCENT_CAPABILITY,
   ALARM_BATTERY_CAPABILITY, ALARM_TAMPER_CAPABILITY, ALARM_AIR_SENSOR_CAPABILITY, ALARM_EXT_SENSOR_CAPABILITY,
   ALARM_RH_SENSOR_CAPABILITY, ALARM_RF_ERROR_CAPABILITY, ALARM_RF_LOW_SIG_CAPABILITY, ALARM_VALVE_POS_CAPABILITY,
@@ -17,9 +17,14 @@ import { normalizeIpv4Address } from '../../lib/ipAddress.mjs';
 class UponorThermostatDevice extends Homey.Device {
 
   private _isHeating: boolean = false;
+  private _isCooling: boolean = false;
 
   public isHeating(): boolean {
     return this._isHeating;
+  }
+
+  public isCooling(): boolean {
+    return this._isCooling;
   }
 
   async onInit(): Promise<void> {
@@ -117,6 +122,7 @@ class UponorThermostatDevice extends Homey.Device {
     await this._ensureCapability(TARGET_TEMPERATURE_CAPABILITY, this._setTargetTemperature.bind(this));
     await this._ensureCapability(MEASURE_TEMPERATURE_EFFECTIVE_SETPOINT_CAPABILITY);
     await this._ensureCapability(IS_HEATING_CAPABILITY);
+    await this._ensureCapability(IS_COOLING_CAPABILITY);
     await this._ensureCapability(BYPASS_ENABLED_CAPABILITY);
 
     if (this.hasCapability(ECO_MODE_CAPABILITY)) {
@@ -230,8 +236,11 @@ class UponorThermostatDevice extends Homey.Device {
         await this._removeCapabilityIfExists(MEASURE_HUMIDITY_CAPABILITY);
       }
 
-      this._isHeating = data.active;
-      await this.setCapabilityValue(IS_HEATING_CAPABILITY, data.active);
+      // Actuator demand is mode-aware: same flag means heating or cooling depending on system mode
+      this._isCooling = data.active && data.mode === 'cool';
+      this._isHeating = data.active && data.mode !== 'cool';
+      await this.setCapabilityValue(IS_HEATING_CAPABILITY, this._isHeating);
+      await this.setCapabilityValue(IS_COOLING_CAPABILITY, this._isCooling);
       await this.setCapabilityValue(BYPASS_ENABLED_CAPABILITY, data.bypassEnabled);
 
       const isHoliday = this.getClient().getGlobalEcoMode();

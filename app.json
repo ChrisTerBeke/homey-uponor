@@ -41,6 +41,44 @@
     }
   },
   "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Stopped cooling",
+          "nl": "Gestopt met koelen"
+        },
+        "hint": {
+          "en": "Triggered when the thermostat actuator turns off while the system is in cooling mode, or when cooling demand ends.",
+          "nl": "Wordt getriggerd wanneer de thermostaat-actuator uitgaat in koelmodus, of wanneer de koelvraag stopt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ],
+        "id": "is_cooling_false"
+      },
+      {
+        "title": {
+          "en": "Started cooling",
+          "nl": "Begonnen met koelen"
+        },
+        "hint": {
+          "en": "Triggered when the thermostat actuator turns on while the system is in cooling mode.",
+          "nl": "Wordt getriggerd wanneer de thermostaat-actuator aangaat terwijl het systeem in koelmodus staat."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ],
+        "id": "is_cooling_true"
+      }
+    ],
     "conditions": [
       {
         "title": {
@@ -97,6 +135,20 @@
           }
         ],
         "id": "device_sys_heat_cool_mode_is"
+      },
+      {
+        "id": "thermostat_is_cooling",
+        "title": {
+          "en": "Is cooling",
+          "nl": "Is aan het koelen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
       },
       {
         "id": "thermostat_is_heating",
@@ -208,6 +260,7 @@
         "target_temperature",
         "measure_temperature.effective_setpoint",
         "is_heating",
+        "is_cooling",
         "bypass_enabled",
         "thermostat_mode",
         "alarm_battery",
@@ -444,6 +497,16 @@
       "getable": true,
       "setable": true,
       "uiComponent": "toggle"
+    },
+    "is_cooling": {
+      "type": "boolean",
+      "title": {
+        "en": "Is cooling",
+        "nl": "Aan het koelen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
     },
     "is_heating": {
       "type": "boolean",
