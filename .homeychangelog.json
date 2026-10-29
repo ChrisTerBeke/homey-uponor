@@ -58,5 +58,8 @@
   },
   "1.0.7": {
     "en": "Added a read-only 'Effective target' sensor showing the target temperature including active eco/cooling offset. Dependency and security updates."
+  },
+  "1.0.8": {
+    "en": "Added Homey Flow triggers for heating, alarms and custom sensors, plus an is_cooling capability with cooling Flow cards."
   }
 }
