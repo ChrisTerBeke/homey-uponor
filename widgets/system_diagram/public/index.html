@@ -889,13 +889,14 @@
             let statusColor = 'inherit';
             let statusIcon = icons.idle;
 
-            if (device.is_heating) { 
-                statusVal = 'Heating'; 
-                statusColor = 'var(--uponor-orange)'; 
+            if (device.is_heating) {
+                statusVal = 'Heating';
+                statusColor = 'var(--uponor-orange)';
                 statusIcon = icons.flame;
-            } else if (device.thermostat_mode === 'cool' && device.measure_temperature > device.target_temperature) { 
-                statusVal = 'Cooling'; 
-                statusColor = 'var(--uponor-blue)'; 
+            } else if (device.is_cooling
+              || (device.thermostat_mode === 'cool' && device.measure_temperature > device.target_temperature)) {
+                statusVal = 'Cooling';
+                statusColor = 'var(--uponor-blue)';
                 statusIcon = icons.snowflake;
             }
             
