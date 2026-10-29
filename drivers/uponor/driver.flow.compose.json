@@ -1,0 +1,277 @@
+{
+  "triggers": [
+    {
+      "id": "is_heating_true",
+      "title": {
+        "en": "Started heating",
+        "nl": "Begonnen met verwarmen"
+      },
+      "hint": {
+        "en": "Triggered when the thermostat actuator turns on for heating or cooling demand.",
+        "nl": "Wordt getriggerd wanneer de thermostaat-actuator aangaat voor warmte- of koelvraag."
+      }
+    },
+    {
+      "id": "is_heating_false",
+      "title": {
+        "en": "Stopped heating",
+        "nl": "Gestopt met verwarmen"
+      },
+      "hint": {
+        "en": "Triggered when the thermostat actuator turns off.",
+        "nl": "Wordt getriggerd wanneer de thermostaat-actuator uitgaat."
+      }
+    },
+    {
+      "id": "bypass_enabled_true",
+      "title": {
+        "en": "Bypass enabled",
+        "nl": "Bypass ingeschakeld"
+      }
+    },
+    {
+      "id": "bypass_enabled_false",
+      "title": {
+        "en": "Bypass disabled",
+        "nl": "Bypass uitgeschakeld"
+      }
+    },
+    {
+      "id": "sys_supply_diagnostic_true",
+      "title": {
+        "en": "Supply diagnostic alarm turned on",
+        "nl": "Aanvoerdiagnostiek-alarm ging aan"
+      }
+    },
+    {
+      "id": "sys_supply_diagnostic_false",
+      "title": {
+        "en": "Supply diagnostic alarm turned off",
+        "nl": "Aanvoerdiagnostiek-alarm ging uit"
+      }
+    },
+    {
+      "id": "valve_pos_percent_changed",
+      "title": {
+        "en": "Valve position changed",
+        "nl": "Ventielpositie veranderd"
+      },
+      "tokens": [
+        {
+          "name": "valve_pos_percent",
+          "type": "number",
+          "title": {
+            "en": "Valve position",
+            "nl": "Ventielpositie"
+          },
+          "example": 50
+        }
+      ]
+    },
+    {
+      "id": "alarm_generic.air_sensor_true",
+      "title": {
+        "en": "Air sensor error turned on",
+        "nl": "Luchtsensorfout ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.air_sensor_false",
+      "title": {
+        "en": "Air sensor error turned off",
+        "nl": "Luchtsensorfout ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.ext_sensor_true",
+      "title": {
+        "en": "External sensor error turned on",
+        "nl": "Externe sensorfout ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.ext_sensor_false",
+      "title": {
+        "en": "External sensor error turned off",
+        "nl": "Externe sensorfout ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.rh_sensor_true",
+      "title": {
+        "en": "Humidity sensor error turned on",
+        "nl": "Vochtigheidssensorfout ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.rh_sensor_false",
+      "title": {
+        "en": "Humidity sensor error turned off",
+        "nl": "Vochtigheidssensorfout ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_error_true",
+      "title": {
+        "en": "RF error turned on",
+        "nl": "RF-fout ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_error_false",
+      "title": {
+        "en": "RF error turned off",
+        "nl": "RF-fout ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_low_sig_true",
+      "title": {
+        "en": "RF low signal warning turned on",
+        "nl": "Zwak RF-signaalwaarschuwing ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_low_sig_false",
+      "title": {
+        "en": "RF low signal warning turned off",
+        "nl": "Zwak RF-signaalwaarschuwing ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.valve_pos_true",
+      "title": {
+        "en": "Valve position error turned on",
+        "nl": "Ventielpositiefout ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.valve_pos_false",
+      "title": {
+        "en": "Valve position error turned off",
+        "nl": "Ventielpositiefout ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.heat_fallback_true",
+      "title": {
+        "en": "Fallback heat alarm turned on",
+        "nl": "Noodverwarming-alarm ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.heat_fallback_false",
+      "title": {
+        "en": "Fallback heat alarm turned off",
+        "nl": "Noodverwarming-alarm ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.floor_limit_true",
+      "title": {
+        "en": "Floor temperature limit alarm turned on",
+        "nl": "Vloertemperatuurlimiet-alarm ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.floor_limit_false",
+      "title": {
+        "en": "Floor temperature limit alarm turned off",
+        "nl": "Vloertemperatuurlimiet-alarm ging uit"
+      }
+    },
+    {
+      "id": "alarm_generic.system_true",
+      "title": {
+        "en": "General system alarm turned on",
+        "nl": "Algemeen systeemalarm ging aan"
+      }
+    },
+    {
+      "id": "alarm_generic.system_false",
+      "title": {
+        "en": "General system alarm turned off",
+        "nl": "Algemeen systeemalarm ging uit"
+      }
+    }
+  ],
+  "conditions": [
+    {
+      "id": "alarm_generic.air_sensor",
+      "title": {
+        "en": "Air sensor error is !{{on|off}}",
+        "nl": "Luchtsensorfout is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.ext_sensor",
+      "title": {
+        "en": "External sensor error is !{{on|off}}",
+        "nl": "Externe sensorfout is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.rh_sensor",
+      "title": {
+        "en": "Humidity sensor error is !{{on|off}}",
+        "nl": "Vochtigheidssensorfout is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_error",
+      "title": {
+        "en": "RF error is !{{on|off}}",
+        "nl": "RF-fout is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.rf_low_sig",
+      "title": {
+        "en": "RF low signal warning is !{{on|off}}",
+        "nl": "Zwak RF-signaalwaarschuwing is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.valve_pos",
+      "title": {
+        "en": "Valve position error is !{{on|off}}",
+        "nl": "Ventielpositiefout is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.heat_fallback",
+      "title": {
+        "en": "Fallback heat alarm is !{{on|off}}",
+        "nl": "Noodverwarming-alarm is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.floor_limit",
+      "title": {
+        "en": "Floor temperature limit alarm is !{{on|off}}",
+        "nl": "Vloertemperatuurlimiet-alarm is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "alarm_generic.system",
+      "title": {
+        "en": "General system alarm is !{{on|off}}",
+        "nl": "Algemeen systeemalarm is !{{aan|uit}}"
+      }
+    },
+    {
+      "id": "bypass_enabled",
+      "title": {
+        "en": "Bypass is !{{enabled|disabled}}",
+        "nl": "Bypass is !{{ingeschakeld|uitgeschakeld}}"
+      }
+    },
+    {
+      "id": "sys_supply_diagnostic",
+      "title": {
+        "en": "Supply diagnostic alarm is !{{on|off}}",
+        "nl": "Aanvoerdiagnostiek-alarm is !{{aan|uit}}"
+      }
+    }
+  ]
+}
