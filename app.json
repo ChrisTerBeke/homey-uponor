@@ -77,319 +77,7 @@
           }
         ],
         "id": "is_cooling_true"
-      }
-    ],
-    "conditions": [
-      {
-        "title": {
-          "en": "System is in eco mode",
-          "nl": "Systeem staat in eco modus"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=uponor"
-          }
-        ],
-        "id": "device_sys_eco_mode_is"
       },
-      {
-        "title": {
-          "en": "System is heating/cooling",
-          "nl": "Systeem verwarmt/koelt"
-        },
-        "titleFormatted": {
-          "en": "System is set to [[mode]]",
-          "nl": "Systeem staat op [[mode]]"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=uponor"
-          },
-          {
-            "name": "mode",
-            "type": "dropdown",
-            "title": {
-              "en": "Mode",
-              "nl": "Modus"
-            },
-            "values": [
-              {
-                "id": "heat",
-                "title": {
-                  "en": "Heating",
-                  "nl": "Verwarmen"
-                }
-              },
-              {
-                "id": "cool",
-                "title": {
-                  "en": "Cooling",
-                  "nl": "Koelen"
-                }
-              }
-            ]
-          }
-        ],
-        "id": "device_sys_heat_cool_mode_is"
-      },
-      {
-        "id": "thermostat_is_cooling",
-        "title": {
-          "en": "Is cooling",
-          "nl": "Is aan het koelen"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "thermostat_is_heating",
-        "title": {
-          "en": "Is heating",
-          "nl": "Is aan het verwarmen"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.air_sensor",
-        "title": {
-          "en": "Air sensor error is !{{on|off}}",
-          "nl": "Luchtsensorfout is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.ext_sensor",
-        "title": {
-          "en": "External sensor error is !{{on|off}}",
-          "nl": "Externe sensorfout is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.rh_sensor",
-        "title": {
-          "en": "Humidity sensor error is !{{on|off}}",
-          "nl": "Vochtigheidssensorfout is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.rf_error",
-        "title": {
-          "en": "RF error is !{{on|off}}",
-          "nl": "RF-fout is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.rf_low_sig",
-        "title": {
-          "en": "RF low signal warning is !{{on|off}}",
-          "nl": "Zwak RF-signaalwaarschuwing is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.valve_pos",
-        "title": {
-          "en": "Valve position error is !{{on|off}}",
-          "nl": "Ventielpositiefout is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.heat_fallback",
-        "title": {
-          "en": "Fallback heat alarm is !{{on|off}}",
-          "nl": "Noodverwarming-alarm is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.floor_limit",
-        "title": {
-          "en": "Floor temperature limit alarm is !{{on|off}}",
-          "nl": "Vloertemperatuurlimiet-alarm is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "alarm_generic.system",
-        "title": {
-          "en": "General system alarm is !{{on|off}}",
-          "nl": "Algemeen systeemalarm is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "bypass_enabled",
-        "title": {
-          "en": "Bypass is !{{enabled|disabled}}",
-          "nl": "Bypass is !{{ingeschakeld|uitgeschakeld}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      },
-      {
-        "id": "sys_supply_diagnostic",
-        "title": {
-          "en": "Supply diagnostic alarm is !{{on|off}}",
-          "nl": "Aanvoerdiagnostiek-alarm is !{{aan|uit}}"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=uponor"
-          }
-        ]
-      }
-    ],
-    "actions": [
-      {
-        "title": {
-          "en": "Set system eco mode",
-          "nl": "Zet systeem eco modus"
-        },
-        "titleFormatted": {
-          "en": "Set system eco mode to [[enabled]]",
-          "nl": "Zet systeem eco modus op [[enabled]]"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=uponor"
-          },
-          {
-            "name": "enabled",
-            "type": "checkbox",
-            "title": {
-              "en": "Enabled",
-              "nl": "Ingeschakeld"
-            }
-          }
-        ],
-        "id": "device_set_sys_eco_mode"
-      },
-      {
-        "title": {
-          "en": "Set system to heating/cooling",
-          "nl": "Zet systeem op verwarmen/koelen"
-        },
-        "titleFormatted": {
-          "en": "Set system to [[mode]]",
-          "nl": "Zet systeem op [[mode]]"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=uponor"
-          },
-          {
-            "name": "mode",
-            "type": "dropdown",
-            "title": {
-              "en": "Mode",
-              "nl": "Modus"
-            },
-            "values": [
-              {
-                "id": "heat",
-                "title": {
-                  "en": "Heating",
-                  "nl": "Verwarmen"
-                }
-              },
-              {
-                "id": "cool",
-                "title": {
-                  "en": "Cooling",
-                  "nl": "Koelen"
-                }
-              }
-            ]
-          }
-        ],
-        "id": "device_set_sys_heat_cool_mode"
-      }
-    ],
-    "triggers": [
       {
         "id": "is_heating_true",
         "title": {
@@ -758,6 +446,316 @@
             "filter": "driver_id=uponor"
           }
         ]
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "System is in eco mode",
+          "nl": "Systeem staat in eco modus"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          }
+        ],
+        "id": "device_sys_eco_mode_is"
+      },
+      {
+        "title": {
+          "en": "System is heating/cooling",
+          "nl": "Systeem verwarmt/koelt"
+        },
+        "titleFormatted": {
+          "en": "System is set to [[mode]]",
+          "nl": "Systeem staat op [[mode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "heat",
+                "title": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              },
+              {
+                "id": "cool",
+                "title": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "device_sys_heat_cool_mode_is"
+      },
+      {
+        "id": "thermostat_is_cooling",
+        "title": {
+          "en": "Is cooling",
+          "nl": "Is aan het koelen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "thermostat_is_heating",
+        "title": {
+          "en": "Is heating",
+          "nl": "Is aan het verwarmen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.air_sensor",
+        "title": {
+          "en": "Air sensor error is !{{on|off}}",
+          "nl": "Luchtsensorfout is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.ext_sensor",
+        "title": {
+          "en": "External sensor error is !{{on|off}}",
+          "nl": "Externe sensorfout is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.rh_sensor",
+        "title": {
+          "en": "Humidity sensor error is !{{on|off}}",
+          "nl": "Vochtigheidssensorfout is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.rf_error",
+        "title": {
+          "en": "RF error is !{{on|off}}",
+          "nl": "RF-fout is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.rf_low_sig",
+        "title": {
+          "en": "RF low signal warning is !{{on|off}}",
+          "nl": "Zwak RF-signaalwaarschuwing is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.valve_pos",
+        "title": {
+          "en": "Valve position error is !{{on|off}}",
+          "nl": "Ventielpositiefout is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.heat_fallback",
+        "title": {
+          "en": "Fallback heat alarm is !{{on|off}}",
+          "nl": "Noodverwarming-alarm is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.floor_limit",
+        "title": {
+          "en": "Floor temperature limit alarm is !{{on|off}}",
+          "nl": "Vloertemperatuurlimiet-alarm is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_generic.system",
+        "title": {
+          "en": "General system alarm is !{{on|off}}",
+          "nl": "Algemeen systeemalarm is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "bypass_enabled",
+        "title": {
+          "en": "Bypass is !{{enabled|disabled}}",
+          "nl": "Bypass is !{{ingeschakeld|uitgeschakeld}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      },
+      {
+        "id": "sys_supply_diagnostic",
+        "title": {
+          "en": "Supply diagnostic alarm is !{{on|off}}",
+          "nl": "Aanvoerdiagnostiek-alarm is !{{aan|uit}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=uponor"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Set system eco mode",
+          "nl": "Zet systeem eco modus"
+        },
+        "titleFormatted": {
+          "en": "Set system eco mode to [[enabled]]",
+          "nl": "Zet systeem eco modus op [[enabled]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "enabled",
+            "type": "checkbox",
+            "title": {
+              "en": "Enabled",
+              "nl": "Ingeschakeld"
+            }
+          }
+        ],
+        "id": "device_set_sys_eco_mode"
+      },
+      {
+        "title": {
+          "en": "Set system to heating/cooling",
+          "nl": "Zet systeem op verwarmen/koelen"
+        },
+        "titleFormatted": {
+          "en": "Set system to [[mode]]",
+          "nl": "Zet systeem op [[mode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=uponor"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "heat",
+                "title": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              },
+              {
+                "id": "cool",
+                "title": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "device_set_sys_heat_cool_mode"
       }
     ]
   },
