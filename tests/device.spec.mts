@@ -111,8 +111,103 @@ describe('UponorThermostatDevice', function() {
     expect(device.setCapabilityValue).toHaveBeenCalledWith('measure_temperature', 21.5);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('target_temperature', 21.0);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('is_heating', true);
+    expect(device.setCapabilityValue).toHaveBeenCalledWith('is_cooling', false);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('bypass_enabled', false);
     expect(device.setCapabilityValue).toHaveBeenCalledWith('thermostat_mode', 'heat');
+    expect(device.isHeating()).toBe(true);
+    expect(device.isCooling()).toBe(false);
+  });
+
+  describe('heating vs cooling actuator state', function() {
+    beforeEach(function() {
+      device.hasCapability = vi.fn().mockReturnValue(true);
+      device.addCapability = vi.fn();
+      device.registerCapabilityListener = vi.fn();
+      device.removeCapability = vi.fn().mockResolvedValue(undefined);
+      device.getData = vi.fn().mockReturnValue({ controllerID: 0, thermostatID: 0 });
+    });
+
+    it('should set is_cooling when actuator is active in cool mode', async function() {
+      const client = (device.driver as any).getClient();
+      client.getThermostat = vi.fn().mockReturnValue({
+        id: 'C0_T0',
+        controllerID: 0,
+        thermostatID: 0,
+        name: 'Living Room',
+        temperature: 24.0,
+        setPoint: 22.0,
+        effectiveSetPoint: 24.0,
+        minimumSetPoint: 5.0,
+        maximumSetPoint: 35.0,
+        mode: 'cool',
+        active: true,
+        bypassEnabled: false,
+        ecoMode: false,
+        coolingAllowed: true,
+        alarms: {
+          battery: false,
+          tamper: false,
+          airSensor: false,
+          extSensor: false,
+          rhSensor: false,
+          rfError: false,
+          rfLowSig: false,
+          valvePos: false,
+          heatFallback: false,
+          floorLimit: false,
+        },
+      });
+      client.getGlobalEcoMode = vi.fn().mockReturnValue(false);
+      client.getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: true });
+
+      await device.updateData();
+
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('is_heating', false);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('is_cooling', true);
+      expect(device.isHeating()).toBe(false);
+      expect(device.isCooling()).toBe(true);
+    });
+
+    it('should clear both flags when actuator is inactive in cool mode', async function() {
+      const client = (device.driver as any).getClient();
+      client.getThermostat = vi.fn().mockReturnValue({
+        id: 'C0_T0',
+        controllerID: 0,
+        thermostatID: 0,
+        name: 'Living Room',
+        temperature: 21.0,
+        setPoint: 22.0,
+        effectiveSetPoint: 24.0,
+        minimumSetPoint: 5.0,
+        maximumSetPoint: 35.0,
+        mode: 'cool',
+        active: false,
+        bypassEnabled: false,
+        ecoMode: false,
+        coolingAllowed: true,
+        alarms: {
+          battery: false,
+          tamper: false,
+          airSensor: false,
+          extSensor: false,
+          rhSensor: false,
+          rfError: false,
+          rfLowSig: false,
+          valvePos: false,
+          heatFallback: false,
+          floorLimit: false,
+        },
+      });
+      client.getGlobalEcoMode = vi.fn().mockReturnValue(false);
+      client.getSystemMetrics = vi.fn().mockReturnValue({ generalSystemAlarm: false, coolingAvailable: true });
+
+      await device.updateData();
+
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('is_heating', false);
+      expect(device.setCapabilityValue).toHaveBeenCalledWith('is_cooling', false);
+      expect(device.isHeating()).toBe(false);
+      expect(device.isCooling()).toBe(false);
+    });
   });
 
   it('should cleanup polling on delete or uninit', async function() {

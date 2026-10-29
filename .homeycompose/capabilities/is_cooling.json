@@ -1,0 +1,10 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Is cooling",
+    "nl": "Aan het koelen"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}
