@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Started cooling",
+    "nl": "Begonnen met koelen"
+  },
+  "hint": {
+    "en": "Triggered when the thermostat actuator turns on while the system is in cooling mode.",
+    "nl": "Wordt getriggerd wanneer de thermostaat-actuator aangaat terwijl het systeem in koelmodus staat."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=uponor"
+    }
+  ]
+}

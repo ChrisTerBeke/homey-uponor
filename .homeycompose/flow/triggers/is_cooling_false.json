@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Stopped cooling",
+    "nl": "Gestopt met koelen"
+  },
+  "hint": {
+    "en": "Triggered when the thermostat actuator turns off while the system is in cooling mode, or when cooling demand ends.",
+    "nl": "Wordt getriggerd wanneer de thermostaat-actuator uitgaat in koelmodus, of wanneer de koelvraag stopt."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=uponor"
+    }
+  ]
+}
