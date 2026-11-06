@@ -32,6 +32,7 @@ class UponorApp extends Homey.App {
         max_floor_setpoint: device.hasCapability('measure_temperature.floor_max_setpoint') ? device.getCapabilityValue('measure_temperature.floor_max_setpoint') : null,
         measure_humidity: device.hasCapability('measure_humidity') ? device.getCapabilityValue('measure_humidity') : null,
         is_heating: device.getCapabilityValue('is_heating'),
+        is_cooling: device.hasCapability('is_cooling') ? device.getCapabilityValue('is_cooling') : false,
         thermostat_mode: device.getCapabilityValue('thermostat_mode'),
         eco_mode: device.hasCapability('eco_mode') ? device.getCapabilityValue('eco_mode') : false,
         bypass_enabled: device.getCapabilityValue('bypass_enabled'),
@@ -129,6 +130,7 @@ class UponorApp extends Homey.App {
                 && client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`) !== '32767'
                 ? (((parseInt(client.getAttribute(`C${cId}_T${data.thermostatID || 1}_external_temperature`)!, 10) / 10) - 32) * (5 / 9)) : null,
               is_heating: device.getCapabilityValue('is_heating'),
+              is_cooling: device.hasCapability('is_cooling') ? device.getCapabilityValue('is_cooling') : false,
               thermostat_mode: device.getCapabilityValue('thermostat_mode'),
               eco_mode: device.hasCapability('eco_mode') ? device.getCapabilityValue('eco_mode') : false,
               bypass_enabled: device.getCapabilityValue('bypass_enabled'),

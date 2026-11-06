@@ -9,6 +9,7 @@ export const MEASURE_TEMPERATURE_FLOOR_MAX_CAPABILITY = 'measure_temperature.flo
 export const TARGET_TEMPERATURE_CAPABILITY = 'target_temperature';
 export const MEASURE_HUMIDITY_CAPABILITY = 'measure_humidity';
 export const IS_HEATING_CAPABILITY = 'is_heating';
+export const IS_COOLING_CAPABILITY = 'is_cooling';
 export const BYPASS_ENABLED_CAPABILITY = 'bypass_enabled';
 export const ECO_MODE_CAPABILITY = 'eco_mode';
 export const THERMOSTAT_MODE_CAPABILITY = 'thermostat_mode';
