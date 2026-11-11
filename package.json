@@ -24,7 +24,7 @@
     "eslint-config-athom": "^3.1.5",
     "ts-node": "^10.9.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.0"
   },
   "overrides": {
     "minimatch@9.0.3": "^9.0.7",
